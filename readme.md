@@ -1,16 +1,6 @@
 ## Objectifs du système à modéliser
 
-On propose de modéliser un système de réservation (master) de tickets pouvant supporter plusieurs vendeurs (vendor). Le système master gère les salles, les concerts, les différents artistes se produisant dans les concerts et la réservation des tickets alors que les vendeurs assurent la vente de billets. Chaque vendeur a un quota pour un concert donné, qui peut évoluer avec le temps.
-En cas d'annulation de concert, le système de réservation informe les vendors qui doivent contacter les clients (customers). Le master propose des services de validation de l'authenticité des tickets à l'entrée des concerts.
-
-Lors de la réservation de ticket, on a 2 phases:
-- le booking (réservation des places)
-- le ticketing (émission de billets sécurisés avec clé.)
-
-Le vendor va demander au master via une API rest les concerts pour lesquels il possède un quota. Seuls ces concerts seront proposés à la vente au client.
-Le client spécifie ensuite le nombre de places assises et le nombre de places debout qu'il souhaite acheter. Le vendor interroge le master sur la disponibilité. Celui-ci va lui renvoyer des tickets transitionnels valables 10 minutes en cas de disponibilité de places.
-Le vendeur va ensuite renseigner les informations du client et les transmettre au master pour l'émission finale des tickets avec clé sécurisée qui sera transmise au client pour qu'il puisse entrer dans la salle.
-En cas d'annulation du concert, le master prévient les vendors (avec les informations des tickets à annuler et les emails des clients) le vendeur doit envoyer un email au client pour chaque ticket annulé.
+L'objectif de la modélisation consiste à créer un système de gestion du trafic RATP avec la capacité de prendre en charge plusieurs utilisateurs ainsi qu'un administrateur RATP. Le système principal gère les abonnements aux différentes lignes, fournit et consulte des informations en temps réel, génère des alertes personnalisées et supervise la réception des alertes. Les utilisateurs ont la possibilité de signaler des incidents tels que des accidents, la présence de contrôleurs ou des ralentissements au système principal. Si plus de 10 notifications sont transmises en moins de 30 minutes, le système principal envoie une demande de confirmation de ces notifications. En cas de confirmation, le système principal envoie une alerte à tous les utilisateurs abonnés à la ligne concernée. De plus, la RATP peut émettre des alertes directement notifiées aux utilisateurs abonnés. Les utilisateurs ont également la faculté de s'abonner ou de se désabonner d'une ligne, ainsi que d'accéder aux informations sur les horaires en temps réel.
 
 ## Interfaces
 
@@ -40,7 +30,8 @@ opt venue cancellation
     vendor->Customer: smtp:cancellation email
 end
 ```
-![](seqDiagram.png)
+![PHOTO-2023-11-10-18-50-59](https://github.com/Emmachz/sample-quarkus-jee-project/assets/112880851/303a5f67-0efe-47c7-a5bb-dd3cfb1844a0)
+
 
 ## Schéma relationnel
 
