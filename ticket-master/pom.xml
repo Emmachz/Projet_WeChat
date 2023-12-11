@@ -38,7 +38,7 @@
   <dependencies>
     <dependency>
       <groupId>fr.pantheonsorbonne.ufr27.miage</groupId>
-      <artifactId>ticket-commons</artifactId>
+      <artifactId>wechat-commons</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
