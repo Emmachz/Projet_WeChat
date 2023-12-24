@@ -23,3 +23,6 @@ REPLACE INTO `VenueQuota` (`seatingQuota`, `standingQuota`, `vendor_idVendor`, `
 
 
 REPLACE INTO `Ticket` (`idTicket`, `seatReference`, `ticketKey`, `validUntil`, `idCustomer`, `idVendor`, `idVenue`) VALUES (1,NULL,'dummyKey',NULL,1,1,1),(2,'ABC-01','dummyKey',NULL,1,2,1);
+
+REPLACE INTO `Event` (`idEvent`, `name`, `region`, `commentary`) VALUES (1,'tremblement de terre', 'haut de seine','le tremblement de terre à lieu dans la region haut de seine sont invité à évacuer' ),(2,'ouragant','Bretagne','la region de la bretagne sont invité à faire attention des prochain jour à l ouragant qui passera les prochains jours');
+

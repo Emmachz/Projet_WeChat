@@ -12,11 +12,12 @@
         <module>ticket-master</module>
         <module>ticket-vendor</module>
         <module>ticket-commons</module>
-        <module>wechat-government</module>
         <module>wechat-master</module>
         <module>wechat-vendor</module>
-        <module>wechat-bank</module>
         <module>wechat-user</module>
+        <module>wechat-commons</module>
+        <module>wechat-government</module>
+        <module>wechat-bank</module>
     </modules>
     <build>
         <plugins>
