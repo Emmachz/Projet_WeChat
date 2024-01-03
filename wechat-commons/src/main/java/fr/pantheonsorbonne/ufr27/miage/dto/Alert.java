@@ -4,16 +4,26 @@ public class Alert {
 
     int alertId;
 
-    public Alert(int alertId) {
+    String alertDescription;
+
+    String alertRegion;
+
+
+    public Alert(int alertId, String alertDescription, String alertRegion) {
+
         this.alertId = alertId;
+        this.alertDescription = alertDescription;
+        this.alertRegion = alertRegion;
     }
 
     public Alert() {
     }
 
     public int getAlertId() {
+
         return alertId;
     }
+
 
 
 }
