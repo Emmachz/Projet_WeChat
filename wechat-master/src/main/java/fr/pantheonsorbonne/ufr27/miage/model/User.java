@@ -1,7 +1,7 @@
 package fr.pantheonsorbonne.ufr27.miage.model;
 
 import jakarta.persistence.*;
-
+@Table(name = "User")
 @Entity
 public class User {
 
@@ -11,12 +11,12 @@ public class User {
     private Long userId;
     @Column(name = "user_name", nullable = false, length = 45)
     private String userName;
-    @Column(name = "user_email", nullable = false, unique = true)
-    private String userEmail;
+    @Column(name = "user_login", nullable = false, unique = true)
+    private String userLogin;
     @Column(name = "user_region", length = 100)
     private String userRegion;
-    @Column(name = "user_password", nullable = false, length = 8)
-    private String userPassword;
+    @Column(name = "user_NameBank")
+    private String userNameBank;
 
     @OneToOne(optional = false)
     @JoinColumn(name = "bank_id", nullable = false)
@@ -26,7 +26,6 @@ public class User {
         this.userName = userName;
         this.userEmail = userEmail;
         this.userRegion = userRegion;
-        this.userPassword = userPassword;
     }
 
     public User() {
@@ -47,12 +46,12 @@ public class User {
         return userName;
     }
 
-    public void setUserEmail (String userEmail){
-        this.userEmail = userEmail;
+    public void setUserLogin (String userLogin){
+        this.userLogin = userLogin;
     }
 
-    public String getUserEmail(){
-        return userEmail;
+    public String getUserLogin(){
+        return userLogin;
     }
 
     public void setUserRegion (String userRegion){
@@ -62,13 +61,15 @@ public class User {
     public String getUserRegion(){
         return userRegion;
     }
-    public void setUserPassword(String userPassword){
-        this.userPassword = userPassword;
+
+    public void setUserNameBank (String bankName){
+        this.userNameBank = bankName;
     }
 
-    public String getUserPassword(){
-        return userPassword;
+    public String getUserNameBank(){
+        return userNameBank;
     }
+
     public void setBankIdId(Bank bankId){
         this.bankId = bankId;
     }

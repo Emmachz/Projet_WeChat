@@ -1,7 +1,7 @@
 package fr.pantheonsorbonne.ufr27.miage.model;
 
 import jakarta.persistence.*;
-
+@Table(name = "Wallet")
 @Entity
 public class Wallet {
     @Id
