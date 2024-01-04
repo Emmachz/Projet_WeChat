@@ -20,8 +20,15 @@ public class Alert {
     }
 
     public int getAlertId() {
-
         return alertId;
+    }
+
+    public String getAlertDescription(){
+        return alertDescription;
+    }
+
+    public String getAlertRegion(){
+        return alertRegion;
     }
 
 
