@@ -9,9 +9,12 @@
     <packaging>pom</packaging>
     <name>project-m1</name>
     <modules>
+        <module>wc-master</module>
         <module>ticket-master</module>
         <module>ticket-vendor</module>
         <module>ticket-commons</module>
+        <module>wechat-seller</module>
+        <module>mybank-master</module>
     </modules>
     <build>
         <plugins>
