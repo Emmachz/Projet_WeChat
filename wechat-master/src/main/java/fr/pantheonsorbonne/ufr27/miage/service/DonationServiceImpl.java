@@ -1,26 +1,30 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
 import com.google.common.hash.Hashing;
-import fr.pantheonsorbonne.ufr27.miage.dto.ETicket;
-import fr.pantheonsorbonne.ufr27.miage.dto.TicketType;
-import fr.pantheonsorbonne.ufr27.miage.exception.CustomerNotFoundException;
-import fr.pantheonsorbonne.ufr27.miage.exception.ExpiredTransitionalTicketException;
 import fr.pantheonsorbonne.ufr27.miage.dao.CustomerDAO;
 import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchTicketException;
 import fr.pantheonsorbonne.ufr27.miage.dao.TicketDAO;
-
+import fr.pantheonsorbonne.ufr27.miage.dto.ETicket;
+import fr.pantheonsorbonne.ufr27.miage.dto.Gig;
+import fr.pantheonsorbonne.ufr27.miage.dto.TicketType;
+import fr.pantheonsorbonne.ufr27.miage.exception.CustomerNotFoundException;
+import fr.pantheonsorbonne.ufr27.miage.exception.ExpiredTransitionalTicketException;
 import fr.pantheonsorbonne.ufr27.miage.model.Customer;
 import fr.pantheonsorbonne.ufr27.miage.model.Ticket;
-
+import fr.pantheonsorbonne.ufr27.miage.model.Venue;
+import fr.pantheonsorbonne.ufr27.miage.model.VenueLineUp;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Objects;
 
 @ApplicationScoped
-public class TicketingServiceImpl implements TicketingService {
+public class DonationServiceImpl implements TicketingService {
 
 
     @Inject
@@ -70,5 +74,21 @@ public class TicketingServiceImpl implements TicketingService {
     @Override
     public boolean validateTicket(Ticket t) {
         return this.getKeyForTicket(t).equals(t.getTicketKey());
+    }
+
+    @Override
+    public Collection<Donation> getAvailableGigs(int idVendor) {
+        Collection<Gig> gigs = new LinkedList<>();
+        for (Venue venue : venueQuotaDAO.getQuotaForVendor(idVendor)) {
+            StringBuilder builder = new StringBuilder();
+            for (VenueLineUp lineUp : venue.getLineUp()) {
+                builder.append(lineUp.getId().getArtist().getName());
+                builder.append(" and ");
+            }
+            String allArtists = builder.substring(0, builder.length() - 5);
+            gigs.add(new Gig(allArtists, venue.getLocation().getName(), venue.getVenueDate(), venue.getId().intValue()));
+        }
+
+        return gigs;
     }
 }

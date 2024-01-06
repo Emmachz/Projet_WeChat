@@ -1,30 +1,40 @@
 
 package fr.pantheonsorbonne.ufr27.miage.resources;
 
-import fr.pantheonsorbonne.ufr27.miage.service.DonationService;
+import fr.pantheonsorbonne.ufr27.miage.service.VenueService;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-@Path("government")
-public class GovernmentResource {
+
+@Path("user")
+public class UserResource {
 
     @Inject
-    donationService DonationService;
+    donationService service;
 
-    @Path(("ask/{donationId}"))
+    @Path("{/see/donations")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Collection<Donation> getDonations() {
+        return service.getDemandDonations();
+    }
+/*
+    @Path("{see/{idDonation}")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Collection<Donation> getDonations(@PathParam("idVendor") int idVendor) {
+        return service.getDemandDonations(idVendor);
+    }
+
+    @Path(("{userId}/give/{giveName}/{donationId}"))
     @POST
     @Produces({MediaType.TEXT_PLAIN})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public String[] requestDonation(Ticket t) {
-        return donationService.requestDonation(donationId);
+    public String[] giveDonation(Ticket t) {
+        return donationService.giveDonation(donationId);
     }
+*/
 
-    @Path("delete/{donationId}")
-    @DELETE
-    public void cancelDonation(@PathParam("donationId") int donationId) {
-        donationService.cancelDonation(donationId);
-    }
 }
- 

@@ -8,17 +8,17 @@ import fr.pantheonsorbonne.ufr27.miage.exception.CustomerNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.exception.ExpiredTransitionalTicketException;
 import fr.pantheonsorbonne.ufr27.miage.model.Ticket;
 import fr.pantheonsorbonne.ufr27.miage.service.TicketingService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Handler;
 import org.apache.camel.ProducerTemplate;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import java.io.IOException;
 
 @ApplicationScoped
-public class TicketGateway {
+public class DonationGateway {
 
     @Inject
     TicketingService ticketingService;
