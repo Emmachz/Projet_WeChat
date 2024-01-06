@@ -13,6 +13,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     public PurchaseDTO init(PurchaseDTO purchase)
     {
+
         this.purchaseDAO.createPurchase(
                 purchase.getExternalSellerId(),
                 purchase.getWeChatUserId(),

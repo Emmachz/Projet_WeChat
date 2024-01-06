@@ -9,8 +9,8 @@ public class Account {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "name", nullable = false, length = 45)
-    private String name;
+    @Column(name = "email", nullable = false, length = 45)
+    private String email;
 
     @Column(name = "balance", nullable = true)
     private int balance;
@@ -23,12 +23,12 @@ public class Account {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getEmail() {
+        return email;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public int getBalance() {

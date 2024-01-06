@@ -1,6 +1,19 @@
 
 REPLACE INTO `Artist` (`idArtist`, `name`) VALUES (1,'Radiohead'),(2,'Billie Eillish'),(3,'French Cowboy');
 
+INSERT INTO User (user_id, user_name, user_email, user_region, nameBank) VALUES
+                                                                             (1, 'John Doe', 'john.doe@example.com', 'North', 'myBank'),
+                                                                             (2, 'Jane Smith', 'jane.smith@example.com', 'South', 'myBank'),
+                                                                             (3, 'Alice Johnson', 'alice.johnson@example.com', 'East', 'myBank'),
+                                                                             (4, 'Bob Wilson', 'bob.wilson@example.com', 'West', 'myBank'),
+                                                                             (5, 'Eva Martinez', 'eva.martinez@example.com', 'Central', 'myBank');
+
+INSERT INTO ExternalSeller (id_ES, email_ES) VALUES
+                                                 (1, 'seller1@example.com'),
+                                                 (2, 'seller2@example.com'),
+                                                 (3, 'seller3@example.com'),
+                                                 (4, 'seller4@example.com'),
+                                                 (5, 'seller5@example.com');
 
 
 REPLACE INTO `Customer` (`idCustomer`, `email`, `fname`, `lname`) VALUES (1,'nicolas.herbaut@univ-paris1.fr','nicolas','herbaut');

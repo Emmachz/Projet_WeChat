@@ -1,7 +1,17 @@
 
 REPLACE INTO `Artist` (`idArtist`, `name`) VALUES (1,'Radiohead'),(2,'Billie Eillish'),(3,'French Cowboy');
 
-REPLACE INTO `Account` (`id`, `name`, `balance`) VALUES (1,'Jul', 0),(2,'Messi', 4),(3,'Vincent', 20);
+INSERT INTO Account (id, email, balance) VALUES
+                                             (1, 'john.doe@example.com', 1000),
+                                             (2, 'jane.smith@example.com', 1500),
+                                             (3, 'alice.johnson@example.com', 2000),
+                                             (4, 'bob.wilson@example.com', 800),
+                                             (5, 'eva.martinez@example.com', 1200),
+                                             (6, 'seller1@example.com', 500),
+                                             (7, 'seller2@example.com', 900),
+                                             (8, 'seller3@example.com', 1200),
+                                             (9, 'seller4@example.com', 300),
+                                             (10, 'seller5@example.com', 700);
 
 REPLACE INTO `Customer` (`idCustomer`, `email`, `fname`, `lname`) VALUES (1,'nicolas.herbaut@univ-paris1.fr','nicolas','herbaut');
 
