@@ -1,16 +1,20 @@
 package fr.pantheonsorbonne.ufr27.miage.dto;
 
+import java.util.Collection;
+
 public class Donation {
     int donationId;
     String description;
-    String region;
-    Requires requires;
+    //String region;
+    Collection<Require> requires;
 
 
-    public Donation(int donationId, String description, String region, Requires requires) {
+    public Donation(int donationId, String description,  Collection<Require> requires) {
         this.donationId = donationId;
         this.description = description;
+        /*
         this.region = region;
+         */
         this.requires = requires;
     }
 
@@ -24,7 +28,7 @@ public class Donation {
     public void setDonationId(int donationId) {
         this.donationId = donationId;
     }
-
+/*
     public String getRegion() {
         return region;
     }
@@ -32,6 +36,8 @@ public class Donation {
     public void setRegion(String region) {
         this.region = region;
     }
+
+ */
 
     public String getDescription() {
         return description;
@@ -41,11 +47,11 @@ public class Donation {
         this.description = description;
     }
 
-    public Requires getRequires() {
+    public Collection<Require> getRequires() {
         return requires;
     }
 
-    public void setRequires(Requires requires) {
+    public void setRequires(Collection<Require> requires) {
         this.requires = requires;
     }
 

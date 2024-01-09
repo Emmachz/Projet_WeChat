@@ -1,18 +1,28 @@
 
 package fr.pantheonsorbonne.ufr27.miage.dto;
 
-public class Requires {
+public class Require {
+
+    String region;
     double moneySupport;
     double timeSupport;
     double clotheSupport;
 
-    public Requires(double moneySupport, double timeSupport, double clotheSupport) {
+    public Require(String region, double moneySupport, double timeSupport, double clotheSupport) {
+        this.region = region;
         this.moneySupport = moneySupport;
         this.timeSupport = timeSupport;
         this.clotheSupport = clotheSupport;
     }
 
-    public Requires() {
+    public Require() {
+    }
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     public double getMoneySupport() {
