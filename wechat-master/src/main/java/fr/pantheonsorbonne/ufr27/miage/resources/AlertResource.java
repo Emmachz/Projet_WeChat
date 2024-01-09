@@ -1,6 +1,5 @@
 package fr.pantheonsorbonne.ufr27.miage.resources;
 
-import fr.pantheonsorbonne.ufr27.miage.model.Ticket;
 import fr.pantheonsorbonne.ufr27.miage.service.MessageService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -10,7 +9,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
 @Path("message")
-public class MessageResource {
+public class AlertResource {
 
     @Inject
     MessageService messageService;

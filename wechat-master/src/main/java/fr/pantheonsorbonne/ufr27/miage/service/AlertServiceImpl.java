@@ -1,8 +1,9 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
-import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
+import fr.pantheonsorbonne.ufr27.miage.dao.AlertDAO;
+import fr.pantheonsorbonne.ufr27.miage.dao.AlertDAOImpl;
+import fr.pantheonsorbonne.ufr27.miage.model.Alert;
 import fr.pantheonsorbonne.ufr27.miage.exception.EventNotFoundException;
-import fr.pantheonsorbonne.ufr27.miage.model.Event;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -11,13 +12,14 @@ import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
-import java.util.Collection;
-
 @ApplicationScoped
 public class AlertServiceImpl implements AlertService {
 
     @PersistenceContext
     EntityManager em;
+
+    @Inject
+    AlertDAO alertDAO;
 
     @Override
     @Transactional
@@ -26,14 +28,18 @@ public class AlertServiceImpl implements AlertService {
 
 
         } catch (NonUniqueResultException | NoResultException e) {
-            throw new EventNotFoundException(alert.getAlertId());
+            throw new EventNotFoundException(alert.getId());
         }
         return alert;
 
     }
-    @Transactional
-    public void testService(Alert alert){
-        System.out.println(alert+"test du service");
+
+    public void addAlert(Alert alert){
+        this.alertDAO.addAlert(alert);
+    }
+
+    public void checkRegion(Alert alert){
+        this.alertDAO.checkRegion(alert);
     }
 
 }

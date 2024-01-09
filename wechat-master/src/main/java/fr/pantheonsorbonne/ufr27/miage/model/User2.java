@@ -3,15 +3,16 @@ package fr.pantheonsorbonne.ufr27.miage.model;
 import jakarta.persistence.*;
 
 @Entity
-public class UserEmma {
+public class User2 {
 
-    @OneToMany
-    @JoinColumn(name = "idUser")
-    private int idUser;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idUser", nullable = false)
+    private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "idMessage")
-    private Message message;
+    //@ManyToOne
+    //@JoinColumn(name = "idMessage")
+    //private Message message;
 
     @Column(name = "lastName", nullable = false)
     private String lastName;

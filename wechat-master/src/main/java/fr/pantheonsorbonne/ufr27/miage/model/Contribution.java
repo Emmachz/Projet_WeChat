@@ -1,2 +1,4 @@
-package fr.pantheonsorbonne.ufr27.miage.model;public class contribution {
+package fr.pantheonsorbonne.ufr27.miage.model;
+
+public class Contribution {
 }

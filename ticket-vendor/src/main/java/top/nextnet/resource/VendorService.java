@@ -27,4 +27,6 @@ public interface VendorService {
     @Path("{idVendor}/venues")
     @GET
     Collection<Gig> getGigs(@PathParam int idVendor);
+
+
 }
