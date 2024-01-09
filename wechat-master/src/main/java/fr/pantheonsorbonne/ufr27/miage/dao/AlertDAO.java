@@ -1,8 +1,10 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
-import fr.pantheonsorbonne.ufr27.miage.model.Message;
+import fr.pantheonsorbonne.ufr27.miage.model.Alert;
 
-public interface MessageDAO {
+import java.util.Collection;
 
-    void check(Message message);
+public interface ALDAO {
+
+    void check(Alert alert);
 }

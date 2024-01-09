@@ -1,29 +1,36 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
+import fr.pantheonsorbonne.ufr27.miage.model.Alert;
 import fr.pantheonsorbonne.ufr27.miage.model.Event;
-import fr.pantheonsorbonne.ufr27.miage.model.Message;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
+import java.util.Collection;
 @ApplicationScoped
-public class MessageDAOImpl implements MessageDAO {
-
-    @Inject
+public class AlDAOImpl implements ALDAO {
+    @PersistenceContext
     EntityManager em;
 
     @Transactional
-    public void addMessage(Message message, int id){
+    public void check(Alert alert){
 
-    }
+        //Alert newAlert= new Alert(4,"addad","zddff");
 
-    @Transactional
-    public void check(Message message){
-        //int idMessage=message.getId();
-        //String description=message.getDescription();
-        //String region=message.getRegion();
-        Message attachedMessage = em.merge(message);
-        em.persist(attachedMessage);
+        //em.merge(newAlert);
+
+
+        //return em.createQuery("SELECT Alert FROM Alert alert", Alert.class).getResultList();
+
+        //em.persist(attachedEvent);
+        //Alert attachedAlert = em.merge(alert);
+
+        em.merge(alert);
+        //System.out.println("rentréeeeeeeee");
+        //em.persist(alert);
+
+        //Alert attachedAlert = em.merge(alert);
+        //em.persist(attachedAlert);
     }
 }
