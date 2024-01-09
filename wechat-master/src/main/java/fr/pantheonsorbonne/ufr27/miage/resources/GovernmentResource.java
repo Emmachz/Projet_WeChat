@@ -1,24 +1,29 @@
 
 package fr.pantheonsorbonne.ufr27.miage.resources;
 
+import fr.pantheonsorbonne.ufr27.miage.model.Donation;
 import fr.pantheonsorbonne.ufr27.miage.service.DonationService;
 
 import jakarta.inject.Inject;
-import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.*;
+
+import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.MediaType;
+import java.util.Collection;
 @Path("government")
 public class GovernmentResource {
 
     @Inject
-    donationService DonationService;
+    DonationService donationService;
 
     @Path(("post/{donationId}"))
     @POST
     @Produces({MediaType.TEXT_PLAIN})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public String[] requestDonation(Donation d) {
-        return donationService.requestDonation(donationId);
+        return donationService.createDonation(donationId);
     }
 
     @Path("delete/{donationId}")

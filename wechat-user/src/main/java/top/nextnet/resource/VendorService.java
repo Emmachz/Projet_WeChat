@@ -19,6 +19,7 @@ import java.util.Collection;
 @RegisterRestClient(configKey = "vendor-api")
 public interface VendorService {
 
+
     @Path("{idVendor}/venue/{idVenue}/quota")
     @GET
     RemainingQuota getQuotas(@PathParam int idVendor, @PathParam int idVenue);

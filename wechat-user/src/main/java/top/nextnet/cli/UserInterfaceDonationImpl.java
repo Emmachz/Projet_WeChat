@@ -2,17 +2,18 @@ package top.nextnet.cli;
 
 
 import fr.pantheonsorbonne.ufr27.miage.dto.Booking;
+import fr.pantheonsorbonne.ufr27.miage.dto.Donation;
 import fr.pantheonsorbonne.ufr27.miage.dto.Gig;
-
+import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import top.nextnet.resource.VendorService;
-
-
+import top.nextnet.resource.UserService;
 
 import java.awt.*;
 import java.time.format.DateTimeFormatter;
@@ -20,34 +21,40 @@ import java.util.stream.Collectors;
 
 
 @ApplicationScoped
-public class UserInterfaceCLIImpl implements UserInterfaceCLI {
+public class UserInterfaceDonationImpl implements UserInterfaceDonation {
 
     @Inject
     @RestClient
     VendorService vendorService;
 
+    @Inject
+    @RestClient
+    UserService userService;
+
 
     TextTerminal<?> terminal;
     TextIO textIO;
 
-    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.vendorId")
-    Integer vendorId;
+    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.userRegion")
+    String userRegion;
+    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.userId")
+    Integer userId;
 
-    public void displayAvailableGigsToCli(){
-        terminal.println("VendorId="+vendorId);
-        for (Gig gig : vendorService.getGigs(vendorId)) {
-            terminal.println("[" + gig.getVenueId() + "] " + gig.getArtistName() + " " + gig.getDate().format(DateTimeFormatter.ISO_DATE) + " " + gig.getLocation());
+    public void displayAvailableDonations(){
+        terminal.println("your region : "+userRegion);
+        for (Donation donation : userService.getDonations(userRegion)) {
+            terminal.println("[" + donation.getDonationId() + "] " + donation.getDescription()+ " " + donation.getRequires() );
         }
     }
 
-    public Booking getBookingFromOperator(){
-        terminal.println("Which Gig to book?");
+    public Giving getDonationFromOperator(){
+        terminal.println("Do you want to help by giving a Donation ?");
 
-        Integer venueId = textIO.newIntInputReader().withPossibleValues(vendorService.getGigs(vendorId).stream().map(g -> g.getVenueId()).collect(Collectors.toList())).read("Which venue?");
-        Integer sittingCount = textIO.newIntInputReader().read("How many seats?");
-        Integer standingCount = textIO.newIntInputReader().read("How many pit tickets?");
+        Integer donationId = textIO.newIntInputReader().withPossibleValues(userService.getDonations(userRegion).stream().map(g -> g.getDonationId()).collect(Collectors.toList())).read("Which Donation?");
+        String typeGive = textIO.newStringInputReader().read("What do you want to give ?");
+        Integer quantity = textIO.newIntInputReader().read("How many do you want to give?");
 
-        return new Booking(vendorId,venueId,standingCount,sittingCount);
+        return new Giving(donationId,this.userRegion,typeGive,quantity);
     }
 
     @Override
@@ -88,7 +95,6 @@ public class UserInterfaceCLIImpl implements UserInterfaceCLI {
         return this.textIO.newStringInputReader().read("Customer Email");
 
     }
-
 
 
 }

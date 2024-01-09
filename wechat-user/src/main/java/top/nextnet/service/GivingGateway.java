@@ -1,5 +1,5 @@
 package top.nextnet.service;
 
-public interface BookingGateway {
-    void sendBookingOrder(int standingCount, int seatingCount, int venueId);
+public interface GivingGateway {
+    void sendGivingOrder(int donationId, String region, String typeGive, int quantity);
 }

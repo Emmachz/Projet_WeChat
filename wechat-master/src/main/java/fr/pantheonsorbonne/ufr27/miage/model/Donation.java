@@ -1,19 +1,26 @@
 package fr.pantheonsorbonne.ufr27.miage.model;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
+import fr.pantheonsorbonne.ufr27.miage.dto.Require;
 import jakarta.persistence.*;
-import java.time.LocalDate;
+
 import java.util.Collection;
 
-@Table(name = "Venue")
+@Table(name = "Donation")
 @Entity
-public class Venue {
+public class Donation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idVenue", nullable = false)
+    @Column(name = "donationId", nullable = false)
     private Integer id;
+
+    @Column(name = "description", nullable = false, length = 45)
+    private String description;
+
+
+    @OneToMany
+    @JoinColumn(name = "requires")
+    private Collection<Require>  requires;
+
 
     public Integer getId() {
         return id;
@@ -23,38 +30,20 @@ public class Venue {
         this.id = id;
     }
 
-
-    public Collection<VenueLineUp> getLineUp() {
-        return lineUp;
+    public String getDescription(){
+        return description;
     }
 
-    public void setLineUp(Collection<VenueLineUp> lineUp) {
-        this.lineUp = lineUp;
+    public void setDescription (String description){
+        this.description = description;
     }
 
-    @OneToMany
-    @JoinColumn(name = "idVenue")
-    private Collection<VenueLineUp> lineUp;
-
-    @ManyToOne
-    @JoinColumn(name = "idLocation")
-    private Location location;
-
-    public Location getLocation() {
-        return location;
+    public Collection<Require> getRequires() {
+        return requires;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setRequires(Collection<Require> requires) {
+        this.requires = requires;
     }
 
-    private LocalDate venueDate;
-
-    public LocalDate getVenueDate() {
-        return venueDate;
-    }
-
-    public void setVenueDate(LocalDate venueDate) {
-        this.venueDate = venueDate;
-    }
 }

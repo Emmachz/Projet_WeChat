@@ -1,22 +1,24 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
+import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchTicketException;
 import fr.pantheonsorbonne.ufr27.miage.dto.Booking;
+import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
+import fr.pantheonsorbonne.ufr27.miage.exception.CustomerNotFoundException;
+import fr.pantheonsorbonne.ufr27.miage.exception.ExpiredTransitionalTicketException;
 import fr.pantheonsorbonne.ufr27.miage.exception.UnsuficientQuotaForVenueException;
-import fr.pantheonsorbonne.ufr27.miage.service.BookingService;
-
-
+import fr.pantheonsorbonne.ufr27.miage.service.GivingService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 @ApplicationScoped
-public class BookingGateway {
+public class GivingGateway {
 
     @Inject
-    BookingService bookingService;
+    GivingService givingService;
 
-    public Booking book(Booking bookingRequest) throws UnsuficientQuotaForVenueException {
+    public String give(Giving givingRequest) throws NoSuchTicketException, ExpiredTransitionalTicketException, CustomerNotFoundException.NoSeatAvailableException {
 
-        return bookingService.book(bookingRequest);
+        return givingService.give(givingRequest);
     }
 
 
