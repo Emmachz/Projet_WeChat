@@ -2,12 +2,17 @@ package fr.pantheonsorbonne.ufr27.miage.camel;
 
 
 import fr.pantheonsorbonne.ufr27.miage.camel.gateway.PaymentsGateway;
+import fr.pantheonsorbonne.ufr27.miage.camel.gateway.VersementGateway;
+import fr.pantheonsorbonne.ufr27.miage.camel.handler.PurchaseHandler;
 import fr.pantheonsorbonne.ufr27.miage.camel.processor.PurchaseInfoEnricher;
 import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseConfirmation;
 import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseDTO;
+import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import fr.pantheonsorbonne.ufr27.miage.exception.SellerNotRegisteredException;
-import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
+import fr.pantheonsorbonne.ufr27.miage.exception.UserNotExistingException;
+import org.apache.camel.AggregationStrategy;
 import org.apache.camel.CamelContext;
+import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -24,7 +29,16 @@ public class CamelRoutes extends RouteBuilder {
     PurchaseHandler purchaseHandler;
 
     @Inject
-    PaymentsGateway gateway;
+    fr.pantheonsorbonne.ufr27.miage.camel.handler.VersementResponseHandler versementResponseHandler;
+
+    @Inject
+    fr.pantheonsorbonne.ufr27.miage.camel.handler.EmetteurResponsehandler emetteurResponsehandler;
+
+    @Inject
+    fr.pantheonsorbonne.ufr27.miage.camel.handler.ReceveurResponsehandler receveurResponsehandler;
+
+    @Inject
+    VersementGateway versementGateway;
 
     @Inject
     CamelContext camelContext;
@@ -38,21 +52,49 @@ public class CamelRoutes extends RouteBuilder {
                 .handled(true)
                 .log("You have not been registered in WeChat. Create an account to sold with WeChat.");
 
-        onException(UserNotFoundException.class)
+        onException(UserNotExistingException.class)
                 .handled(true)
                 .log("This user do not exist in WeChat. The purchase will not be paid.");
 
-        from("sjms2:" + jmsPrefix + "selling")//
+        /*from("sjms2:" + jmsPrefix + "selling")//
                 .log("purchased received: ${in.headers}")//
                 .unmarshal().json(PurchaseDTO.class)//
                 .bean(purchaseHandler, "init")
-                .marshal().json()
-                .to("");
+                .marshal().json();
 
         from("smjs2" + jmsPrefix + "confirm-purchase")
                 .unmarshal().json(PurchaseConfirmation.class)//
                 .bean(purchaseHandler, "confirm")
-                .process(new PurchaseInfoEnricher());
+                .marshal().json()
+                        .to("direct:ok");*/
+                /*.process(new PurchaseInfoEnricher())
+                .marshal().json();*/
+
+        from("sjms2:" + jmsPrefix + "TransfertArgent")
+                .unmarshal().json(TransfertArgent.class)
+                .bean(versementGateway, "findTwoUsersVersement")
+                .bean(versementResponseHandler)
+                .choice()
+                .when(header("success").isEqualTo(true))
+                .bean(versementGateway, "realizeVersementWallet")
+                .bean(emetteurResponsehandler)
+                .marshal().json()
+                .to("sjms2:topic:" + jmsPrefix + "versementSuccesEmetteur")
+                .stop()
+                .otherwise()
+                .bean(versementGateway, "sendInfosToBank")
+                .marshal().json()
+                .multicast()
+                .to("sjms2:" + jmsPrefix + "MyBankSystem?exchangePattern=InOut", "sjms2:" + jmsPrefix + "YesBankSystem?exchangePattern=InOut")
+                .parallelProcessing()
+                .aggregationStrategy((new AggregationStrategy() {
+                    @Override
+                    public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
+                        return null;
+                    }
+                }))
+        ;
+
 
 
         /*onException(ExpiredTransitionalTicketException.class)

@@ -2,6 +2,7 @@ package fr.pantheonsorbonne.ufr27.miage.dao;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import fr.pantheonsorbonne.ufr27.miage.dto.UserLocal;
+import fr.pantheonsorbonne.ufr27.miage.exception.UserNotExistingException;
 import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
 import fr.pantheonsorbonne.ufr27.miage.model.Versement;

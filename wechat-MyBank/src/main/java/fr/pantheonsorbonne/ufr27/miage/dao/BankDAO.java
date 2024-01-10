@@ -11,4 +11,9 @@ public interface BankDAO {
     TransfertArgent updateTwoComptes(TransfertArgent transfertArgent) throws NoSuchComptException;
     TransfertArgent updateCompteCredit(TransfertArgent transfertArgent) throws NoSuchComptException;
     TransfertArgent updateCompteDebit(TransfertArgent transfertArgent) throws NoSuchComptException;
+
+    void addMoneyToAccount(String bankNumber, double amount);
+
+    void debitMoneyFromAccount(String bankNumber, double amount);
+
 }

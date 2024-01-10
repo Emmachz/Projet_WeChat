@@ -3,10 +3,7 @@ package fr.pantheonsorbonne.ufr27.miage.service;
 import fr.pantheonsorbonne.ufr27.miage.dao.PurchaseDAO;
 import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseConfirmation;
 import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseDTO;
-import fr.pantheonsorbonne.ufr27.miage.exception.PurchaseNotExistException;
-import fr.pantheonsorbonne.ufr27.miage.exception.SellerNotRegisteredException;
-import fr.pantheonsorbonne.ufr27.miage.exception.UserNotAllowedToPayException;
-import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
+import fr.pantheonsorbonne.ufr27.miage.exception.*;
 import fr.pantheonsorbonne.ufr27.miage.model.Purchase;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -18,7 +15,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Inject
     PurchaseDAO purchaseDAO;
 
-    public PurchaseDTO init(PurchaseDTO purchase) throws SellerNotRegisteredException, UserNotFoundException
+    public PurchaseDTO init(PurchaseDTO purchase) throws SellerNotRegisteredException, UserNotExistingException
     {
         this.purchaseDAO.createPurchase(
                 purchase.getExternalSellerId(),

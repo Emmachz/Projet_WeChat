@@ -13,12 +13,9 @@
         <module>ticket-master</module>
         <module>ticket-vendor</module>
         <module>ticket-commons</module>
-        <module>wechat-master</module>
-        <module>wechat-user1</module>
         <module>wechat-MyBank</module>
         <module>wechat-YesBank</module>
         <module>wechat-seller</module>
-        <module>mybank-master</module>
         <module>wechat-user</module>
     </modules>
     <build>

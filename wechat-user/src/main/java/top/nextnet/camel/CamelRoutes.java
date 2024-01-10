@@ -3,6 +3,7 @@ package top.nextnet.camel;
 import fr.pantheonsorbonne.ufr27.miage.dto.Booking;
 import fr.pantheonsorbonne.ufr27.miage.dto.CancelationNotice;
 import fr.pantheonsorbonne.ufr27.miage.dto.ETicket;
+import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.camel.CamelContext;
@@ -20,6 +21,23 @@ public class CamelRoutes extends RouteBuilder {
     @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.jmsPrefix")
     String jmsPrefix;
 
+    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.userLogin")
+    String userLogin;
+
+    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.smtp.user")
+    String smtpUser;
+
+    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.smtp.password")
+    String smtpPassword;
+
+    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.smtp.host")
+    String smtpHost;
+
+    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.smtp.port")
+    String smtpPort;
+    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.smtp.from")
+    String smtpFrom;
+
     @Inject
     CamelContext camelContext;
 
@@ -28,54 +46,37 @@ public class CamelRoutes extends RouteBuilder {
     public void configure() throws Exception {
         camelContext.setTracing(true);
 
+        from("direct:versement")
+                .marshal().json()//, "onBookedResponseReceived"
+                .to("sjms2:" + jmsPrefix + "TransfertArgent");
+
         from("direct:confirm-purchase")
                 .marshal().json()//, "onBookedResponseReceived"
                 .to("sjms2:" + jmsPrefix + "confirm-purchase");
 
-        /*from("direct:cli")//
-                .marshal().json()//, "onBookedResponseReceived"
-                .to("sjms2:" + jmsPrefix + "booking?exchangePattern=InOut")//
-                .choice()
-                .when(header("success").isEqualTo(false))
-                .setBody(simple("not enough quota for this vendor"))
-                .bean(eCommerce, "showErrorMessage").stop()
-                .otherwise()
-                .unmarshal().json(Booking.class)
-                .bean(BookingResponseHandler)
-                .log("response received ${in.body}")
-                .bean(ticketingService, "fillTicketsWithCustomerInformations")
-                .split(body())
-                .marshal().json(ETicket.class)
-                .to("sjms2:" + jmsPrefix + "ticket?exchangePattern=InOut")
-                .choice()
-                .when(header("success").isEqualTo(false))
-                .bean(eCommerce, "showErrorMessage").stop()
-                .otherwise()
-                .bean(ticketingService, "notifyCreatedTicket");
-
-
-        from("sjms2:topic:" + jmsPrefix + "cancellation")
-                .log("cancellation notice ${body} ${headers}")
-                .filter(header("vendorId").isEqualTo(vendorId))
-
-                .unmarshal().json(CancelationNotice.class)
+        from("sjms2:topic:" + jmsPrefix + "versementSuccesEmetteur")
+                .log("Message Versement succès ${body} ${headers}")
+                .filter(header("login").isEqualTo(userLogin))
+                .unmarshal().json(TransfertArgent.class)
                 .process(new Processor() {
                     @Override
                     public void process(Exchange exchange) throws Exception {
-
-                        CancelationNotice notice = exchange.getMessage().getMandatoryBody(CancelationNotice.class);
+                        TransfertArgent transfertArgent = exchange.getMessage().getMandatoryBody(TransfertArgent.class);
                         exchange.getMessage().setHeaders(new HashMap<>());
-                        exchange.getMessage().setHeader("to", notice.getEmail());
+                        exchange.getMessage().setHeader("to", transfertArgent.getEmetteur().getUserEmail());
                         exchange.getMessage().setHeader("from", smtpFrom);
                         exchange.getMessage().setHeader("contentType", "text/html");
-                        exchange.getMessage().setHeader("subject", "cancellation notice for venue");
-                        exchange.getMessage().setBody("Dear Customer,\n\n Venue for your ticket " + notice.getTicketId() + " has been cancelled.\n\n Contact vendor for refund");
+                        exchange.getMessage().setHeader("subject", "Versement Succès");
+                        exchange.getMessage().setBody("Bonjour " + transfertArgent.getEmetteur().getUserName() +"," +
+                                "\n\n Votre versement " + transfertArgent.getValue() + " euros à "+ transfertArgent.getReceveur().getUserName()+" a été mise en place avec succès." +
+                                "\n\n Merci voutr confiance");
                     }
                 })
-                .log("cancellation notice ${body} ${headers}")
-                .to("smtps:" + smtpHost + ":" + smtpPort + "?username=" + smtpUser + "&password=" + smtpPassword + "&contentType=")
-                .bean(eCommerce, "showErrorMessage");
-            */
+                .log("Message Versement succès ${body} ${headers}")
+                .to("smtps:" + smtpHost + ":" + smtpPort + "?username=" + smtpUser + "&password=" + smtpPassword + "&contentType=");
+
+
+
 
     }
 }

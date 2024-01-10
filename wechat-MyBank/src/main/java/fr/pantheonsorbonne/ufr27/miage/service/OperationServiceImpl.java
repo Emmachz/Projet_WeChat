@@ -3,6 +3,7 @@ package fr.pantheonsorbonne.ufr27.miage.service;
 import fr.pantheonsorbonne.ufr27.miage.dao.BankDAO;
 import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchComptException;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
+import fr.pantheonsorbonne.ufr27.miage.model.Bank;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -40,6 +41,17 @@ public class OperationServiceImpl implements OperationService{
         }catch (NoSuchComptException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    @Transactional
+    public void creditMoney(String bankNumber, double amount) {
+        bankDAO.addMoneyToAccount(bankNumber, amount);
+    }
+
+    @Override
+    public void debitMoney(String bankNumber, double amount) {
+        bankDAO.debitMoneyFromAccount(bankNumber, amount);
     }
 
 

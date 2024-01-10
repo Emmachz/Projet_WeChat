@@ -2,7 +2,7 @@ package fr.pantheonsorbonne.ufr27.miage.dao;
 
 import fr.pantheonsorbonne.ufr27.miage.exception.PurchaseNotExistException;
 import fr.pantheonsorbonne.ufr27.miage.exception.SellerNotRegisteredException;
-import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
+import fr.pantheonsorbonne.ufr27.miage.exception.UserNotExistingException;
 import fr.pantheonsorbonne.ufr27.miage.model.ExternalSeller;
 import fr.pantheonsorbonne.ufr27.miage.model.Purchase;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
@@ -10,9 +10,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-
-import java.lang.invoke.DelegatingMethodHandle$Holder;
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 @ApplicationScoped
 public class PurchaseDAOImpl implements PurchaseDAO {
@@ -22,7 +19,7 @@ public class PurchaseDAOImpl implements PurchaseDAO {
 
     @Override
     @Transactional
-    public void createPurchase(int idES, int idWC, int amount) throws SellerNotRegisteredException, UserNotFoundException {
+    public void createPurchase(int idES, int idWC, int amount) throws SellerNotRegisteredException, UserNotExistingException {
         var externalSeller = em.find(ExternalSeller.class, idES);
         if(externalSeller == null)
         {
@@ -31,13 +28,14 @@ public class PurchaseDAOImpl implements PurchaseDAO {
         var weChatUser = em.find(User.class, idWC);
         if(weChatUser == null)
         {
-            throw new UserNotFoundException(idWC);
+            throw new UserNotExistingException(idWC);
         }
         var purchase = new Purchase(externalSeller, weChatUser, amount);
         this.em.persist(purchase);
         this.em.flush();
     }
 
+    @Transactional
     @Override
     public void confirmPurchase(int id) throws PurchaseNotExistException{
         var purchase = this.findPurchase(id);

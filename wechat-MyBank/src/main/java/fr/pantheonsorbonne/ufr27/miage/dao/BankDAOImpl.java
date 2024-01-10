@@ -79,4 +79,32 @@ public class BankDAOImpl implements BankDAO{
         return transfertArgent;
     }
 
+    @Override
+    public void addMoneyToAccount(String bankNumber, double amount)
+    {
+        try {
+            Bank account = this.findUserByNumero(bankNumber);
+            double initialBalance = account.getBankAmonut();
+            account.setBankAmonut(initialBalance + amount);
+            em.merge(account);
+            em.flush();
+        }catch (NoSuchComptException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void debitMoneyFromAccount(String bankNumber, double amount)
+    {
+        try {
+            Bank account = this.findUserByNumero(bankNumber);
+            double initialBalance = account.getBankAmonut();
+            account.setBankAmonut(initialBalance - amount);
+            em.merge(account);
+            em.flush();
+        }catch (NoSuchComptException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
 }

@@ -11,22 +11,18 @@ public class User {
     private Long userId;
     @Column(name = "user_name", nullable = false, length = 45)
     private String userName;
+    @Column(name = "user_login", nullable = false, unique = true)
+    private String userLogin;
     @Column(name = "user_email", nullable = false, unique = true)
     private String userEmail;
     @Column(name = "user_region", length = 100)
     private String userRegion;
-    @Column(name = "nameBank")
-    private String nameBank;
-
-    /*@OneToOne(optional = false)
-    @JoinColumn(name = "bank_id", nullable = false)
-    private Bank bankId;*/
-
-    public User(String userName, String userEmail, String userRegion){
-        this.userName = userName;
-        this.userEmail = userEmail;
-        this.userRegion = userRegion;
-    }
+    @Column(name = "user_wallet")
+    private double userWallet;
+    @Column(name = "user_nameBank")
+    private String userNameBank;
+    @Column(name = "user_numeroBank")
+    private String userNumeroBank;
 
     public User() {
 
@@ -46,20 +42,20 @@ public class User {
         return userName;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public void setUserLogin (String userLogin){
+        this.userLogin = userLogin;
     }
 
-    public void setUserEmail(String userEmail) {
+    public String getUserLogin(){
+        return userLogin;
+    }
+
+    public void setUserEmail (String userEmail){
         this.userEmail = userEmail;
     }
 
-    public String getNameBank() {
-        return nameBank;
-    }
-
-    public void setNameBank(String nameBank) {
-        this.nameBank = nameBank;
+    public String getUserEmail(){
+        return userEmail;
     }
 
     public void setUserRegion (String userRegion){
@@ -70,6 +66,27 @@ public class User {
         return userRegion;
     }
 
+    public void setUserNameBank (String bankName){
+        this.userNameBank = bankName;
+    }
+
+    public String getUserNameBank(){
+        return userNameBank;
+    }
+
+    public void setUserNumeroBank(String numeroBank){
+        this.userNumeroBank = numeroBank;
+    }
+    public String getUserNumeroBank(){
+        return userNumeroBank;
+    }
+
+    public void setUserWallet(double walletValue){
+        this.userWallet = walletValue;
+    }
+    public double getUserWallet(){
+        return userWallet;
+    }
 
 
 
