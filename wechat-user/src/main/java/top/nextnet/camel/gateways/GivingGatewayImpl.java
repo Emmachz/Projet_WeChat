@@ -1,6 +1,5 @@
 package top.nextnet.camel.gateways;
 
-import fr.pantheonsorbonne.ufr27.miage.dto.Booking;
 import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -11,7 +10,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import java.io.IOException;
 
 @ApplicationScoped
-public class GivingGatewayImpl implements top.nextnet.service.GivingGateway {
+public class GivingGatewayImpl implements GivingGateway {
 
     @Inject
     CamelContext context;

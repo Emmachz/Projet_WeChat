@@ -1,14 +1,12 @@
 package top.nextnet.cli;
 
-import fr.pantheonsorbonne.ufr27.miage.dto.Booking;
 import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import jakarta.inject.Inject;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
 import org.beryx.textio.swing.SwingTextTerminal;
 import picocli.CommandLine.Command;
-import top.nextnet.service.BookingGateway;
-import top.nextnet.service.GivingGateway;
+import top.nextnet.camel.gateways.GivingGateway;
 
 
 @Command(name = "greeting", mixinStandardHelpOptions = true)

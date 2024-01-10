@@ -11,8 +11,8 @@ import fr.pantheonsorbonne.ufr27.miage.exception.UnsuficientQuotaForVenueExcepti
 import fr.pantheonsorbonne.ufr27.miage.model.Ticket;
 
 public interface GivingService {
-     String giveDonation(Giving giving)  throws ExpiredTransitionalTicketException, NoSuchTicketException, CustomerNotFoundException.NoSeatAvailableException;
+     String give(Giving giving)  throws ExpiredTransitionalTicketException, NoSuchTicketException, CustomerNotFoundException.NoSeatAvailableException;
 
-    void cleanUpTransitionalTicket(int transitionalTicketId);
+    void cleanUpTransitionalGiving(int transitionalGivingId);
 
 }

@@ -45,7 +45,7 @@ public class GivingServiceImpl implements GivingService {
 
     @Override
     @Transactional
-    public String emitTicket(Giving giving) throws ExpiredTransitionalTicketException, NoSuchTicketException, CustomerNotFoundException.NoSeatAvailableException {
+    public String give(Giving giving) throws ExpiredTransitionalTicketException, NoSuchTicketException, CustomerNotFoundException.NoSeatAvailableException {
 
        /*enlever la quantity*/
 
@@ -65,8 +65,8 @@ public class GivingServiceImpl implements GivingService {
 
     @Override
     @Transactional
-    public void cleanUpTransitionalTicket(int transitionalTicketId) {
-        donationDAO.(transitionalTicketId);
+    public void cleanUpTransitionalGiving(int transitionalGivingId) {
+        donationDAO.removeDonation(transitionalGivingId);
     }
 
 }

@@ -1,4 +1,4 @@
-package top.nextnet.camel.gateways;
+package top.nextnet.service;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.ETicket;
 import jakarta.enterprise.context.ApplicationScoped;

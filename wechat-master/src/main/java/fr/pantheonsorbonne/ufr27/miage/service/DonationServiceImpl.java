@@ -1,8 +1,12 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
+import fr.pantheonsorbonne.ufr27.miage.camel.DonationGateway;
+import fr.pantheonsorbonne.ufr27.miage.camel.TicketGateway;
+import fr.pantheonsorbonne.ufr27.miage.dto.Require;
 import fr.pantheonsorbonne.ufr27.miage.exception.UnsuficientQuotaForVenueException;
 import fr.pantheonsorbonne.ufr27.miage.model.*;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
@@ -17,28 +21,27 @@ public class DonationServiceImpl implements DonationService {
     @PersistenceContext
     EntityManager em;
 
+    @Inject
+    DonationGateway donationGateway;
 
     @Override
     @Transactional
     public Donation createDonation(Donation donation) throws UnsuficientQuotaForVenueException {
         try {
-            VenueQuota vq = (VenueQuota) (em.createQuery("select q from  q where q.id.venue.id=:venueId and q.id.vendor.id=:vendorId and q.seatingQuota>=:countSeating and q.standingQuota>=:countStanding")
-                    .setParameter("vendorId", booking.getVendorId())
-                    .setParameter("venueId", booking.getVenueId())
-                    .setParameter("countStanding", booking.getStandingTicketsNumber())
-                    .setParameter("countSeating", booking.getSeatingTicketsNumber()).getSingleResult());
-            vq.setSeatingQuota(vq.getSeatingQuota() - booking.getSeatingTicketsNumber());
-            vq.setStandingQuota(vq.getStandingQuota() - booking.getStandingTicketsNumber());
+            VenueQuota vq = (VenueQuota) (em.createQuery("select d from Donation where d.id.venue.id=:venueId and q.id.vendor.id=:vendorId and q.seatingQuota>=:countSeating and q.standingQuota>=:countStanding")
+                    .setParameter("vendorId", donation.getId())
+                    .setParameter("venueId", donation.getDescription())
+                    .setParameter("countStanding", donation.getRequires())
 
-            Venue venue = em.find(Venue.class, booking.getVenueId());
-            Vendor vendor = em.find(Vendor.class, booking.getVendorId());
+            Venue venue = em.find(Venue.class, donation.getVenueId());
+            Vendor vendor = em.find(Vendor.class, donation.getVendorId());
 
 
 
         } catch (NonUniqueResultException | NoResultException e) {
-            throw new UnsuficientQuotaForVenueException(booking.getVenueId());
+            //throw new UnsuficientQuotaForVenueException();
         }
-        return booking;
+        return donation;
 
 
     }
@@ -47,9 +50,9 @@ public class DonationServiceImpl implements DonationService {
     @Transactional
     public void cancelDonation(int donationId) throws UnsuficientQuotaForVenueException {
         Donation donation = em.find(Donation.class, donationId);
-        List<Donation> donationsToCancel = em.createQuery("SELECT d from V t where t.idVenue.id=:venueId").setParameter("venueId", venueId).getResultList();
+        List<Donation> donationsToCancel = em.createQuery("SELECT d from Donation where d.idVenue.id=:venueId").setParameter("venueId", venueId).getResultList();
         for (Donation d : donationsToCancel) {
-            ticketGateway.cancelTicket(t);
+            donationGateway.cancelDonation(d);
             em.remove(d);
         }
 
@@ -58,7 +61,7 @@ public class DonationServiceImpl implements DonationService {
 
 
 
-    protected Collection<VenueLineUp> removeVenuesLineup(int artistId, Venue venue) {
+    protected Collection<Require> removeRequiresOfDonation(int artistId, Venue venue) {
         Collection<VenueLineUp> venueLineupToRemove = new ArrayList<>();
         for (VenueLineUp lineup : venue.getLineUp()) {
             if (lineup.getId().getArtist().getIdArtist().equals(artistId)) {
