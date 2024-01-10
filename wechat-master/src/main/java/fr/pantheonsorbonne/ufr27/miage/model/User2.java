@@ -10,9 +10,9 @@ public class User2 {
     @Column(name = "idUser", nullable = false)
     private Integer id;
 
-    //@ManyToOne
-    //@JoinColumn(name = "idMessage")
-    //private Message message;
+    @ManyToOne
+    @JoinColumn(name = "idRegion")
+    private Region idRegion;
 
     @Column(name = "lastName", nullable = false)
     private String lastName;
@@ -28,7 +28,5 @@ public class User2 {
 
     @Column(name = "vetementKg", nullable = false)
     private int vetementKg;
-
-
 
 }

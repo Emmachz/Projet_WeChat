@@ -10,6 +10,10 @@ public class Alert {
     @Column(name = "idAlert", nullable = false)
     private Integer id;
 
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "idRegion", nullable = true)
+    private Region idRegion;
+
     @Column(name = "description", nullable = false)
     private String description;
 

@@ -55,22 +55,36 @@ public class CamelRoutes extends RouteBuilder {
 
 
         from("direct:transfert")
-                //queue
                 .marshal().json()
-                .log("TRANSFERTTTTTTTT ${body}")
-                .to("direct:alertAll");
+                .log(" ${body}")
+                .to("sjms2:topic:alertAll + jmsPrefix");
 
-        from("direct:alertAll")
+        from("sjms2:topic:alertAll + jmsPrefix")
                 .unmarshal().json(Alert.class)
                 .log("Succèssssssssss alertAllllll ${body}")
                 .marshal().json();
+
+        from("sjms2:topic:alertAll + jmsPrefix")
+                .unmarshal().json(Alert.class)
+                .toD("sjms2:topic:alert${body.getAlertRegion()}" + jmsPrefix)
+                .log("${body.getAlertRegion()}")
+                .log("Succèssssssssss 222222222222 alertAllllll ${body}")
+                .marshal().json();
+
+        from("sjms2:topic:alerthaut-de-seine" + jmsPrefix)
+                .log("testHAUTDESEINEEEEEEEE");
+
+        from("sjms2:topic:alertile-de-france" + jmsPrefix)
+                .log("testile-de-franceeeeeeeeeeeeeeeeeeee");
+
+
         //.log("${body().getAlertRegion()}")
                 //.log(body().contains("haut de seine").toString())
                 //.choice()
                 //    .when(body().contains("haut de seine"))
                 //        .to("direct:alertHautDeSeine" + jmsPrefix)
-                //    .when(body().contains("urgent"))
-                //        .to("direct:urgentMessages" + jmsPrefix)
+                //    .when(body().contains("normandie "))
+                //        .to("direct:urgentnorrmandie" + jmsPrefix)
                 //    .otherwise()
                 //       .to("direct:alertAll" + jmsPrefix)
 

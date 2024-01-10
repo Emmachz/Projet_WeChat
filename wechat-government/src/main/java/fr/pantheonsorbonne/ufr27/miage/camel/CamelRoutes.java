@@ -39,11 +39,10 @@ public class CamelRoutes extends RouteBuilder {
                 .log("Succèssssssssss HautDeSaineeeeeee ${body}")
                 .marshal().json();
 
-        from("direct:alertAll")
+        from("sjms2:topic:alerthaut-de-seine")
                 .unmarshal().json(Alert.class)
                 .log("Succèssssssssss alertAllllll ${body}")
                 .marshal().json();
-
     }
 
     private static class ExpiredTransitionalTicketProcessor implements Processor {
