@@ -1,6 +1,7 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
 
+import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
 import fr.pantheonsorbonne.ufr27.miage.exception.ExpiredTransitionalTicketException;
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelExecutionException;
@@ -28,8 +29,21 @@ public class CamelRoutes extends RouteBuilder {
 
         from ("direct:Alert")
                 .log("test")
+                .log("jjjjjjjjjjjj ${body}")
                 .marshal().json()
+                .log("iiiiii ${body}")
                 .to("sjms2:topic:" + jmsPrefix);
+
+        from("direct:alertHautDeSeine" + jmsPrefix)
+                .unmarshal().json(Alert.class)
+                .log("Succèssssssssss HautDeSaineeeeeee ${body}")
+                .marshal().json();
+
+        from("direct:alertAll")
+                .unmarshal().json(Alert.class)
+                .log("Succèssssssssss alertAllllll ${body}")
+                .marshal().json();
+
     }
 
     private static class ExpiredTransitionalTicketProcessor implements Processor {

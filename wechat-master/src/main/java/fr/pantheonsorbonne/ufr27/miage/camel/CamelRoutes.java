@@ -48,12 +48,34 @@ public class CamelRoutes extends RouteBuilder {
 
         from("sjms2:topic:" + jmsPrefix)
                 .unmarshal().json(Alert.class)
+                .log("Clearning expired transitional ticket ${body}")
                 .bean(alertGateway, "addAlert")
-                .bean(alertGateway,"checkRegion")
+                .bean(alertGateway, "transfertAlert")
                 .marshal().json();
+
+
+        from("direct:transfert")
+                //queue
+                .marshal().json()
+                .log("TRANSFERTTTTTTTT ${body}")
+                .to("direct:alertAll");
+
+        from("direct:alertAll")
+                .unmarshal().json(Alert.class)
+                .log("Succèssssssssss alertAllllll ${body}")
+                .marshal().json();
+        //.log("${body().getAlertRegion()}")
+                //.log(body().contains("haut de seine").toString())
+                //.choice()
+                //    .when(body().contains("haut de seine"))
+                //        .to("direct:alertHautDeSeine" + jmsPrefix)
+                //    .when(body().contains("urgent"))
+                //        .to("direct:urgentMessages" + jmsPrefix)
+                //    .otherwise()
+                //       .to("direct:alertAll" + jmsPrefix)
+
+
     }
-
-
 
     private static class ExpiredTransitionalTicketProcessor implements Processor {
         @Override

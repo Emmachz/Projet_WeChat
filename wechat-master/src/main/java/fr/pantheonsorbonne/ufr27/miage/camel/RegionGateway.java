@@ -20,7 +20,7 @@ public class RegionGateway {
 
     public void sendAlert(Event event) {
         try (ProducerTemplate producerTemplate = camelContext.createProducerTemplate()) {
-            producerTemplate.sendBody("direct:Region", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(event.getIdEvent(), event.getDescription(), event.getRegion()));
+            //producerTemplate.sendBody("direct:Region", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(event.getIdEvent(), event.getDescription(), event.getRegion()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

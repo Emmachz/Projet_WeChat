@@ -17,6 +17,9 @@ public class AlertGateway {
     @Inject
     AlertService alertService;
 
+    @Inject
+    CamelContext camelContext;
+
 
     public void addAlert(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert){
         Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion());
@@ -27,5 +30,16 @@ public class AlertGateway {
         Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion());
         this.alertService.checkRegion(newAlert);
     }
+
+    public void transfertAlert(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert) {
+        Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion());
+        System.out.println(newAlert+"SAVOIRRRRRRR");
+        try (ProducerTemplate producerTemplate = camelContext.createProducerTemplate()) {
+            producerTemplate.sendBody("direct:transfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }
