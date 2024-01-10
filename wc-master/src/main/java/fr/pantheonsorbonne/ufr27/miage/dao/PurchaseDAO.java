@@ -1,7 +1,14 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
-public interface PurchaseDAO {
-    public void createPurchase(int idES, int idWC, int amount);
+import fr.pantheonsorbonne.ufr27.miage.exception.PurchaseNotExistException;
+import fr.pantheonsorbonne.ufr27.miage.exception.SellerNotRegisteredException;
+import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
+import fr.pantheonsorbonne.ufr27.miage.model.Purchase;
 
-    public void confirmPurchase(int id);
+public interface PurchaseDAO {
+    public void createPurchase(int idES, int idWC, int amount) throws SellerNotRegisteredException, UserNotFoundException;
+
+    public void confirmPurchase(int id) throws PurchaseNotExistException;
+
+    public Purchase findPurchase(int id) throws PurchaseNotExistException;
 }

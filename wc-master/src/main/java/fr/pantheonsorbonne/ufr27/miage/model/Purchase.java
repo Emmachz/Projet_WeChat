@@ -11,11 +11,13 @@ public class Purchase {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "idES", nullable = false)
-    private Integer idES;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "idES", nullable = false)
+    private ExternalSeller idES;
 
-    @Column(name = "idWC", nullable = false)
-    private Integer idWC;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "idWC", nullable = false)
+    private User idWC;
 
     @Column(name = "amount", nullable = false)
     private Integer amount;
@@ -26,12 +28,12 @@ public class Purchase {
     @Column(name = "isValidatedByUser", nullable = false)
     private boolean isValidatedByUser;
 
-    public Purchase(int idES,
-                    int idWC,
+    public Purchase(ExternalSeller externalSeller,
+                    User weChatUser,
                     int amount)
     {
-        this.idES = idES;
-        this.idWC = idWC;
+        this.idES = externalSeller;
+        this.idWC = weChatUser;
         this.amount = amount;
         this.createdAt = new Date();
         this.isValidatedByUser = false;
@@ -49,20 +51,28 @@ public class Purchase {
         this.id = id;
     }
 
-    public Integer getIdES() {
+    public ExternalSeller getIdES() {
         return idES;
     }
 
-    public void setIdES(Integer idES) {
+    public void setIdES(ExternalSeller idES) {
         this.idES = idES;
     }
 
-    public Integer getIdWC() {
+    public User getIdWC() {
         return idWC;
     }
 
-    public void setIdWC(Integer idWC) {
+    public void setIdWC(User idWC) {
         this.idWC = idWC;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
     }
 
     public Date getCreatedAt() {

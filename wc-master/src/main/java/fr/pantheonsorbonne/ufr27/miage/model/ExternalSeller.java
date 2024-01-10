@@ -12,4 +12,20 @@ public class ExternalSeller {
 
     @Column(name = "email_ES", nullable = false, unique = true)
     private String emailES;
+
+    public Long getEsId() {
+        return esId;
+    }
+
+    public void setEsId(Long esId) {
+        this.esId = esId;
+    }
+
+    public String getEmailES() {
+        return emailES;
+    }
+
+    public void setEmailES(String emailES) {
+        this.emailES = emailES;
+    }
 }

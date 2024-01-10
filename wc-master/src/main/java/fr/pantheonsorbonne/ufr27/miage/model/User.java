@@ -46,6 +46,22 @@ public class User {
         return userName;
     }
 
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getNameBank() {
+        return nameBank;
+    }
+
+    public void setNameBank(String nameBank) {
+        this.nameBank = nameBank;
+    }
+
     public void setUserRegion (String userRegion){
         this.userRegion = userRegion;
     }

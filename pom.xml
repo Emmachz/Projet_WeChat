@@ -15,6 +15,7 @@
         <module>ticket-commons</module>
         <module>wechat-seller</module>
         <module>mybank-master</module>
+        <module>wechat-user</module>
     </modules>
     <build>
         <plugins>

@@ -1,7 +1,12 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
 
+import fr.pantheonsorbonne.ufr27.miage.camel.gateway.PaymentsGateway;
+import fr.pantheonsorbonne.ufr27.miage.camel.processor.PurchaseInfoEnricher;
+import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseConfirmation;
 import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseDTO;
+import fr.pantheonsorbonne.ufr27.miage.exception.SellerNotRegisteredException;
+import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -12,12 +17,14 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class CamelRoutes extends RouteBuilder {
 
-
     @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.jmsPrefix")
     String jmsPrefix;
 
     @Inject
-    PurchaseHandler purshaseHandler;
+    PurchaseHandler purchaseHandler;
+
+    @Inject
+    PaymentsGateway gateway;
 
     @Inject
     CamelContext camelContext;
@@ -27,10 +34,26 @@ public class CamelRoutes extends RouteBuilder {
 
         camelContext.setTracing(true);
 
+        onException(SellerNotRegisteredException.class)
+                .handled(true)
+                .log("You have not been registered in WeChat. Create an account to sold with WeChat.");
+
+        onException(UserNotFoundException.class)
+                .handled(true)
+                .log("This user do not exist in WeChat. The purchase will not be paid.");
+
         from("sjms2:" + jmsPrefix + "selling")//
                 .log("purchased received: ${in.headers}")//
                 .unmarshal().json(PurchaseDTO.class)//
-                .bean(purshaseHandler, "init").marshal().json();
+                .bean(purchaseHandler, "init")
+                .marshal().json()
+                .to("");
+
+        from("smjs2" + jmsPrefix + "confirm-purchase")
+                .unmarshal().json(PurchaseConfirmation.class)//
+                .bean(purchaseHandler, "confirm")
+                .process(new PurchaseInfoEnricher());
+
 
         /*onException(ExpiredTransitionalTicketException.class)
                 .handled(true)
