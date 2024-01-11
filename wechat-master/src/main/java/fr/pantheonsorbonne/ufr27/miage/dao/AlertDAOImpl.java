@@ -1,6 +1,7 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
 import fr.pantheonsorbonne.ufr27.miage.model.Alert;
+import fr.pantheonsorbonne.ufr27.miage.model.Region;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -12,9 +13,54 @@ public class AlertDAOImpl implements AlertDAO {
     EntityManager em;
 
     @Transactional
-    public void addAlert(Alert alert){
-        em.merge(alert);
+    public void addAlert(Alert alert) {
+        Alert newAlert = createNewAlert(alert);
+        mergeAlert(newAlert);
     }
+
+    private Alert createNewAlert(Alert alert) {
+        String regionCode = getRegionCode(alert.getRegion());
+        Region region = new Region("FR-" + regionCode, alert.getRegion());
+        return new Alert(alert.getId(), alert.getDescription(), alert.getRegion(), region);
+    }
+
+    private String getRegionCode(String regionName) {
+        switch (regionName.toLowerCase()) {
+            case "auvergne-rhone-alpes":
+                return "ARA";
+            case "bourgogne-franche-comte":
+                return "BFC";
+            case "bretagne":
+                return "BRE";
+            case "corse":
+                return "COR";
+            case "centre-val-de-loire":
+                return "CVL";
+            case "grand-est":
+                return "GES";
+            case "hauts-de-france":
+                return "HDF";
+            case "ile-de-france":
+                return "IDF";
+            case "nouvelle-aquitaine":
+                return "NAQ";
+            case "normandie":
+                return "NOR";
+            case "occitanie":
+                return "OCC";
+            case "provence-alpes-cote-dazur":
+                return "PAC";
+            case "pays-de-la-loire":
+                return "PDL";
+            default:
+                throw new IllegalArgumentException("Unknown region: " + regionName);
+        }
+    }
+
+    private void mergeAlert(Alert newAlert) {
+        em.merge(newAlert);
+    }
+
 
     public void checkRegion(Alert alert) {
 

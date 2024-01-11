@@ -1,6 +1,8 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
 import fr.pantheonsorbonne.ufr27.miage.model.Alert;
+import fr.pantheonsorbonne.ufr27.miage.model.Region;
+
 
 import fr.pantheonsorbonne.ufr27.miage.model.Event;
 import fr.pantheonsorbonne.ufr27.miage.service.AlertService;
@@ -10,6 +12,8 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 
 import java.io.IOException;
+
+import static io.netty.handler.codec.http.HttpHeaders.setHeader;
 
 @ApplicationScoped
 public class AlertGateway {
@@ -22,20 +26,68 @@ public class AlertGateway {
 
 
     public void addAlert(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert){
-        Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion());
+        Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-HDF","hauts-de-france"));
         this.alertService.addAlert(newAlert);
     }
 
-    public void checkRegion(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert){
-        Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion());
-        this.alertService.checkRegion(newAlert);
-    }
-
-    public void transfertAlert(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert) {
-        Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion());
-        System.out.println(newAlert+"SAVOIRRRRRRR");
+    public void transfertAlert2(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert) {
         try (ProducerTemplate producerTemplate = camelContext.createProducerTemplate()) {
-            producerTemplate.sendBody("direct:transfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()));
+            if( (alert.getAlertRegion().equals("auvergne-rhone-alpes"))){
+                Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-ARA","auvergne-rhone-alpes"));
+                producerTemplate.sendBodyAndHeader("direct:alerttransfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()),  "headerRegion", "auvergne-rhone-alpes");
+            }
+
+            else if ((alert.getAlertRegion().equals("bourgogne-franche-comte"))) {
+                Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-BFC","bourgogne-franche-comte"));
+                producerTemplate.sendBodyAndHeader("direct:alerttransfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()),  "headerRegion", "bourgogne-franche-comte");
+            }
+            else if ((alert.getAlertRegion().equals("bretagne"))) {
+                Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-BRE","bretagne"));
+                producerTemplate.sendBodyAndHeader("direct:alerttransfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()),  "headerRegion", "bretagne");
+            }
+            else if ((alert.getAlertRegion().equals("corse"))) {
+                Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-COR","corse"));
+                producerTemplate.sendBodyAndHeader("direct:alerttransfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()),  "headerRegion", "corse");
+            }
+            else if ((alert.getAlertRegion().equals("centre-val-de-loire"))) {
+                Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-CVL","centre-val-de-loire"));
+                producerTemplate.sendBodyAndHeader("direct:alerttransfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()),  "headerRegion", "centre-val-de-loire");
+            }
+            else if ((alert.getAlertRegion().equals("grand-est"))) {
+                Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-GES","grand-est"));
+                producerTemplate.sendBodyAndHeader("direct:alerttransfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()),  "headerRegion", "grand-est");
+            }
+            else if ((alert.getAlertRegion().equals("hauts-de-france"))) {
+                Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-HDF","hauts-de-france"));
+                producerTemplate.sendBodyAndHeader("direct:alerttransfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()),  "headerRegion", "hauts-de-france");
+            }
+            else if ((alert.getAlertRegion().equals("ile-de-france"))) {
+                Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-IDF","ile-de-france"));
+                producerTemplate.sendBodyAndHeader("direct:alerttransfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()),  "headerRegion", "ile-de-france");
+            }
+            else if ((alert.getAlertRegion().equals("nouvelle-aquitaine"))) {
+                Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-NAQ","nouvelle-aquitaine"));
+                producerTemplate.sendBodyAndHeader("direct:alerttransfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()),  "headerRegion", "nouvelle-aquitaine");
+            }
+            else if ((alert.getAlertRegion().equals("normandie"))) {
+                Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-NOR","normandie"));
+                producerTemplate.sendBodyAndHeader("direct:alerttransfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()),  "headerRegion", "normandie");
+            }
+            else if ((alert.getAlertRegion().equals("occitanie"))) {
+                Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-ACC","occitanie"));
+                producerTemplate.sendBodyAndHeader("direct:alerttransfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()),  "headerRegion", "occitanie");
+            }
+            else if ((alert.getAlertRegion().equals("provence-alpes-cote-dazur"))) {
+                Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-PAC","provence-alpes-cote-dazur"));
+                producerTemplate.sendBodyAndHeader("direct:alerttransfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()),  "headerRegion", "provence-alpes-cote-dazur");
+            }
+            else if ((alert.getAlertRegion().equals("pays-de-la-loire"))) {
+                Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-PDL","pays-de-la-loire"));
+                producerTemplate.sendBodyAndHeader("direct:alerttransfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()),  "headerRegion", "pays-de-la-loire");
+            }
+            //else {
+             //   producerTemplate.sendBody("direct:transfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()));
+            //}
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

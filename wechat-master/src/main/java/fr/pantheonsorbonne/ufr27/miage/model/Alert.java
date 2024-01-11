@@ -11,7 +11,7 @@ public class Alert {
     private Integer id;
 
     @ManyToOne(optional = true)
-    @JoinColumn(name = "idRegion", nullable = true)
+    @JoinColumn(name = "idRegion")
     private Region idRegion;
 
     @Column(name = "description", nullable = false)
@@ -20,10 +20,11 @@ public class Alert {
     @Column(name = "region", nullable = false)
     private String region;
 
-    public Alert(Integer id, String description, String region) {
+    public Alert(Integer id, String description, String region, Region idRegion) {
         this.id = id;
         this.description = description;
         this.region = region;
+        this.idRegion= idRegion;
     }
 
     public Alert() {
@@ -49,7 +50,11 @@ public class Alert {
         return region;
     }
 
-    public void setRegion(String region) {
-        this.region = region;
+    public void setIdRegion(Region region){
+        this.idRegion=region;
+    }
+
+    public void setRegion(Region region) {
+        this.idRegion = region;
     }
 }

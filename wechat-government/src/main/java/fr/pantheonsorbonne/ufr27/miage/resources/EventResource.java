@@ -69,7 +69,4 @@ public class EventResource {
         this.alertService.deleteEventServiceId(alertId);
     }
 
-
-
-
 }

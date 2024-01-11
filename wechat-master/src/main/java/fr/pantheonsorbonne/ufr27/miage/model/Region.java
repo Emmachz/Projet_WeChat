@@ -6,12 +6,37 @@ import jakarta.persistence.*;
 public class Region {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idRegion", nullable = false)
-    private int idRegion;
+    private String idRegion;
 
     @Column(name = "region", nullable = false)
     private String region;
 
+    public Region ( String idRegion,String region){
+        this.idRegion=idRegion;
+        this.region=region;
+    }
+    public Region() {
+    }
 
+    public String getIdRegion() {
+        return idRegion;
+    }
+
+    public void setDescription(String idRegion) {
+        this.idRegion = idRegion;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+
+    public void setIdRegion(String idRegion) {
+        this.idRegion=idRegion;
+    }
 }
