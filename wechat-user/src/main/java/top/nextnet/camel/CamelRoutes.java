@@ -66,10 +66,10 @@ public class CamelRoutes extends RouteBuilder {
                         exchange.getMessage().setHeader("to", transfertArgent.getEmetteur().getUserEmail());
                         exchange.getMessage().setHeader("from", smtpFrom);
                         exchange.getMessage().setHeader("contentType", "text/html");
-                        exchange.getMessage().setHeader("subject", "Versement Succès");
+                        exchange.getMessage().setHeader("subject", "Versement Success");
                         exchange.getMessage().setBody("Bonjour " + transfertArgent.getEmetteur().getUserName() +"," +
-                                "\n\n Votre versement " + transfertArgent.getValue() + " euros à "+ transfertArgent.getReceveur().getUserName()+" a été mise en place avec succès." +
-                                "\n\n Merci voutr confiance");
+                                "\n\n Votre versement " + transfertArgent.getValue() + " euros a "+ transfertArgent.getReceveur().getUserName()+" a ete mise en place avec success." +
+                                "\n\n Merci voutr confiance. \n\n WeChat");
                     }
                 })
                 .log("Message Versement succès ${body} ${headers}")

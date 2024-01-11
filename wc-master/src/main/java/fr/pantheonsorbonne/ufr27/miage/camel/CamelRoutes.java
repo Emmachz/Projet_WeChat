@@ -13,6 +13,7 @@ import fr.pantheonsorbonne.ufr27.miage.exception.UserNotExistingException;
 import org.apache.camel.AggregationStrategy;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -85,15 +86,13 @@ public class CamelRoutes extends RouteBuilder {
                 .bean(versementGateway, "sendInfosToBank")
                 .marshal().json()
                 .multicast()
-                .to("sjms2:" + jmsPrefix + "MyBankSystem?exchangePattern=InOut", "sjms2:" + jmsPrefix + "YesBankSystem?exchangePattern=InOut")
                 .parallelProcessing()
-                .aggregationStrategy((new AggregationStrategy() {
-                    @Override
-                    public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
-                        return null;
-                    }
-                }))
+                .to("sjms2:" + jmsPrefix + "MyBankSystem", "sjms2:" + jmsPrefix + "YesBankSystem")
+
+
+
         ;
+
 
 
 

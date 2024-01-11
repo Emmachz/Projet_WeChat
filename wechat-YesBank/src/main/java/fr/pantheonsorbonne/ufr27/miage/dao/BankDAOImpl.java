@@ -63,6 +63,20 @@ public class BankDAOImpl implements BankDAO{
         }
         return transfertArgent;
     }
+    @Override
+    public boolean checkSolde(String bankNumber, double value){
+        try{
+            Bank bankEmet = this.findUserByNumero(bankNumber);
+            if (bankEmet.getBankAmonut() >= value){
+                return true;
+            }
+        } catch (NoSuchComptException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
+
 
     @Override
     public TransfertArgent updateCompteDebit(TransfertArgent transfertArgent) throws NoSuchComptException {
@@ -77,6 +91,34 @@ public class BankDAOImpl implements BankDAO{
             throw new NoSuchComptException();
         }
         return transfertArgent;
+    }
+
+    @Override
+    public void addMoneyToAccount(String bankNumber, double amount)
+    {
+        try {
+            Bank account = this.findUserByNumero(bankNumber);
+            double initialBalance = account.getBankAmonut();
+            account.setBankAmonut(initialBalance + amount);
+            em.merge(account);
+            em.flush();
+        }catch (NoSuchComptException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void debitMoneyFromAccount(String bankNumber, double amount)
+    {
+        try {
+            Bank account = this.findUserByNumero(bankNumber);
+            double initialBalance = account.getBankAmonut();
+            account.setBankAmonut(initialBalance - amount);
+            em.merge(account);
+            em.flush();
+        }catch (NoSuchComptException e){
+            System.out.println(e.getMessage());
+        }
     }
 
 }

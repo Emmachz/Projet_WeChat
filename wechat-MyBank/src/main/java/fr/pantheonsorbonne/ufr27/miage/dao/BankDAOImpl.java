@@ -63,6 +63,20 @@ public class BankDAOImpl implements BankDAO{
         }
         return transfertArgent;
     }
+    @Override
+    public boolean checkSolde(String bankNumber, double value){
+        try{
+            Bank bankEmet = this.findUserByNumero(bankNumber);
+            if (bankEmet.getBankAmonut() >= value){
+                return true;
+            }
+        } catch (NoSuchComptException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
+
 
     @Override
     public TransfertArgent updateCompteDebit(TransfertArgent transfertArgent) throws NoSuchComptException {
