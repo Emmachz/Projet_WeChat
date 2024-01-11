@@ -36,7 +36,7 @@ public class CamelRoutes extends RouteBuilder {
                 .setHeader("success", simple("false"))
                 .setBody(simple("Le compte bancaire n existe pas : Mauvais Nom de Banque !"));
 
-        from("sjms2:" + jmsPrefix + "MyBankSystem")
+        from("sjms2:" + jmsPrefix + "YesBankSystem?exchangePattern=InOut")
                 .unmarshal().json(TransfertArgent.class)
                 .bean(compteGateway, "realizeOperation")
                 .bean(checkUserHandler)

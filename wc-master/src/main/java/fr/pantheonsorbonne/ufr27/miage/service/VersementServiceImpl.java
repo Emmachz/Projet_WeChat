@@ -28,6 +28,8 @@ public class VersementServiceImpl implements VersementService {
             throw new RuntimeException(e);
         }
     }
+
+
     @Override
     @Transactional
     public TransfertArgent realizeVersementWallet (Versement versement){

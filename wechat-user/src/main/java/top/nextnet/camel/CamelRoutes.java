@@ -54,9 +54,9 @@ public class CamelRoutes extends RouteBuilder {
                 .marshal().json()//, "onBookedResponseReceived"
                 .to("sjms2:" + jmsPrefix + "confirm-purchase");
 
-        from("sjms2:topic:" + jmsPrefix + "versementSuccesEmetteur")
+        from("sjms2:" + jmsPrefix + "versementSuccesEmetteur")
                 .log("Message Versement succès ${body} ${headers}")
-                .filter(header("login").isEqualTo(userLogin))
+                .filter(header("emetteur").isEqualTo(userLogin))
                 .unmarshal().json(TransfertArgent.class)
                 .process(new Processor() {
                     @Override

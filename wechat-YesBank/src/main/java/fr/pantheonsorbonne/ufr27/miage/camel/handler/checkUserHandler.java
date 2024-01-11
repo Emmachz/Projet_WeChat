@@ -14,10 +14,10 @@ public class checkUserHandler {
 
         if (transfertArgent.getLoginEmetteur() != null){
             exchange.getMessage().setHeader("success", false);
-            exchange.getMessage().setHeader("login", transfertArgent.getLoginEmetteur());
+            exchange.getMessage().setHeader("emetteur", transfertArgent.getLoginEmetteur());
         }else {
             exchange.getMessage().setHeader("success", true);
-            exchange.getMessage().setHeader("login", transfertArgent.getEmetteur().getUserLogin());
+            exchange.getMessage().setHeader("emetteur", transfertArgent.getEmetteur().getUserLogin());
         }
     }
 }
