@@ -46,6 +46,9 @@ public class CamelRoutes extends RouteBuilder {
 
         from("sjms2:topic:alerthauts-de-france" + jmsPrefix)
                 .log("testHAUTDESEINEEEEEEEE");
+
+
+
     }
 
     private static class ExpiredTransitionalTicketProcessor implements Processor {

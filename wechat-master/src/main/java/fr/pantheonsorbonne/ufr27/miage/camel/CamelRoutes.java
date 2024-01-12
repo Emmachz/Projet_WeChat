@@ -48,15 +48,15 @@ public class CamelRoutes extends RouteBuilder {
                 .unmarshal().json(Alert.class)
                 .log("Clearning expired transitional ticket ${body}")
                 .bean(alertGateway, "addAlert")
-                .bean(alertGateway, "transfertAlert2")
+                .bean(alertGateway, "transfertAlert2");
                 //.toD("sjms2:topic:alert${body.getAlertRegion()}" + jmsPrefix)
-                .marshal().json();
+                //.marshal().json();
 
         from("direct:alerttransfert")
             .marshal().json()
                 .choice()
-                .when(header("headerRegion").isEqualTo("lertauvergne-rhone-alpes"))
-                    .to("sjms2:topic:alertlertauvergne-rhone-alpes" + jmsPrefix)
+                .when(header("headerRegion").isEqualTo("auvergne-rhone-alpes"))
+                    .to("sjms2:topic:alertauvergne-rhone-alpes" + jmsPrefix)
                 .when(header("headerRegion").isEqualTo("bourgogne-franche-comte"))
                     .to("sjms2:topic:alertbourgogne-franche-comte" + jmsPrefix)
                 .when(header("headerRegion").isEqualTo("bretagne"))

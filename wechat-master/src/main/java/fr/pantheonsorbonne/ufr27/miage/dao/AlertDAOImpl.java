@@ -1,5 +1,7 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
+import fr.pantheonsorbonne.ufr27.miage.exception.AlertNotFoundException;
+import fr.pantheonsorbonne.ufr27.miage.exception.RegionNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.model.Alert;
 import fr.pantheonsorbonne.ufr27.miage.model.Region;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -9,13 +11,18 @@ import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class AlertDAOImpl implements AlertDAO {
+
     @PersistenceContext
     EntityManager em;
 
     @Transactional
     public void addAlert(Alert alert) {
-        Alert newAlert = createNewAlert(alert);
-        mergeAlert(newAlert);
+        if (isValidRegion(alert.getRegion())) {
+            Alert newAlert = createNewAlert(alert);
+            mergeAlert(newAlert);
+        } else {
+            System.out.println("Erreur : Région inconnue - " + alert.getRegion());
+        }
     }
 
     private Alert createNewAlert(Alert alert) {
@@ -24,7 +31,7 @@ public class AlertDAOImpl implements AlertDAO {
         return new Alert(alert.getId(), alert.getDescription(), alert.getRegion(), region);
     }
 
-    private String getRegionCode(String regionName) {
+    private String getRegionCode(String regionName)   {
         switch (regionName.toLowerCase()) {
             case "auvergne-rhone-alpes":
                 return "ARA";
@@ -54,6 +61,7 @@ public class AlertDAOImpl implements AlertDAO {
                 return "PDL";
             default:
                 throw new IllegalArgumentException("Unknown region: " + regionName);
+                //throw new RegionNotFoundException(regionName);
         }
     }
 
@@ -61,9 +69,23 @@ public class AlertDAOImpl implements AlertDAO {
         em.merge(newAlert);
     }
 
+    private boolean isValidRegion(String regionName) {
+        try {
+            getRegionCode(regionName);
+            return true;  // La région est valide
+        } catch (IllegalArgumentException e) {
+            return false; // La région est inconnue
+        }
+    }
 
     public void checkRegion(Alert alert) {
-
-
+        try {
+            String regionCode = getRegionCode(alert.getRegion());
+            // Si la région existe, aucune exception n'est lancée
+            System.out.println("La région existe : " + alert.getRegion() + " (Code : " + regionCode + ")");
+        } catch (IllegalArgumentException e) {
+            // Si l'exception est lancée, la région n'existe pas dans les propositions
+            System.out.println("Erreur : " + e.getMessage());
+        }
     }
 }

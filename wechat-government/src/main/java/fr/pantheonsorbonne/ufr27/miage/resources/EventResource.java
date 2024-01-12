@@ -57,8 +57,9 @@ public class EventResource {
     @Path(("/addEvent"))
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void addEvent(Event event) {
-        this.alertService.addEventService(event);
+    public String addEvent(Event event) {
+        return this.alertService.addEventService(event);
+
     }
 
     @Path("deleteEvent/{alertId}")

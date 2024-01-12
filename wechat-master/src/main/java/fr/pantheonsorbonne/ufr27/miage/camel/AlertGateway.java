@@ -1,5 +1,7 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
+import fr.pantheonsorbonne.ufr27.miage.exception.AlertNotFoundException;
+import fr.pantheonsorbonne.ufr27.miage.exception.EventNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.model.Alert;
 import fr.pantheonsorbonne.ufr27.miage.model.Region;
 
@@ -8,6 +10,8 @@ import fr.pantheonsorbonne.ufr27.miage.model.Event;
 import fr.pantheonsorbonne.ufr27.miage.service.AlertService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.NonUniqueResultException;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 
@@ -24,13 +28,12 @@ public class AlertGateway {
     @Inject
     CamelContext camelContext;
 
-
     public void addAlert(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert){
         Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-HDF","hauts-de-france"));
         this.alertService.addAlert(newAlert);
     }
 
-    public void transfertAlert2(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert) {
+    public void transfertAlert2(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert) throws AlertNotFoundException, IOException {
         try (ProducerTemplate producerTemplate = camelContext.createProducerTemplate()) {
             if( (alert.getAlertRegion().equals("auvergne-rhone-alpes"))){
                 Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region("FR-ARA","auvergne-rhone-alpes"));
@@ -86,10 +89,14 @@ public class AlertGateway {
                 producerTemplate.sendBodyAndHeader("direct:alerttransfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()),  "headerRegion", "pays-de-la-loire");
             }
             //else {
-             //   producerTemplate.sendBody("direct:transfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()));
+                //producerTemplate.sendBody("direct:transfert", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(newAlert.getId(), newAlert.getDescription(), newAlert.getRegion()));
+                //EventNotFoundException(alert.getAlertId())
             //}
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            else{
+                new AlertNotFoundException(alert.getAlertId());
+            }
+        } catch (NonUniqueResultException | NoResultException e) {
+            throw new AlertNotFoundException(alert.getAlertId());
         }
     }
 

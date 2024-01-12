@@ -17,6 +17,7 @@
         <module>wechat-commons</module>
         <module>wechat-government</module>
         <module>wechat-bank</module>
+        <module>wechat-user</module>
     </modules>
     <build>
         <plugins>

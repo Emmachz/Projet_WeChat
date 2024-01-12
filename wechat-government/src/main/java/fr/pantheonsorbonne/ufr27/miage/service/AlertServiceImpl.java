@@ -13,6 +13,7 @@ import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 @ApplicationScoped
@@ -52,9 +53,22 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Transactional
-    public void addEventService(Event event) {
-        this.eventdao.addEvent(event);
-        this.alertGateway.sendAlert(event);
+    public String addEventService(Event event) {
+        if (isValidRegion(event)) {
+            this.eventdao.addEvent(event);
+            this.alertGateway.sendAlert(event);
+            return "Event bien envoyé";
+        } else {
+            return "Erreur dans l'entrée de la région";
+        }
+    }
+
+    private boolean isValidRegion(Event event) {
+        String[] validRegions = {"auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
+                "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
+                "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire"};
+
+        return Arrays.asList(validRegions).contains(event.getRegion());
     }
 
     @Transactional
@@ -66,7 +80,5 @@ public class AlertServiceImpl implements AlertService {
     public void deleteEventServiceId(int id){
         this.eventdao.deleteEvent(id);
     }
-
-
 
 }
