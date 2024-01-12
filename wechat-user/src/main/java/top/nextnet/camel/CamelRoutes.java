@@ -12,10 +12,6 @@ import org.apache.camel.builder.RouteBuilder;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import top.nextnet.cli.UserInterface;
-import top.nextnet.service.TicketingService;
-
-
 import java.util.HashMap;
 
 @ApplicationScoped
@@ -24,32 +20,6 @@ public class CamelRoutes extends RouteBuilder {
     @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.jmsPrefix")
     String jmsPrefix;
 
-    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.vendorId")
-    Integer vendorId;
-
-    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.smtp.user")
-    String smtpUser;
-
-    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.smtp.password")
-    String smtpPassword;
-
-    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.smtp.host")
-    String smtpHost;
-
-    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.smtp.port")
-    String smtpPort;
-    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.smtp.from")
-    String smtpFrom;
-
-    @Inject
-    top.nextnet.camel.handler.GivingResponseHandler GivingResponseHandler;
-
-    @Inject
-    TicketingService ticketingService;
-
-    @Inject
-    UserInterface eCommerce;
-
     @Inject
     CamelContext camelContext;
 
@@ -57,9 +27,19 @@ public class CamelRoutes extends RouteBuilder {
     @Override
     public void configure() throws Exception {
         camelContext.setTracing(true);
+        from("direct:giving")
+                .log("dede")
+                .marshal().json()//, "onBookedResponseReceived"
+                .log("dede")
+                .to("sjms2:" + jmsPrefix + "givingDonation");
 
+        /*from("direct:confirm-purchase")
+                .marshal().json()//, "onBookedResponseReceived"
+                .to("sjms2:" + jmsPrefix + "confirm-purchase");
 
-        from("direct:cli")//
+         */
+
+        /*from("direct:cli")//
                 .marshal().json()//, "onBookedResponseReceived"
                 .to("sjms2:" + jmsPrefix + "booking?exchangePattern=InOut")//
                 .choice()
@@ -68,7 +48,7 @@ public class CamelRoutes extends RouteBuilder {
                 .bean(eCommerce, "showErrorMessage").stop()
                 .otherwise()
                 .unmarshal().json(Booking.class)
-                .bean(GivingResponseHandler)
+                .bean(BookingResponseHandler)
                 .log("response received ${in.body}")
                 .bean(ticketingService, "fillTicketsWithCustomerInformations")
                 .split(body())
@@ -102,6 +82,7 @@ public class CamelRoutes extends RouteBuilder {
                 .log("cancellation notice ${body} ${headers}")
                 .to("smtps:" + smtpHost + ":" + smtpPort + "?username=" + smtpUser + "&password=" + smtpPassword + "&contentType=")
                 .bean(eCommerce, "showErrorMessage");
+            */
 
     }
 }

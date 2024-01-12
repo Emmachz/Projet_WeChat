@@ -1,25 +1,21 @@
+INSERT INTO Region (idRegion, region)
+VALUES (1, 'ile-de-france');
 
-REPLACE INTO `Artist` (`idArtist`, `name`) VALUES (1,'Radiohead'),(2,'Billie Eillish'),(3,'French Cowboy');
+INSERT INTO User2 (age, idUser, vetementKg, fristName, lastName, region, idRegion)
+VALUES (22, 1, '123', 'emma', 'chen', 'ile-de-france', 1);
 
+INSERT INTO Message (idMessage, idUser2, description, region)
+VALUES (1, 1, 'inondation', 'ile-de-france');
 
+REPLACE INTO `Alert` (`idAlert`, `description`, `region`, `idRegion` )
+VALUES (1,'attentat','ile-de-france', 1);
 
-REPLACE INTO `Customer` (`idCustomer`, `email`, `fname`, `lname`) VALUES (1,'nicolas.herbaut@univ-paris1.fr','nicolas','herbaut');
+INSERT INTO `Help` (`helpId`, `region`, `moneySupport`, `timeSupport`, `clotheSupport`  )
+VALUES (1,'ile-de-france',80000, 80000, 80000),(2,'haut-de-seine',80000, 80000, 80000);
 
+INSERT INTO `Donation` (`donationId`, `description` )
+VALUES (1,'famine dans le monde');
 
-REPLACE INTO `Location` (`idLocation`, `name`, `standingGauge`) VALUES (1,'Bordeaux Akea Arena',2000),(2,'Le Moulin (Marseille)',800),(3,'Espace 3000 (Hyères)',200);
+INSERT INTO `Donation_Help` (`Donation_donationId`, `helps_helpId` )
+VALUES (1,1),(1,2);
 
-
-
-REPLACE INTO `Vendor` (`idVendor`, `name`) VALUES (1,'fnac'),(2,'ticket master');
-
-
-REPLACE INTO `Venue` (`idVenue`, `venueDate`, `idLocation`) VALUES (1,'2022-06-06',1),(2,'2022-06-06',1),(3,'2021-02-03',3),(4,'2022-01-03',2);
-
-
-REPLACE INTO `VenueLineUp` (`idVenue`, `showTime`, `artist_idArtist`) VALUES (1,'20:00',1),(2,'22:00',1),(2,'19:30',2),(3,'22:00',3);
-
-
-REPLACE INTO `VenueQuota` (`seatingQuota`, `standingQuota`, `vendor_idVendor`, `venue_idVenue`) VALUES (10,20,1,2),(15,50,2,1),(5,5,2,2),(0,0,2,3);
-
-
-REPLACE INTO `Ticket` (`idTicket`, `seatReference`, `ticketKey`, `validUntil`, `idCustomer`, `idVendor`, `idVenue`) VALUES (1,NULL,'dummyKey',NULL,1,1,1),(2,'ABC-01','dummyKey',NULL,1,2,1);

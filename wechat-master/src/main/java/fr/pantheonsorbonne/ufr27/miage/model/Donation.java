@@ -1,6 +1,5 @@
 package fr.pantheonsorbonne.ufr27.miage.model;
 
-import fr.pantheonsorbonne.ufr27.miage.dto.Require;
 import jakarta.persistence.*;
 
 import java.util.Collection;
@@ -17,9 +16,10 @@ public class Donation {
     private String description;
 
 
+
+    @Column(name = "helps", nullable = false, length = 45)
     @OneToMany
-    @JoinColumn(name = "requires")
-    private Collection<Require>  requires;
+    private Collection<Help> helps;
 
 
     public Integer getId() {
@@ -38,12 +38,12 @@ public class Donation {
         this.description = description;
     }
 
-    public Collection<Require> getRequires() {
-        return requires;
+    public Collection<Help> getHelps() {
+        return helps;
     }
 
-    public void setRequires(Collection<Require> requires) {
-        this.requires = requires;
+    public void setHelps(Collection<Help> helps) {
+        this.helps = helps;
     }
 
 }

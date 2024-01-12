@@ -1,72 +1,105 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
 
-import com.google.common.hash.Hashing;
-import fr.pantheonsorbonne.ufr27.miage.dao.CustomerDAO;
-import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchTicketException;
-import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
-import fr.pantheonsorbonne.ufr27.miage.dao.DonationDAO;
-import fr.pantheonsorbonne.ufr27.miage.dto.Donation;
-import fr.pantheonsorbonne.ufr27.miage.dto.ETicket;
 import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
-import fr.pantheonsorbonne.ufr27.miage.dto.TicketType;
-import fr.pantheonsorbonne.ufr27.miage.exception.CustomerNotFoundException;
-import fr.pantheonsorbonne.ufr27.miage.exception.ExpiredTransitionalTicketException;
 import fr.pantheonsorbonne.ufr27.miage.exception.UnsuficientQuotaForVenueException;
-import fr.pantheonsorbonne.ufr27.miage.model.*;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
 
 @ApplicationScoped
 public class GivingServiceImpl implements GivingService {
 
-    @Inject
-    UserDAO userDAO;
+    @PersistenceContext
+    EntityManager em;
+/*
 
-    @Inject
-    DonationDAO donationDAO;
+    @Override
+    @Transactional
+    public Booking book(Booking give) throws UnsuficientQuotaForVenueException {
+        try {
+            VenueQuota vq = (VenueQuota) (em.createQuery("select q from VenueQuota q where q.id.venue.id=:venueId and q.id.vendor.id=:vendorId and q.seatingQuota>=:countSeating and q.standingQuota>=:countStanding")
+                    .setParameter("vendorId", give.getVendorId())
+                    .setParameter("venueId", give.getVenueId())
+                    .setParameter("countStanding", give.getStandingTicketsNumber())
+                    .setParameter("countSeating", give.getSeatingTicketsNumber()).getSingleResult());
+            vq.setSeatingQuota(vq.getSeatingQuota() - give.getSeatingTicketsNumber());
+            vq.setStandingQuota(vq.getStandingQuota() - give.getStandingTicketsNumber());
 
-    @Inject
-    SeatPlacementService seatPlacementService;
+            Venue venue = em.find(Venue.class, give.getVenueId());
+            Vendor vendor = em.find(Vendor.class, give.getVendorId());
 
-    public String getKeyForTicket(Ticket ticket) {
-        return Hashing.sha256().hashString(ticket.getId() + "" + ticket.getIdVenue().getId() + "" + ticket.getIdVendor().getId() + "MySuperSecret75013!", StandardCharsets.UTF_8).toString();
+
+            for (int i = 0; i < give.getStandingTicketsNumber(); i++) {
+                Ticket ticket = new Ticket();
+                ticket.setValidUntil(Instant.now().plus(10, ChronoUnit.HOURS));
+                ticket.setIdVendor(vendor);
+                ticket.setIdVenue(venue);
+                em.persist(ticket);
+                give.getStandingTransitionalTicket().add(ticket.getId());
+
+            }
+
+            for (int i = 0; i < give.getSeatingTicketsNumber(); i++) {
+                Ticket ticket = new Ticket();
+                ticket.setValidUntil(Instant.now().plus(10, ChronoUnit.MINUTES));
+                ticket.setIdVendor(vendor);
+                ticket.setIdVenue(venue);
+                ticket.setSeatReference("");
+                em.persist(ticket);
+
+                give.getSeatingTransitionalTicket().add(ticket.getId());
+
+            }
+
+        } catch (NonUniqueResultException | NoResultException e) {
+            throw new UnsuficientQuotaForVenueException(give.getVenueId());
+        }
+        return give;
+
+
+    }
+*/
+    @Override
+    @Transactional
+    public Giving giveMoney(Giving give) throws UnsuficientQuotaForVenueException {
+        
+        return null;
     }
 
     @Override
     @Transactional
-    public String give(Giving giving) throws ExpiredTransitionalTicketException, NoSuchTicketException, CustomerNotFoundException.NoSeatAvailableException {
+    public Giving giveTime(Giving give) throws UnsuficientQuotaForVenueException {
+        /*try {
 
-       /*enlever la quantity*/
+            VenueQuota vq = (VenueQuota) (em.createQuery("select q from Re q where q.id.venue.id=:venueId and q.id.vendor.id=:vendorId and q.seatingQuota>=:countSeating and q.standingQuota>=:countStanding")
+                    .setParameter("vendorId", give.getVendorId())
+                    .setParameter("venueId", give.getVenueId())
+                    .setParameter("countStanding", give.getStandingTicketsNumber())
+                    .setParameter("countSeating", give.getSeatingTicketsNumber()).getSingleResult());
+            vq.setSeatingQuota(vq.getSeatingQuota() - give.getSeatingTicketsNumber());
+            vq.setStandingQuota(vq.getStandingQuota() - give.getStandingTicketsNumber());
 
-        Donation donation = donationDAO.findDonation(giving.getDonationId());
-        if (donation.getValidUntil().isBefore(Instant.now())) {
-            throw new ExpiredTransitionalTicketException(eticket.getTransitionalTicketId());
+            Venue venue = em.find(Venue.class, give.getVenueId());
+            Vendor vendor = em.find(Vendor.class, give.getVendorId());
+
+        } catch (NonUniqueResultException | NoResultException e) {
+            throw new UnsuficientQuotaForVenueException(give.getVenueId());
         }
-        donation = donationDAO.emitDonationForUser(giving.getDonationId(), customer);
-        donation.setTicketKey(this.getKeyForTicket(donation));
-        if (Objects.equals(eticket.getType(), TicketType.SEATING)) {
-            donation.setSeatReference(seatPlacementService.bookSeat(donation.getIdVenue().getId()));
-        }
-        return donation.getTicketKey();
+        return give;*/
+        return null;
 
 
     }
 
     @Override
     @Transactional
-    public void cleanUpTransitionalGiving(int transitionalGivingId) {
-        donationDAO.removeDonation(transitionalGivingId);
+    public Giving giveClothe(Giving give) throws UnsuficientQuotaForVenueException {
+        return null;
     }
-
 }

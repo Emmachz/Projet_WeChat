@@ -53,7 +53,7 @@ public class TicketingServiceImpl implements TicketingService {
         }
         ticket = ticketDAO.emitTicketForCustomer(eticket.getTransitionalTicketId(), customer);
         ticket.setTicketKey(this.getKeyForTicket(ticket));
-        if (Objects.equals(eticket.getType(),TicketType.SEATING)) {
+        if (Objects.equals(eticket.getType(), TicketType.SEATING)) {
             ticket.setSeatReference(seatPlacementService.bookSeat(ticket.getIdVenue().getId()));
         }
         return ticket.getTicketKey();

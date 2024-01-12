@@ -15,6 +15,7 @@
         <module>wechat-master</module>
         <module>wechat-government</module>
         <module>wechat-user</module>
+        <module>wechat-user1</module>
     </modules>
     <build>
         <plugins>

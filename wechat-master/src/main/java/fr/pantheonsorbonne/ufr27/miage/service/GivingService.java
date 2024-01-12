@@ -1,18 +1,13 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
 
-import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchTicketException;
 import fr.pantheonsorbonne.ufr27.miage.dto.Booking;
-import fr.pantheonsorbonne.ufr27.miage.dto.ETicket;
 import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
-import fr.pantheonsorbonne.ufr27.miage.exception.CustomerNotFoundException;
-import fr.pantheonsorbonne.ufr27.miage.exception.ExpiredTransitionalTicketException;
 import fr.pantheonsorbonne.ufr27.miage.exception.UnsuficientQuotaForVenueException;
-import fr.pantheonsorbonne.ufr27.miage.model.Ticket;
 
 public interface GivingService {
-     String give(Giving giving)  throws ExpiredTransitionalTicketException, NoSuchTicketException, CustomerNotFoundException.NoSeatAvailableException;
 
-    void cleanUpTransitionalGiving(int transitionalGivingId);
-
+    Giving giveMoney(Giving give) throws UnsuficientQuotaForVenueException;
+    Giving giveTime(Giving give) throws UnsuficientQuotaForVenueException;
+    Giving giveClothe(Giving give) throws UnsuficientQuotaForVenueException;
 }

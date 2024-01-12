@@ -6,16 +6,16 @@ public class Donation {
     int donationId;
     String description;
     //String region;
-    Collection<Require> requires;
+    Collection<Help> helps;
 
 
-    public Donation(int donationId, String description,  Collection<Require> requires) {
+    public Donation(int donationId, String description,  Collection<Help> helps) {
         this.donationId = donationId;
         this.description = description;
         /*
         this.region = region;
          */
-        this.requires = requires;
+        this.helps = helps;
     }
 
     public Donation() {
@@ -47,12 +47,12 @@ public class Donation {
         this.description = description;
     }
 
-    public Collection<Require> getRequires() {
-        return requires;
+    public Collection<Help> getHelps() {
+        return helps;
     }
 
-    public void setRequires(Collection<Require> requires) {
-        this.requires = requires;
+    public void setHelps(Collection<Help> helps) {
+        this.helps = helps;
     }
 
 }
