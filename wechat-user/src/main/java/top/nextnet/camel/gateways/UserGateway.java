@@ -1,4 +1,4 @@
-package top.nextnet.service;
+package top.nextnet.camel.gateways;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 

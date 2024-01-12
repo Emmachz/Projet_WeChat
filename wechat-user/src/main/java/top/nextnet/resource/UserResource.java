@@ -12,7 +12,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import jakarta.ws.rs.Path;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import top.nextnet.service.PurchaseConfirmationGateway;
-import top.nextnet.service.UserGateway;
+import top.nextnet.camel.gateways.UserGateway;
 
 
 @Path("/user")
