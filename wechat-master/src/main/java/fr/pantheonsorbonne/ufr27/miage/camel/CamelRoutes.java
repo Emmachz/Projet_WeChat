@@ -1,12 +1,15 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
 
+import fr.pantheonsorbonne.ufr27.miage.camel.handler.GivingHandler;
 import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchTicketException;
 import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
+import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import fr.pantheonsorbonne.ufr27.miage.exception.CustomerNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.exception.ExpiredTransitionalTicketException;
 import fr.pantheonsorbonne.ufr27.miage.exception.UnsuficientQuotaForVenueException;
 import fr.pantheonsorbonne.ufr27.miage.service.AlertService;
+import fr.pantheonsorbonne.ufr27.miage.service.GivingService;
 import fr.pantheonsorbonne.ufr27.miage.service.MessageService;
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelExecutionException;
@@ -31,10 +34,16 @@ public class CamelRoutes extends RouteBuilder {
     AlertService alertService;
 
     @Inject
+    fr.pantheonsorbonne.ufr27.miage.camel.handler.GivingHandler givingHandler;
+
+    @Inject
     MessageService messageService;
 
     @Inject
     AlertGateway alertGateway;
+    @Inject
+    GivingGateway givingGateway;
+
 
     @Inject
     CamelContext camelContext;
@@ -126,6 +135,20 @@ public class CamelRoutes extends RouteBuilder {
 
         from("sjms2:topic:alertpays-de-la-loire" + jmsPrefix)
                 .log("${body} + pays-de-la-loire");
+
+
+        from("sjms2:" + jmsPrefix + "givingDonation")
+                .unmarshal().json(Giving.class)
+                .bean(givingHandler)
+                .choice()
+                .when(header("typeGive").isEqualTo("money"))
+                .bean(givingGateway, "giveMoney")
+                .when(header("typeGive").isEqualTo("time"))
+                .bean(givingGateway, "giveTime")
+                .when(header("typeGive").isEqualTo("clothe"))
+                .bean(givingGateway, "giveClothe")
+                .marshal().json();
+
 
     }
 

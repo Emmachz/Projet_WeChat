@@ -48,6 +48,6 @@ public class UserResource {
     //@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public void giveDonation() {
-        this.gateway.sendGivingOrder(new Giving(1, "ile-de-france", "typeGive", 50));
+        this.gateway.sendGivingOrder(new Giving(1,1, 1, "money", 50));
     }
 }

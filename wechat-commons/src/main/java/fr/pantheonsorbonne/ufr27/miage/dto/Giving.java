@@ -1,19 +1,28 @@
 package fr.pantheonsorbonne.ufr27.miage.dto;
 
 public class Giving {
+    int userId;
     int donationId;
-    String userRegion;
+    int helpId;
     String typeGive;
     int quantity;
 
-    public Giving(int donationId, String userRegion, String typeGive, int quantity) {
+    public Giving(int userId, int donationId,  int helpId, String typeGive, int quantity) {
+        this.userId = userId;
         this.donationId = donationId;
-        this.userRegion = userRegion;
+        this.helpId = helpId;
         this.typeGive = typeGive;
         this.quantity = quantity;
     }
 
     public Giving() {
+    }
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public int getDonationId() {
@@ -24,12 +33,12 @@ public class Giving {
         this.donationId = donationId;
     }
 
-    public String getuserRegion() {
-        return userRegion;
+    public int getHelpId() {
+        return helpId;
     }
 
-    public void setuserRegion(String userRegion) {
-        this.userRegion = userRegion;
+    public void setHelpId(int helpId) {
+        this.helpId = helpId;
     }
 
     public String getTypeGive() {
