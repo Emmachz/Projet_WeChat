@@ -17,11 +17,7 @@ public class GivingServiceImpl implements GivingService {
 
     @PersistenceContext
     EntityManager em;
-<<<<<<< HEAD
 
-    @Override
-    @Transactional
-=======
 /*
 
     @Override
@@ -72,7 +68,7 @@ public class GivingServiceImpl implements GivingService {
 */
     @Override
     @Transactional
->>>>>>> a4244aa7616f8a31d39ca3cf452225aea48efc06
+
     public Giving giveMoney(Giving give) throws UnsuficientQuotaForVenueException {
         
         return null;
@@ -81,12 +77,7 @@ public class GivingServiceImpl implements GivingService {
     @Override
     @Transactional
     public Giving giveTime(Giving give) throws UnsuficientQuotaForVenueException {
-<<<<<<< HEAD
-       /* try {
 
-
-            Help vq = (VenueQuota) (em.createQuery("select h from Donation d, Donation_Help dp, Help h  where d.id.id=:venueId and q.id.vendor.id=:vendorId and q.seatingQuota>=:countSeating and q.standingQuota>=:countStanding")
-=======
         /*try {
 
             VenueQuota vq = (VenueQuota) (em.createQuery("select q from Re q where q.id.venue.id=:venueId and q.id.vendor.id=:vendorId and q.seatingQuota>=:countSeating and q.standingQuota>=:countStanding")
@@ -105,12 +96,8 @@ public class GivingServiceImpl implements GivingService {
             throw new UnsuficientQuotaForVenueException(give.getVenueId());
         }
         return give;*/
-<<<<<<< HEAD
             return null;
-=======
-        return null;
 
->>>>>>> a4244aa7616f8a31d39ca3cf452225aea48efc06
 
     }
 

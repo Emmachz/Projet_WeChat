@@ -1,0 +1,1 @@
+INSERT INTO `YesBank`(`bank_amount`, `bank_number`, `bank_id`) VALUES (100,'2345678901',1), (200,'5678901234',2);
