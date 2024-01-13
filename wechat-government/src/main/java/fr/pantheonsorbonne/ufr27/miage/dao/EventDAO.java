@@ -13,8 +13,5 @@ public interface EventDAO {
     Event postEventRegion(int id, String region);
 
     void addEvent(Event event);
-
-    Event addEvent(int id, String category, String region, String date, String hour, String description);
-
     void deleteEvent(int id);
 }

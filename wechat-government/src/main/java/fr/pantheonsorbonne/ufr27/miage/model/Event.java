@@ -26,8 +26,7 @@ public class Event {
 
 
 
-    public Event(int id,String category, String region, String date, String hour, String description) {
-        this.idEvent=id;
+    public Event(String category, String region, String date, String hour, String description) {
         this.category = category;
         this.region = region;
         this.date = date;
