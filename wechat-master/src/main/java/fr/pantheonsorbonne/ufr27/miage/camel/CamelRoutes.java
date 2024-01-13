@@ -45,35 +45,19 @@ public class CamelRoutes extends RouteBuilder {
 
         from("sjms2:topic:" + jmsPrefix)
                 .unmarshal().json(Alert.class)
-                .log("Clearning expired transitional ticket ${body}")
+                .log("Clearning expiredtransitional ticket ${body}")
                 .bean(alertGateway, "addAlert")
                 .bean(alertGateway, "transfertAlert");
-                //.toD("sjms2:topic:alert${body.getAlertRegion()}" + jmsPrefix)
-                //.marshal().json();
 
 
         from("direct:alerttransfert")
                 .marshal().json()
-                .choice()
-                .when(header("headerRegion").in("auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
-                        "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
-                        "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire"))
                 .process(exchange -> {
                     String headerRegion = exchange.getIn().getHeader("headerRegion", String.class);
                     String topicName = "sjms2:topic:alert" + headerRegion + jmsPrefix;
                     exchange.getIn().setHeader("topicName", topicName);
                 })
                 .toD("${header.topicName}");
-
-/*
-        from("direct:alerttransfert")
-                .marshal().json()
-                .process(exchange -> {
-                    String headerRegion = exchange.getIn().getHeader("headerRegion", String.class);
-                })
-                .toD("sjms2:topic:alert" + String.valueOf(header("headerRegion"))+ jmsPrefix);
-*/
-
 
         from("sjms2:" + jmsPrefix + "givingDonation")
                 .unmarshal().json(Giving.class)
