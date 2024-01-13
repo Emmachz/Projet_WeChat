@@ -67,7 +67,7 @@ public class GivingServiceImpl implements GivingService {
     @Transactional
     public Giving convertirGiving(Giving give) throws UserNotFoundException.NoExistUserException {
             User donneur = userDAO.findUserByLogin(give.getUserLogin());
-            UserLocal user = new UserLocal(donneur.getUserName(), donneur.getUserWallet(),donneur.getUserLogin(), donneur.getUserRegion(), donneur.getUserEmail(), donneur.getUserNameBank(), donneur.getUserNumeroBank());
+            UserLocal user = new UserLocal(donneur.getUserName(), donneur.getUserWallet(),donneur.getUserLogin(), donneur.getUserRegion().getIdRegion(), donneur.getUserEmail(), donneur.getUserNameBank(), donneur.getUserNumeroBank());
             return new Giving(user, give.getQuantity(), give.getTypeGive(), give.getHelpId());
     }
 

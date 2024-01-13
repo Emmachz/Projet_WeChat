@@ -15,8 +15,9 @@ public class User {
     private String userLogin;
     @Column(name = "user_email", nullable = false, unique = true)
     private String userEmail;
-    @Column(name = "user_region", length = 100)
-    private String userRegion;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_region")
+    private Region idRegion;
     @Column(name = "user_wallet")
     private double userWallet;
     @Column(name = "user_nameBank")
@@ -58,12 +59,12 @@ public class User {
         return userEmail;
     }
 
-    public void setUserRegion (String userRegion){
-        this.userRegion = userRegion;
+    public void setUserRegion (Region userRegion){
+        this.idRegion = userRegion;
     }
 
-    public String getUserRegion(){
-        return userRegion;
+    public Region getUserRegion(){
+        return idRegion;
     }
 
     public void setUserNameBank (String bankName){
