@@ -24,10 +24,6 @@ public class User {
     @Column(name = "user_numeroBank")
     private String userNumeroBank;
 
-    @ManyToOne
-    @JoinColumn(name = "idRegion")
-    private Region idRegion;
-
     public User() {
 
     }
@@ -91,6 +87,8 @@ public class User {
     public double getUserWallet(){
         return userWallet;
     }
+
+
 
 
 

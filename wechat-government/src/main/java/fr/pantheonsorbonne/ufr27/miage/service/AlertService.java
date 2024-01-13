@@ -18,6 +18,9 @@ public interface AlertService {
 
     String addEventService(Event event);
 
+    void addEventService(int id, String category, String region, String date, String hour, String description, String level, String status);
+
     void deleteEventServiceId(int id);
+
 
 }

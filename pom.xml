@@ -14,10 +14,10 @@
         <module>ticket-commons</module>
         <module>wechat-master</module>
         <module>wechat-vendor</module>
-        <module>wechat-commons</module>
         <module>wechat-government</module>
-        <module>wechat-bank</module>
         <module>wechat-user</module>
+        <module>wechat-YesBankGiving</module>
+        <module>wechat-MyBankGiving</module>
     </modules>
     <build>
         <plugins>

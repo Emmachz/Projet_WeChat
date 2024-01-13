@@ -1,4 +1,4 @@
-package fr.pantheonsorbonne.ufr27.miage.camel;
+package fr.pantheonsorbonne.ufr27.miage.camel.gateway;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
 import fr.pantheonsorbonne.ufr27.miage.model.Event;
@@ -7,28 +7,22 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.IOException;
 
 @ApplicationScoped
-public class AlertGateway {
+public class RegionGateway {
     @Inject
-    AlertService AlertService;
-
-    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.jmsPrefix")
-    String jmsPrefix;
+    AlertService alertService;
 
     @Inject
     CamelContext camelContext;
 
     public void sendAlert(Event event) {
         try (ProducerTemplate producerTemplate = camelContext.createProducerTemplate()) {
-            producerTemplate.sendBody("direct:Alert", new Alert(event.getIdEvent(), event.getDescription(), event.getRegion()));
+            //producerTemplate.sendBody("direct:Region", new fr.pantheonsorbonne.ufr27.miage.dto.Alert(event.getIdEvent(), event.getDescription(), event.getRegion()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
-
 }

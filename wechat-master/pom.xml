@@ -120,13 +120,7 @@
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>fr.pantheonsorbonne.ufr27.miage</groupId>
-      <artifactId>wechat-commons</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
+    </dependency>status
   </dependencies>
   <build>
     <plugins>

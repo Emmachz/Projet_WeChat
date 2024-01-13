@@ -1,14 +1,15 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
 
+import fr.pantheonsorbonne.ufr27.miage.camel.gateway.AlertGateway;
+import fr.pantheonsorbonne.ufr27.miage.camel.gateway.GivingGateway;
+import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchUserException;
 import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
 import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
-import fr.pantheonsorbonne.ufr27.miage.exception.ExpiredTransitionalTicketException;
+import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.service.AlertService;
+import fr.pantheonsorbonne.ufr27.miage.service.MessageService;
 import org.apache.camel.CamelContext;
-import org.apache.camel.CamelExecutionException;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -21,14 +22,15 @@ public class CamelRoutes extends RouteBuilder {
     @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.jmsPrefix")
     String jmsPrefix;
 
-    //@ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.UserId")
-    //int idUser;
-
     @Inject
     AlertService alertService;
 
     @Inject
     fr.pantheonsorbonne.ufr27.miage.camel.handler.GivingHandler givingHandler;
+
+    @Inject
+    MessageService messageService;
+
     @Inject
     AlertGateway alertGateway;
     @Inject
@@ -42,61 +44,66 @@ public class CamelRoutes extends RouteBuilder {
     public void configure() throws Exception {
 
         camelContext.setTracing(true);
+        onException(NoSuchUserException.class)
+                .handled(true)
+                .setHeader("success", simple("false"));
+
+        onException(UserNotFoundException.NoExistUserException.class)
+                .handled(true)
+                .setHeader("success", simple("false"));
 
         from("sjms2:topic:" + jmsPrefix)
                 .unmarshal().json(Alert.class)
                 .log("Clearning expired transitional ticket ${body}")
                 .bean(alertGateway, "addAlert")
-                .bean(alertGateway, "transfertAlert");
+                .bean(alertGateway, "transfertAlert2");
                 //.toD("sjms2:topic:alert${body.getAlertRegion()}" + jmsPrefix)
                 //.marshal().json();
 
 
-        from("direct:alerttransfert")
-                .marshal().json()
-                .choice()
-                .when(header("headerRegion").in("auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
-                        "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
-                        "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire"))
-                .process(exchange -> {
-                    String headerRegion = exchange.getIn().getHeader("headerRegion", String.class);
-                    String topicName = "sjms2:topic:alert" + headerRegion + jmsPrefix;
-                    exchange.getIn().setHeader("topicName", topicName);
-                })
-                .toD("${header.topicName}");
-
-/*
-        from("direct:alerttransfert")
-                .marshal().json()
-                .process(exchange -> {
-                    String headerRegion = exchange.getIn().getHeader("headerRegion", String.class);
-                })
-                .toD("sjms2:topic:alert" + String.valueOf(header("headerRegion"))+ jmsPrefix);
-*/
-
-
         from("sjms2:" + jmsPrefix + "givingDonation")
                 .unmarshal().json(Giving.class)
+                .bean(givingGateway, "convertirGiving")
                 .bean(givingHandler)
                 .choice()
                 .when(header("typeGive").isEqualTo("money"))
-                .bean(givingGateway, "giveMoney")
+                    .choice()
+                    .when(header("success").isEqualTo(true))
+                        .bean(givingGateway, "giveMoney")
+                        .marshal().json()
+                        .to("sjms2:" + jmsPrefix + "sendGovernment")
+                        .stop()
+                    .when(header("success").isEqualTo("passBank"))
+                        .choice()
+                        .when(header("bank").isEqualTo("MyBank"))
+                            .marshal().json()
+                            .to("sjms2:" + jmsPrefix + "MyBankGiving?exchangePattern=InOut")
+                            .choice()
+                            .when(header("success").isEqualTo(true))
+                                .to("sjms2:" + jmsPrefix + "sendGovernment")
+                                .stop()
+                            .otherwise()
+                                .to("sjms2:" + jmsPrefix + "FailedGiving")
+                                .stop()
+                        .when(header("bank").isEqualTo("YesBank"))
+                            .marshal().json()
+                            .to("sjms2:" + jmsPrefix + "YesBankGiving?exchangePattern=InOut")
+                            .choice()
+                            .when(header("success").isEqualTo(true))
+                                .to("sjms2:" + jmsPrefix + "sendGovernment")
+                                .stop()
+                            .otherwise()
+                                .to("sjms2:" + jmsPrefix + "FailedGiving")
+                                .stop()
                 .when(header("typeGive").isEqualTo("time"))
                 .bean(givingGateway, "giveTime")
+
                 .when(header("typeGive").isEqualTo("clothe"))
                 .bean(givingGateway, "giveClothe")
-                .marshal().json();
+                .marshal().json()
+                .end();
+
 
     }
 
-    private static class ExpiredTransitionalTicketProcessor implements Processor {
-        @Override
-        public void process(Exchange exchange) throws Exception {
-            //https://camel.apache.org/manual/exception-clause.html
-            CamelExecutionException caused = (CamelExecutionException) exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
-
-
-            exchange.getMessage().setBody(((ExpiredTransitionalTicketException) caused.getCause()).getExpiredTicketId());
-        }
-    }
 }

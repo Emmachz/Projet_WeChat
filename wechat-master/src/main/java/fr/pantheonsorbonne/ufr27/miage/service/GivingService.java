@@ -1,13 +1,14 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
 
-import fr.pantheonsorbonne.ufr27.miage.dto.Booking;
 import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
-import fr.pantheonsorbonne.ufr27.miage.exception.UnsuficientQuotaForVenueException;
+import fr.pantheonsorbonne.ufr27.miage.exception.UnsuficientQuotaDonationException;
+import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
 
 public interface GivingService {
 
-    Giving giveMoney(Giving give) throws UnsuficientQuotaForVenueException;
-    Giving giveTime(Giving give) throws UnsuficientQuotaForVenueException;
-    Giving giveClothe(Giving give) throws UnsuficientQuotaForVenueException;
+    Giving giveMoney(Giving give) throws UnsuficientQuotaDonationException;
+    Giving giveTime(Giving give) throws UnsuficientQuotaDonationException;
+    Giving giveClothe(Giving give)throws UnsuficientQuotaDonationException;
+    Giving convertirGiving(Giving give) throws UserNotFoundException.NoExistUserException;
 }
