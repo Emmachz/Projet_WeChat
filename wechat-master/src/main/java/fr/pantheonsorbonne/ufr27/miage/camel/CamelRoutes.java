@@ -51,37 +51,7 @@ public class CamelRoutes extends RouteBuilder {
                 //.toD("sjms2:topic:alert${body.getAlertRegion()}" + jmsPrefix)
                 //.marshal().json();
 
-        /*
-        from("direct:alerttransfert")
-            .marshal().json()
-                .choice()
-                .when(header("headerRegion").isEqualTo("auvergne-rhone-alpes"))
-                    .to("sjms2:topic:alertauvergne-rhone-alpes" + jmsPrefix)
-                .when(header("headerRegion").isEqualTo("bourgogne-franche-comte"))
-                    .to("sjms2:topic:alertbourgogne-franche-comte" + jmsPrefix)
-                .when(header("headerRegion").isEqualTo("bretagne"))
-                    .to("sjms2:topic:alertbretagne" + jmsPrefix)
-                .when(header("headerRegion").isEqualTo("corse"))
-                    .to("sjms2:topic:alertcorse" + jmsPrefix)
-                .when(header("headerRegion").isEqualTo("centre-val-de-loire"))
-                    .to("sjms2:topic:alertcentre-val-de-loire" + jmsPrefix)
-                .when(header("headerRegion").isEqualTo("grand-est"))
-                    .to("sjms2:topic:alertgrand-est" + jmsPrefix)
-                .when(header("headerRegion").isEqualTo("hauts-de-france"))
-                    .to("sjms2:topic:alerthauts-de-france" + jmsPrefix)
-                .when(header("headerRegion").isEqualTo("ile-de-france"))
-                 .to("sjms2:topic:alertile-de-france" + jmsPrefix)
-                .when(header("headerRegion").isEqualTo("nouvelle-aquitaine"))
-                    .to("sjms2:topic:alertnouvelle-aquitaine" + jmsPrefix)
-                .when(header("headerRegion").isEqualTo("normandie"))
-                    .to("sjms2:topic:alertnormandie" + jmsPrefix)
-                .when(header("headerRegion").isEqualTo("occitanie"))
-                    .to("sjms2:topic:alertoccitanie" + jmsPrefix)
-                .when(header("headerRegion").isEqualTo("provence-alpes-cote-dazur"))
-                    .to("sjms2:topic:alertprovence-alpes-cote-dazur" + jmsPrefix)
-                .when(header("headerRegion").isEqualTo("pays-de-la-loire"))
-                    .to("sjms2:topic:alertpays-de-la-loire" + jmsPrefix);
-*//*
+
         from("direct:alerttransfert")
                 .marshal().json()
                 .choice()
@@ -94,13 +64,15 @@ public class CamelRoutes extends RouteBuilder {
                     exchange.getIn().setHeader("topicName", topicName);
                 })
                 .toD("${header.topicName}");
-                */
 
+/*
         from("direct:alerttransfert")
                 .marshal().json()
-                .log(String.valueOf(header("headerRegion")))
+                .process(exchange -> {
+                    String headerRegion = exchange.getIn().getHeader("headerRegion", String.class);
+                })
                 .toD("sjms2:topic:alert" + String.valueOf(header("headerRegion"))+ jmsPrefix);
-
+*/
 
 
         from("sjms2:" + jmsPrefix + "givingDonation")
