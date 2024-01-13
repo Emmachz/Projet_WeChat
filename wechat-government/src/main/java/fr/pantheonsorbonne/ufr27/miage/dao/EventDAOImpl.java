@@ -60,7 +60,7 @@ public class EventDAOImpl implements EventDAO {
 
     @Override
     @Transactional
-    public Event addEvent(int id, String category, String region, String date, String hour, String description, String level, String status) {
+    public Event addEvent(int id, String category, String region, String date, String hour, String description) {
         Event newEvent = new Event();
         newEvent.setIdEvent(id);
         newEvent.setCategory(category);
@@ -68,8 +68,6 @@ public class EventDAOImpl implements EventDAO {
         newEvent.setDate(date);
         newEvent.setHour(hour);
         newEvent.setDescription(description);
-        newEvent.setLevel(level);
-        newEvent.setStatus(status);
         em.getTransaction().begin();
 
         // Réattacher l'entité à la session avant de la persister

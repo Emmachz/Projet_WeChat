@@ -149,7 +149,6 @@ public class CamelRoutes extends RouteBuilder {
                 .bean(givingGateway, "giveClothe")
                 .marshal().json();
 
-
     }
 
     private static class ExpiredTransitionalTicketProcessor implements Processor {

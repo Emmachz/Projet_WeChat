@@ -41,7 +41,7 @@ public class EventResource {
     @Path("{idEvent}/category/{category}/region/{region}/date/{date}/hour/{hour}/description/{description}/level/{level}/status/{status}")
     @POST
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void postAddEvent(@PathParam("idEvent") int idEvent, @PathParam("category") String category,@PathParam("region") String region,@PathParam("date") String date,@PathParam("hour") String hour, @PathParam("description") String description,@PathParam("level") String level,@PathParam("status") String status) {
+    public void postAddEvent(@PathParam("idEvent") int idEvent, @PathParam("category") String category,@PathParam("region") String region,@PathParam("date") String date,@PathParam("hour") String hour, @PathParam("description") String description) {
         Event newEvent = new Event();
         newEvent.setIdEvent(idEvent);
         newEvent.setCategory(category);
@@ -49,8 +49,6 @@ public class EventResource {
         newEvent.setDate(date);
         newEvent.setHour(hour);
         newEvent.setDescription(description);
-        newEvent.setLevel(level);
-        newEvent.setStatus(status);
         this.alertService.addEventService(newEvent);
     }
 

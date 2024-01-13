@@ -24,22 +24,15 @@ public class Event {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "level")
-    private String level;
-    @Column(name = "status")
-    private String status;
 
 
-
-    public Event(int id,String category, String region, String date, String hour, String description, String level, String  status) {
+    public Event(int id,String category, String region, String date, String hour, String description) {
         this.idEvent=id;
         this.category = category;
         this.region = region;
         this.date = date;
         this.hour = hour;
         this.description = description;
-        this.level=level;
-        this.status=status;
     }
 
     public Event() {
@@ -83,22 +76,6 @@ public class Event {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.hour = level;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.hour = status;
     }
 
     public Integer getIdEvent() {

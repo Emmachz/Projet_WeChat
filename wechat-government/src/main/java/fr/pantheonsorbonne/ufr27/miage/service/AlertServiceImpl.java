@@ -72,8 +72,8 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Transactional
-    public void addEventService(int id, String category, String region, String date, String hour, String description, String level, String status){
-        this.eventdao.addEvent(id, category, region, date, hour, description, level, status);
+    public void addEventService(int id, String category, String region, String date, String hour, String description){
+        this.eventdao.addEvent(id, category, region, date, hour, description);
     }
 
     @Transactional
