@@ -18,26 +18,18 @@ public class VersementServiceImpl implements VersementService {
 
     @Override
     @Transactional
-    public Versement findTwoUsersVersement (TransfertArgent transfertArgent){
-        try{
+    public Versement findTwoUsersVersement (TransfertArgent transfertArgent) throws UserNotFoundException.NoExistUserException {
             User emetteur = userDAO.findUserByLogin(transfertArgent.getLoginEmetteur());
             User receveur = userDAO.findUserByLogin(transfertArgent.getLoginReceveur());
             Versement versement = new Versement(emetteur, receveur, transfertArgent.getValue());
             return versement;
-        } catch (UserNotFoundException.NoExistUserException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
     @Override
     @Transactional
     public TransfertArgent realizeVersementWallet (Versement versement){
-        try{
             return userDAO.upadateUser(versement);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
     @Override
     @Transactional

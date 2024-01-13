@@ -24,6 +24,18 @@ public class User {
     @Column(name = "user_numeroBank")
     private String userNumeroBank;
 
+    public User (String userName, String userLogin,
+                 String userEmail, String userRegion, double userWallet,
+                 String userNameBank,String userNumeroBank ){
+        this.userName = userName;
+        this. userLogin = userLogin;
+        this. userEmail = userEmail;
+        this.userRegion = userRegion;
+        this.userWallet = userWallet;
+        this.userNameBank = userNameBank;
+        this.userNumeroBank =userNumeroBank;
+    }
+
     public User() {
 
     }
