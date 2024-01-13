@@ -28,24 +28,9 @@ public class CamelRoutes extends RouteBuilder {
         camelContext.setTracing(true);
 
         from ("direct:Alert")
-                .log("test")
-                .log("jjjjjjjjjjjj ${body}")
                 .marshal().json()
-                .log("iiiiii ${body}")
                 .to("sjms2:topic:" + jmsPrefix);
 
-        from("direct:alertHautDeSeine" + jmsPrefix)
-                .unmarshal().json(Alert.class)
-                .log("Succèssssssssss HautDeSaineeeeeee ${body}")
-                .marshal().json();
-
-        from("sjms2:topic:alerthaut-de-seine")
-                .unmarshal().json(Alert.class)
-                .log("Succèssssssssss alertAllllll ${body}")
-                .marshal().json();
-
-        from("sjms2:topic:alerthauts-de-france" + jmsPrefix)
-                .log("testHAUTDESEINEEEEEEEE");
 
     }
 

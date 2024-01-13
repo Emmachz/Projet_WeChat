@@ -26,7 +26,6 @@ public class AlertServiceImpl implements AlertService {
     public Alert alert(Alert alert) throws EventNotFoundException {
         try {
 
-
         } catch (NonUniqueResultException | NoResultException e) {
             throw new EventNotFoundException(alert.getId());
         }
@@ -36,10 +35,6 @@ public class AlertServiceImpl implements AlertService {
 
     public void addAlert(Alert alert){
         this.alertDAO.addAlert(alert);
-    }
-
-    public void checkRegion(Alert alert){
-        this.alertDAO.checkRegion(alert);
     }
 
 }

@@ -21,9 +21,10 @@ public class CamelRoutes extends RouteBuilder {
     @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.jmsPrefix")
     String jmsPrefix;
 
+    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.userRegion")
+    String userRegion;
     @Inject
     CamelContext camelContext;
-
 
     @Override
     public void configure() throws Exception {
@@ -34,52 +35,9 @@ public class CamelRoutes extends RouteBuilder {
                 .log("dede")
                 .to("sjms2:" + jmsPrefix + "givingDonation");
 
+        from("sjms2:topic:alert" + userRegion + jmsPrefix)
+                .log("${body}");
 
-        from("sjms2:topic:alertauvergne-rhone-alpes" + jmsPrefix)
-                .log("${body} + avergne-rhone-alpes");
-
-        from("sjms2:topic:alertbourgogne-franche-comte" + jmsPrefix)
-                .unmarshal().json(Alert.class)
-                .log("${body} + bourgogne-franche-comte");
-
-        from("sjms2:topic:alertbretagne" + jmsPrefix)
-                .log("${body} + bretagne");
-
-        from("sjms2:topic:alertcorse" + jmsPrefix)
-                .log("${body}+ body CORSEEEEEEEréussiiiiiiiiiiii")
-                //.unmarshal().json(Alert.class)
-                .log("${body} + corse");
-
-        from("sjms2:topic:alertcentre-val-de-loire" + jmsPrefix)
-                .log("${body} + centre-val-de-loire");
-
-        from("sjms2:topic:alertgrand-est" + jmsPrefix)
-                .log("${body}+ body grandestttttttttt réussiiiiiiiiiiii")
-                .log("${body} + grand-est");
-
-        from("sjms2:topic:alerthauts-de-france" + jmsPrefix)
-                .log("${body}+ body réussiiiiiiiiiiii")
-                .log("${body} + hauts-de-franceeeeeeeeeeeeee");
-
-        from("sjms2:topic:alertile-de-france" + jmsPrefix)
-                .log("${body} + ile-de-france");
-
-        from("sjms2:topic:alertnouvelle-aquitaine" + jmsPrefix)
-                .log("${body} + nouvelle-aquitaine");
-
-        from("sjms2:topic:alertnormandie" + jmsPrefix)
-                .log("${body} + normandie");
-
-        from("sjms2:topic:alertoccitanie" + jmsPrefix)
-                .log("${body} + occitanie");
-
-        from("sjms2:topic:alertprovence-alpes-cote-dazur" + jmsPrefix)
-                .log("${body} + provence-alpes-cote-dazur");
-
-        from("sjms2:topic:alertpays-de-la-loire" + jmsPrefix)
-                .log("${body} + pays-de-la-loire");
-
-    }
 
         /*from("direct:confirm-purchase")
                 .marshal().json()//, "onBookedResponseReceived"
@@ -132,5 +90,5 @@ public class CamelRoutes extends RouteBuilder {
                 .bean(eCommerce, "showErrorMessage");
             */
 
-
+    }
 }

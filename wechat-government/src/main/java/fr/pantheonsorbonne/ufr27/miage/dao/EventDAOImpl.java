@@ -50,42 +50,8 @@ public class EventDAOImpl implements EventDAO {
     @Override
     @Transactional
     public void addEvent(Event event) {
-        if (!isEventExists(event.getIdEvent())) {
-            Event attachedEvent = em.merge(event);
-            em.persist(attachedEvent);
-        } else {
-            System.out.println("Erreur : L'événement avec l'ID " + event.getIdEvent() + " existe déjà.");
-        }
-    }
-
-    @Override
-    @Transactional
-    public Event addEvent(int id, String category, String region, String date, String hour, String description, String level, String status) {
-        Event newEvent = new Event();
-        newEvent.setIdEvent(id);
-        newEvent.setCategory(category);
-        newEvent.setRegion(region);
-        newEvent.setDate(date);
-        newEvent.setHour(hour);
-        newEvent.setDescription(description);
-        newEvent.setLevel(level);
-        newEvent.setStatus(status);
-        em.getTransaction().begin();
-
-        // Réattacher l'entité à la session avant de la persister
-        em.merge(newEvent);
-
-        // Persister l'entité dans la base de données
-        em.persist(newEvent);
-
-        // Valider la transaction
-        em.getTransaction().commit();
-
-        System.out.println("Événement ajouté avec succès.");
-        //em.persist(newEvent);
-        System.out.println(newEvent);
-
-        return newEvent;
+        Event attachedEvent = em.merge(event);
+        em.persist(attachedEvent);
     }
 
     @Override
@@ -98,15 +64,5 @@ public class EventDAOImpl implements EventDAO {
             System.out.println("L'événement avec l'ID " + id + " n'existe pas.");
         }
     }
-
-    private Collection<Integer> getAllEventId(){
-        return em.createQuery("SELECT event.idEvent FROM Event event", Integer.class).getResultList();
-    }
-    private boolean isEventExists(int id) {
-        Collection<Integer> allEventIds = getAllEventId();
-        System.out.println(allEventIds.contains(id));
-        return allEventIds.contains(id);
-    }
-
 
 }
