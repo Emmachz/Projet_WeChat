@@ -13,16 +13,20 @@ public class User {
     private String userName;
     @Column(name = "user_login", nullable = false, unique = true)
     private String userLogin;
+    @Column(name = "user_email", nullable = false, unique = true)
+    private String userEmail;
     @Column(name = "user_region", length = 100)
     private String userRegion;
-    @Column(name = "user_NameBank")
+    @Column(name = "user_wallet")
+    private double userWallet;
+    @Column(name = "user_nameBank")
     private String userNameBank;
+    @Column(name = "user_numeroBank")
+    private String userNumeroBank;
 
-    public User(String userName, String userLogin, String userRegion, String userPassword){
-        this.userName = userName;
-        this.userLogin = userLogin;
-        this.userRegion = userRegion;
-    }
+    @ManyToOne
+    @JoinColumn(name = "idRegion")
+    private Region idRegion;
 
     public User() {
 
@@ -50,6 +54,14 @@ public class User {
         return userLogin;
     }
 
+    public void setUserEmail (String userEmail){
+        this.userEmail = userEmail;
+    }
+
+    public String getUserEmail(){
+        return userEmail;
+    }
+
     public void setUserRegion (String userRegion){
         this.userRegion = userRegion;
     }
@@ -64,6 +76,20 @@ public class User {
 
     public String getUserNameBank(){
         return userNameBank;
+    }
+
+    public void setUserNumeroBank(String numeroBank){
+        this.userNumeroBank = numeroBank;
+    }
+    public String getUserNumeroBank(){
+        return userNumeroBank;
+    }
+
+    public void setUserWallet(double walletValue){
+        this.userWallet = walletValue;
+    }
+    public double getUserWallet(){
+        return userWallet;
     }
 
 

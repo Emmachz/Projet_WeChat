@@ -1,16 +1,10 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
 
-import fr.pantheonsorbonne.ufr27.miage.camel.handler.GivingHandler;
-import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchTicketException;
 import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
 import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
-import fr.pantheonsorbonne.ufr27.miage.exception.CustomerNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.exception.ExpiredTransitionalTicketException;
-import fr.pantheonsorbonne.ufr27.miage.exception.UnsuficientQuotaForVenueException;
 import fr.pantheonsorbonne.ufr27.miage.service.AlertService;
-import fr.pantheonsorbonne.ufr27.miage.service.GivingService;
-import fr.pantheonsorbonne.ufr27.miage.service.MessageService;
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
@@ -35,10 +29,6 @@ public class CamelRoutes extends RouteBuilder {
 
     @Inject
     fr.pantheonsorbonne.ufr27.miage.camel.handler.GivingHandler givingHandler;
-
-    @Inject
-    MessageService messageService;
-
     @Inject
     AlertGateway alertGateway;
     @Inject

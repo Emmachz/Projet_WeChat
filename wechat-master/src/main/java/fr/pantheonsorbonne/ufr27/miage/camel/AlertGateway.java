@@ -1,12 +1,10 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
 import fr.pantheonsorbonne.ufr27.miage.exception.AlertNotFoundException;
-import fr.pantheonsorbonne.ufr27.miage.exception.EventNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.model.Alert;
 import fr.pantheonsorbonne.ufr27.miage.model.Region;
 
 
-import fr.pantheonsorbonne.ufr27.miage.model.Event;
 import fr.pantheonsorbonne.ufr27.miage.service.AlertService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

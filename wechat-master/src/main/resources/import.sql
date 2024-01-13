@@ -13,11 +13,11 @@ VALUES ('FR-ARA', 'auvergne-rhone-alpes'),
        ('FR-PDL', 'pays-de-la-loire'),
        ('FR-PAC', 'provence-alpes-cote-dazur');
 
-INSERT INTO User2 (age, idUser, vetementKg, fristName, lastName, region, idRegion)
-VALUES (22, 1, '123', 'emma', 'chen', 'ile-de-france', 'FR-IDF');
+--INSERT INTO User2 (age, idUser, vetementKg, fristName, lastName, region, idRegion)
+--VALUES (22, 1, '123', 'emma', 'chen', 'ile-de-france', 'FR-IDF');
 
-INSERT INTO Message (idMessage, idUser2, description, region)
-VALUES (1, 1, 'inondation', 'ile-de-france');
+INSERT INTO `User` (`user_numeroBank`, `user_wallet`, `user_id`, `user_name`, `user_region`, `user_login`, `user_nameBank`,`user_email`,`idRegion`)
+VALUES ('1234567890', '10', 1, 'LIU','paris','haliu','MyBank', 'olivialiu0916@gmail.com', 'FR-IDF');
 
 INSERT INTO `Alert` (idAlert, description, region, idRegion )
 VALUES (1,'attentat','ile-de-france', 'FR-IDF');

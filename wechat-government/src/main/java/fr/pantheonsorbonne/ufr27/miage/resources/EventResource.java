@@ -15,7 +15,6 @@ public class EventResource {
 
     @Path(("/allEvent"))
     @GET
-    //@Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Collection<Event> getAlert() {

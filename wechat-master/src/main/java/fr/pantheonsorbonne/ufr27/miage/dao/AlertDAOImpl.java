@@ -61,7 +61,6 @@ public class AlertDAOImpl implements AlertDAO {
                 return "PDL";
             default:
                 throw new IllegalArgumentException("Unknown region: " + regionName);
-                //throw new RegionNotFoundException(regionName);
         }
     }
 

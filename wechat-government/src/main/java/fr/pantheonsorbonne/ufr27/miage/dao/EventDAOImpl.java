@@ -70,13 +70,10 @@ public class EventDAOImpl implements EventDAO {
         newEvent.setDescription(description);
         em.getTransaction().begin();
 
-        // Réattacher l'entité à la session avant de la persister
         em.merge(newEvent);
 
-        // Persister l'entité dans la base de données
         em.persist(newEvent);
 
-        // Valider la transaction
         em.getTransaction().commit();
 
         System.out.println("Événement ajouté avec succès.");

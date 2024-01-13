@@ -33,7 +33,6 @@ public class AlertServiceImpl implements AlertService {
     public Alert alert(Alert alert) throws EventNotFoundException {
         try {
 
-
         } catch (NonUniqueResultException | NoResultException e) {
             throw new EventNotFoundException(alert.getAlertId());
         }
@@ -67,7 +66,6 @@ public class AlertServiceImpl implements AlertService {
         String[] validRegions = {"auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
                 "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
                 "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire"};
-
         return Arrays.asList(validRegions).contains(event.getRegion());
     }
 

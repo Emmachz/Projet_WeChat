@@ -22,5 +22,4 @@ public interface AlertService {
 
     void deleteEventServiceId(int id);
 
-
 }
