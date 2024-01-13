@@ -4,35 +4,25 @@ import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import top.nextnet.camel.gateways.GivingGateway;
-import top.nextnet.service.PurchaseConfirmationGateway;
 
 
 @Path("/user")
 @RegisterRestClient(configKey = "user-api")
 public class UserResource {
 
-    @Inject
-    private PurchaseConfirmationGateway egateway;
-
-    @Path("purchase/{idPurchase}/confirm")
-    @PUT
-    public void confirmPurchase(@PathParam int idPurchase)
-    {
-        egateway.confirmWeChatPurchase(idPurchase);
-    }
 
     @Inject
     GivingGateway gateway;
-/*
+
     @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.regionUser")
     String userRegion;
 
-
+/*
     @Path("/give/{donationId}/{typeGive}/{quantity}")
     @GET
     //@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
