@@ -76,15 +76,4 @@ public class AlertDAOImpl implements AlertDAO {
             return false; // La région est inconnue
         }
     }
-
-    public void checkRegion(Alert alert) {
-        try {
-            String regionCode = getRegionCode(alert.getRegion());
-            // Si la région existe, aucune exception n'est lancée
-            System.out.println("La région existe : " + alert.getRegion() + " (Code : " + regionCode + ")");
-        } catch (IllegalArgumentException e) {
-            // Si l'exception est lancée, la région n'existe pas dans les propositions
-            System.out.println("Erreur : " + e.getMessage());
-        }
-    }
 }

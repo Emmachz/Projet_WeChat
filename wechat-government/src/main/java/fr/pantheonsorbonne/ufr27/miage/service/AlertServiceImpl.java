@@ -33,7 +33,6 @@ public class AlertServiceImpl implements AlertService {
     public Alert alert(Alert alert) throws EventNotFoundException {
         try {
 
-
         } catch (NonUniqueResultException | NoResultException e) {
             throw new EventNotFoundException(alert.getAlertId());
         }

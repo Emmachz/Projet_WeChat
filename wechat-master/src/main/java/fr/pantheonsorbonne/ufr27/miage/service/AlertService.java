@@ -9,6 +9,4 @@ public interface AlertService {
 
     void addAlert(Alert alert);
 
-    void checkRegion(Alert alert);
-
 }

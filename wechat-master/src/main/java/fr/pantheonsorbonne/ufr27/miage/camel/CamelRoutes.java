@@ -47,10 +47,11 @@ public class CamelRoutes extends RouteBuilder {
                 .unmarshal().json(Alert.class)
                 .log("Clearning expired transitional ticket ${body}")
                 .bean(alertGateway, "addAlert")
-                .bean(alertGateway, "transfertAlert2");
+                .bean(alertGateway, "transfertAlert");
                 //.toD("sjms2:topic:alert${body.getAlertRegion()}" + jmsPrefix)
                 //.marshal().json();
 
+        /*
         from("direct:alerttransfert")
             .marshal().json()
                 .choice()
@@ -80,51 +81,26 @@ public class CamelRoutes extends RouteBuilder {
                     .to("sjms2:topic:alertprovence-alpes-cote-dazur" + jmsPrefix)
                 .when(header("headerRegion").isEqualTo("pays-de-la-loire"))
                     .to("sjms2:topic:alertpays-de-la-loire" + jmsPrefix);
+*//*
+        from("direct:alerttransfert")
+                .marshal().json()
+                .choice()
+                .when(header("headerRegion").in("auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
+                        "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
+                        "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire"))
+                .process(exchange -> {
+                    String headerRegion = exchange.getIn().getHeader("headerRegion", String.class);
+                    String topicName = "sjms2:topic:alert" + headerRegion + jmsPrefix;
+                    exchange.getIn().setHeader("topicName", topicName);
+                })
+                .toD("${header.topicName}");
+                */
 
+        from("direct:alerttransfert")
+                .marshal().json()
+                .log(String.valueOf(header("headerRegion")))
+                .toD("sjms2:topic:alert" + String.valueOf(header("headerRegion"))+ jmsPrefix);
 
-        from("sjms2:topic:alertauvergne-rhone-alpes" + jmsPrefix)
-                .log("${body} + avergne-rhone-alpes");
-
-        from("sjms2:topic:alertbourgogne-franche-comte" + jmsPrefix)
-                .unmarshal().json(Alert.class)
-                .log("${body} + bourgogne-franche-comte");
-
-        from("sjms2:topic:alertbretagne" + jmsPrefix)
-                .log("${body} + bretagne");
-
-        from("sjms2:topic:alertcorse" + jmsPrefix)
-                .log("${body}+ body CORSEEEEEEEréussiiiiiiiiiiii")
-                //.unmarshal().json(Alert.class)
-                .log("${body} + corse");
-
-        from("sjms2:topic:alertcentre-val-de-loire" + jmsPrefix)
-                .log("${body} + centre-val-de-loire");
-
-        from("sjms2:topic:alertgrand-est" + jmsPrefix)
-                .log("${body}+ body grandestttttttttt réussiiiiiiiiiiii")
-                .log("${body} + grand-est");
-
-        from("sjms2:topic:alerthauts-de-france" + jmsPrefix)
-                .log("${body}+ body réussiiiiiiiiiiii")
-                .log("${body} + hauts-de-franceeeeeeeeeeeeee");
-
-        from("sjms2:topic:alertile-de-france" + jmsPrefix)
-                .log("${body} + ile-de-france");
-
-        from("sjms2:topic:alertnouvelle-aquitaine" + jmsPrefix)
-                .log("${body} + nouvelle-aquitaine");
-
-        from("sjms2:topic:alertnormandie" + jmsPrefix)
-                .log("${body} + normandie");
-
-        from("sjms2:topic:alertoccitanie" + jmsPrefix)
-                .log("${body} + occitanie");
-
-        from("sjms2:topic:alertprovence-alpes-cote-dazur" + jmsPrefix)
-                .log("${body} + provence-alpes-cote-dazur");
-
-        from("sjms2:topic:alertpays-de-la-loire" + jmsPrefix)
-                .log("${body} + pays-de-la-loire");
 
 
         from("sjms2:" + jmsPrefix + "givingDonation")
