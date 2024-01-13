@@ -23,7 +23,6 @@ public class User {
     private String userNameBank;
     @Column(name = "user_numeroBank")
     private String userNumeroBank;
-
     @ManyToOne
     @JoinColumn(name = "idRegion")
     private Region idRegion;

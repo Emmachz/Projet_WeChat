@@ -19,10 +19,10 @@ public class UserResource {
     @Inject
     GivingGateway gateway;
 
-    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.regionUser")
-    String userRegion;
 
-/*
+
+
+
     @Path("/give/{donationId}/{typeGive}/{quantity}")
     @GET
     //@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -32,12 +32,6 @@ public class UserResource {
                              @jakarta.ws.rs.PathParam("quantity") int quantity) {
         this.gateway.sendGivingOrder(new Giving(donationId, "ile-de-france", typeGive, quantity));
     }
-*/
-    @Path("/give")
-    @GET
-    //@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void giveDonation() {
-        this.gateway.sendGivingOrder(new Giving(1,1, 1, "money", 50));
-    }
+
+
 }

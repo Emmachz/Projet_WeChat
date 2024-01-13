@@ -1,28 +1,36 @@
 package fr.pantheonsorbonne.ufr27.miage.dto;
 
 public class Giving {
-    int userId;
+    String userLogin;
     int donationId;
     int helpId;
     String typeGive;
-    int quantity;
+    double quantity;
+    UserLocal usergive;
 
-    public Giving(int userId, int donationId,  int helpId, String typeGive, int quantity) {
-        this.userId = userId;
-        this.donationId = donationId;
+    public Giving(int helpId, String userLogin, String typeGive, double quantity){
+        this.userLogin = userLogin;
         this.helpId = helpId;
         this.typeGive = typeGive;
         this.quantity = quantity;
     }
 
-    public Giving() {
-    }
-    public int getUserId() {
-        return userId;
+    public Giving (UserLocal usergive, double quantity,  String typeGive, int donationId){
+        this.usergive = usergive;
+        this.quantity = quantity;
+        this.donationId = donationId;
+        this.typeGive = typeGive;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+
+    public Giving() {
+    }
+    public String getUserLogin() {
+        return userLogin;
+    }
+
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
     }
 
     public int getDonationId() {
@@ -49,11 +57,18 @@ public class Giving {
         this.typeGive = typeGive;
     }
 
-    public int getQuantity() {
+
+    public UserLocal getUsergive() {
+        return usergive;
+    }
+
+    public void setUsergive(UserLocal usergive) {this.usergive = usergive;}
+
+    public double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(double quantity) {
         this.quantity = quantity;
     }
 }

@@ -26,15 +26,12 @@ public class CamelRoutes extends RouteBuilder {
 
     @Inject
     AlertService alertService;
-
     @Inject
     fr.pantheonsorbonne.ufr27.miage.camel.handler.GivingHandler givingHandler;
     @Inject
     AlertGateway alertGateway;
     @Inject
     GivingGateway givingGateway;
-
-
     @Inject
     CamelContext camelContext;
 
