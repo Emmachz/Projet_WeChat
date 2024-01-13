@@ -28,18 +28,6 @@ public class AlertServiceImpl implements AlertService {
     @PersistenceContext
     EntityManager em;
 
-    @Override
-    @Transactional
-    public Alert alert(Alert alert) throws EventNotFoundException {
-        try {
-
-
-        } catch (NonUniqueResultException | NoResultException e) {
-            throw new EventNotFoundException(alert.getAlertId());
-        }
-        return alert;
-
-    }
 
     public Collection<Event> getEventService(){
         return this.eventdao.getEvent();
@@ -63,22 +51,16 @@ public class AlertServiceImpl implements AlertService {
         }
     }
 
+    @Transactional
+    public void deleteEventServiceId(int id){
+        this.eventdao.deleteEvent(id);
+    }
+
     private boolean isValidRegion(Event event) {
         String[] validRegions = {"auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
                 "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
                 "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire"};
-
         return Arrays.asList(validRegions).contains(event.getRegion());
-    }
-
-    @Transactional
-    public void addEventService(int id, String category, String region, String date, String hour, String description, String level, String status){
-        this.eventdao.addEvent(id, category, region, date, hour, description, level, status);
-    }
-
-    @Transactional
-    public void deleteEventServiceId(int id){
-        this.eventdao.deleteEvent(id);
     }
 
 }

@@ -15,7 +15,6 @@ public class EventResource {
 
     @Path(("/allEvent"))
     @GET
-    //@Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Collection<Event> getAlert() {
@@ -38,19 +37,16 @@ public class EventResource {
         return this.alertService.postEventService(alertId, alertRegion);
     }
 
-    @Path("{idEvent}/category/{category}/region/{region}/date/{date}/hour/{hour}/description/{description}/level/{level}/status/{status}")
+    @Path("category/{category}/region/{region}/date/{date}/hour/{hour}/description/{description}")
     @POST
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void postAddEvent(@PathParam("idEvent") int idEvent, @PathParam("category") String category,@PathParam("region") String region,@PathParam("date") String date,@PathParam("hour") String hour, @PathParam("description") String description,@PathParam("level") String level,@PathParam("status") String status) {
+    public void postAddEvent( @PathParam("category") String category,@PathParam("region") String region,@PathParam("date") String date,@PathParam("hour") String hour, @PathParam("description") String description) {
         Event newEvent = new Event();
-        newEvent.setIdEvent(idEvent);
         newEvent.setCategory(category);
         newEvent.setRegion(region);
         newEvent.setDate(date);
         newEvent.setHour(hour);
         newEvent.setDescription(description);
-        newEvent.setLevel(level);
-        newEvent.setStatus(status);
         this.alertService.addEventService(newEvent);
     }
 

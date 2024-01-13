@@ -32,20 +32,11 @@ public class CamelRoutes extends RouteBuilder {
                 .marshal().json()
                 .to("sjms2:topic:" + jmsPrefix);
 
-        from("direct:alertHautDeSeine" + jmsPrefix)
-                .unmarshal().json(Alert.class)
-                .marshal().json();
+        from ("direct:Donation")
+                .marshal().json()
+                .to("sjms2:topic:" + jmsPrefix);
 
-        from("sjms2:topic:alerthaut-de-seine")
-                .unmarshal().json(Alert.class)
-                .marshal().json();
-
-        from("sjms2:topic:alerthauts-de-france" + jmsPrefix)
-                .log("testHAUTDESEINEEEEEEEE");
-
-        from("sjms2:" + jmsPrefix + "sendGovernment")
-                .unmarshal().json(Giving.class)
-                .log("${body}");
 
     }
+
 }
