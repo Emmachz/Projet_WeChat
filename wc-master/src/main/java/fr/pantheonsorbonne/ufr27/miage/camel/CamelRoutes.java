@@ -143,7 +143,6 @@ public class CamelRoutes extends RouteBuilder {
                 .bean(versementGateway, "sendInfosToBank")
                 .marshal().json()
                 .to("sjms2:" + jmsPrefix + "MyBankSystem?exchangePattern=InOut")
-                .log("${headers}")
                 .choice()
                 .when(header("success").isEqualTo(true))
                 .to("sjms2:" + jmsPrefix + "YesBankSystem?exchangePattern=InOut")
