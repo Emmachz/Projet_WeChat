@@ -27,7 +27,7 @@ public class UserResource {
 
     @Path("purchase/{idPurchase}/confirm")
     @PUT
-    public void confirmPurchase(@PathParam int idPurchase)
+    public void confirmPurchase(@PathParam Long idPurchase)
     {
         confirmationGateway.confirmWeChatPurchase(idPurchase);
     }

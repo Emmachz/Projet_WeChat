@@ -9,18 +9,18 @@ public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "idES", nullable = false)
-    private ExternalSeller idES;
+    private ExternalSeller externalSeller;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "idWC", nullable = false)
-    private User idWC;
+    private User user;
 
     @Column(name = "amount", nullable = false)
-    private Integer amount;
+    private double amount;
 
     @Column(name = "createdAt", nullable = false)
     private Date createdAt;
@@ -30,10 +30,10 @@ public class Purchase {
 
     public Purchase(ExternalSeller externalSeller,
                     User weChatUser,
-                    int amount)
+                    double amount)
     {
-        this.idES = externalSeller;
-        this.idWC = weChatUser;
+        this.externalSeller = externalSeller;
+        this.user = weChatUser;
         this.amount = amount;
         this.createdAt = new Date();
         this.isValidatedByUser = false;
@@ -43,32 +43,37 @@ public class Purchase {
     {
 
     }
-    public Integer getId() {
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public ExternalSeller getIdES() {
-        return idES;
+    public ExternalSeller getExternalSeller() {
+        return externalSeller;
     }
 
-    public void setIdES(ExternalSeller idES) {
-        this.idES = idES;
+    public void setExternalSeller(ExternalSeller externalSeller) {
+        this.externalSeller = externalSeller;
     }
 
-    public User getIdWC() {
-        return idWC;
+    public User getUser() {
+        return user;
     }
 
-    public void setIdWC(User idWC) {
-        this.idWC = idWC;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Integer getAmount() {
+    public double getAmount() {
         return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public void setAmount(Integer amount) {

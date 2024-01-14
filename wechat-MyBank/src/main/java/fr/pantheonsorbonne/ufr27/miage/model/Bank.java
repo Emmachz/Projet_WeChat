@@ -27,7 +27,7 @@ public class Bank {
     public String getBankNumber(){
         return bankNumber;
     }
-    public void setBankAmonut(double bankAmonut){
+    public void setBankAmount(double bankAmonut){
         this.bankAmonut = bankAmonut;
     }
     public double getBankAmonut(){

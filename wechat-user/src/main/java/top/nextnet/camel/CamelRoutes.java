@@ -52,9 +52,9 @@ public class CamelRoutes extends RouteBuilder {
 
         from("direct:confirm-purchase")
                 .marshal().json()//, "onBookedResponseReceived"
-                .to("sjms2:" + jmsPrefix + "confirm-purchase");
+                .to("sjms2:" + jmsPrefix + "confirmation");
 
-        from("sjms2:topic:" + jmsPrefix + "versementSuccesEmetteur")
+        /*from("sjms2:topic:" + jmsPrefix + "versementSuccesEmetteur")
                 .log("Message Versement succès ${body} ${headers}")
                 .filter(header("login").isEqualTo(userLogin))
                 .unmarshal().json(TransfertArgent.class)
@@ -75,7 +75,7 @@ public class CamelRoutes extends RouteBuilder {
                 .log("Message Versement succès ${body} ${headers}")
                 .to("smtps:" + smtpHost + ":" + smtpPort + "?username=" + smtpUser + "&password=" + smtpPassword + "&contentType=");
 
-
+                    */
 
 
     }

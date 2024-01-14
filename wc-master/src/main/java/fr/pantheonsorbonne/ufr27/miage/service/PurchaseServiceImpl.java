@@ -15,22 +15,25 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Inject
     PurchaseDAO purchaseDAO;
 
+    @Override
     public PurchaseDTO init(PurchaseDTO purchase) throws SellerNotRegisteredException, UserNotExistingException
     {
-        this.purchaseDAO.createPurchase(
-                purchase.getExternalSellerId(),
-                purchase.getWeChatUserId(),
+        Purchase entity = this.purchaseDAO.createPurchase(
+                purchase.getLoginSeller(),
+                purchase.getLoginUser(),
                 purchase.getAmount()
         );
+
+        purchase.setPurchaseId(entity.getId());
 
         return purchase;
     }
 
     @Override
-    public void confirm(PurchaseConfirmation confirmationInfos) throws PurchaseNotExistException, UserNotAllowedToPayException {
+    public void confirm(PurchaseConfirmation confirmationInfos) throws PurchaseNotExistException, UserNotAllowedToPayException, AlreadyPaidPurchaseException {
         Purchase purchase = this.purchaseDAO.findPurchase(confirmationInfos.getPurchaseId());
-        User purchaser = purchase.getIdWC();
-        if(!purchaser.getUserEmail().equals(confirmationInfos.getUserMail()))
+        User purchaser = purchase.getUser();
+        if(!purchaser.getUserLogin().equals(confirmationInfos.getUserLogin()))
         {
             throw new UserNotAllowedToPayException();
         }
@@ -38,16 +41,20 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
-    public PurchaseDTO findPurchase(int id) throws PurchaseNotExistException {
+    public PurchaseDTO findPurchase(Long id) throws PurchaseNotExistException {
         return convertPurchaseEntityToDTO(this.purchaseDAO.findPurchase(id));
     }
 
     private PurchaseDTO convertPurchaseEntityToDTO(Purchase purchase)
     {
-        return new PurchaseDTO(
-                (int)Long.parseLong(purchase.getIdES().getEsId().toString()),
-                (int)Long.parseLong(purchase.getIdWC().getUserId().toString()),
+        PurchaseDTO dto = new PurchaseDTO(
+                purchase.getUser().getUserLogin(),
+                purchase.getExternalSeller().getLoginSeller(),
                 purchase.getAmount()
         );
+
+        dto.setPurchaseId(purchase.getId());
+
+        return dto;
     }
 }

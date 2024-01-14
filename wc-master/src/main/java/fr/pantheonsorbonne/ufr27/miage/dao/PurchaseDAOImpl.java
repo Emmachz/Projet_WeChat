@@ -1,5 +1,6 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
+import fr.pantheonsorbonne.ufr27.miage.exception.AlreadyPaidPurchaseException;
 import fr.pantheonsorbonne.ufr27.miage.exception.PurchaseNotExistException;
 import fr.pantheonsorbonne.ufr27.miage.exception.SellerNotRegisteredException;
 import fr.pantheonsorbonne.ufr27.miage.exception.UserNotExistingException;
@@ -19,33 +20,39 @@ public class PurchaseDAOImpl implements PurchaseDAO {
 
     @Override
     @Transactional
-    public void createPurchase(int idES, int idWC, int amount) throws SellerNotRegisteredException, UserNotExistingException {
-        var externalSeller = em.find(ExternalSeller.class, idES);
+    public Purchase createPurchase(String loginSeller, String loginUser, double amount) throws SellerNotRegisteredException, UserNotExistingException {
+        var externalSeller = (ExternalSeller) em.createQuery("Select seller from ExternalSeller seller where seller.loginSeller=:login_seller").setParameter("login_seller", loginSeller).getSingleResult();
         if(externalSeller == null)
         {
             throw new SellerNotRegisteredException();
         }
-        var weChatUser = em.find(User.class, idWC);
+        var weChatUser = (User) em.createQuery("Select user from User user where user.userLogin=:userLogin").setParameter("userLogin", loginUser).getSingleResult();;
         if(weChatUser == null)
         {
-            throw new UserNotExistingException(idWC);
+            throw new UserNotExistingException();
         }
         var purchase = new Purchase(externalSeller, weChatUser, amount);
         this.em.persist(purchase);
         this.em.flush();
+        return purchase;
     }
 
     @Transactional
     @Override
-    public void confirmPurchase(int id) throws PurchaseNotExistException{
+    public void confirmPurchase(Long id) throws PurchaseNotExistException, AlreadyPaidPurchaseException{
         var purchase = this.findPurchase(id);
+        if (purchase.isValidatedByUser())
+        {
+            throw new AlreadyPaidPurchaseException();
+        }
         purchase.setValidatedByUser(true);
         this.em.merge(purchase);
         this.em.flush();
     }
 
     @Override
-    public Purchase findPurchase(int id) throws PurchaseNotExistException
+    @Transactional
+    public Purchase findPurchase(Long id) throws PurchaseNotExistException
     {
         var purchase = this.em.find(Purchase.class, id);
         if(purchase == null)

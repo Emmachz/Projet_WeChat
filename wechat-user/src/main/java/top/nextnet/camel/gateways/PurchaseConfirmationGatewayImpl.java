@@ -16,13 +16,13 @@ public class PurchaseConfirmationGatewayImpl implements PurchaseConfirmationGate
     @Inject
     CamelContext context;
 
-    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.user_mail")
-    String mailUser;
+    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.userLogin")
+    String userLogin;
 
     @Override
-    public void confirmWeChatPurchase(int idPurchaseWeChat) {
+    public void confirmWeChatPurchase(Long idPurchaseWeChat) {
         try (ProducerTemplate producer = context.createProducerTemplate()) {
-            producer.sendBody("direct:confirm-purchase", new PurchaseConfirmation(idPurchaseWeChat, this.mailUser));
+            producer.sendBody("direct:confirm-purchase", new PurchaseConfirmation(idPurchaseWeChat, this.userLogin));
         } catch (IOException e) {
             e.printStackTrace();
         }

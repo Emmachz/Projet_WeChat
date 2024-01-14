@@ -2,6 +2,7 @@ package fr.pantheonsorbonne.ufr27.miage.dao;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import fr.pantheonsorbonne.ufr27.miage.dto.UserLocal;
+import fr.pantheonsorbonne.ufr27.miage.exception.UnsufficientWalletAmountToPay;
 import fr.pantheonsorbonne.ufr27.miage.exception.UserNotExistingException;
 import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
@@ -19,6 +20,7 @@ public class UserDAOImpl implements UserDAO {
     EntityManager em;
 
     @Override
+    @Transactional
     public User findUser(Long userId) throws NoSuchUserException {
         try {
             User userFind = (User) em.createQuery("Select user from User user where user.userId=:userId").setParameter("userId", userId).getSingleResult();
@@ -29,6 +31,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    @Transactional
     public User findUserByLogin(String userLogin) throws UserNotFoundException.NoExistUserException {
         try {
             User userFind = (User) em.createQuery("Select user from User user where user.userLogin=:userLogin").setParameter("userLogin", userLogin).getSingleResult();
@@ -67,6 +70,41 @@ public class UserDAOImpl implements UserDAO {
         return null;
     }
 
+    @Override
+    @Transactional
+    public void debitAmountToUser(String login, double amount) throws UnsufficientWalletAmountToPay {
+        try {
+            User user = this.findUserByLogin(login);
+            double initialWalletAmount = user.getUserWallet();
+            if(initialWalletAmount - amount < 0)
+            {
+                throw  new UnsufficientWalletAmountToPay();
+            }
+            else
+            {
+                user.setUserWallet(initialWalletAmount - amount);
+                em.persist(user);
+            }
+        } catch(UserNotFoundException.NoExistUserException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public void creditAmountToUser(String login, double amount) {
+        try {
+            User user = this.findUserByLogin(login);
+            double initialWalletAmount = user.getUserWallet();
+            user.setUserWallet(initialWalletAmount + amount);
+            em.persist(user);
+        } catch(UserNotFoundException.NoExistUserException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 }

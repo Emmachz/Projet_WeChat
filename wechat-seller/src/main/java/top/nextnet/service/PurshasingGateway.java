@@ -1,5 +1,5 @@
 package top.nextnet.service;
 
 public interface PurshasingGateway {
-    void sendWeChatPurshasing(int idWeChatCustomer, int idWeChatExternalSeller, int amount);
+    void sendWeChatPurshasing(String weChatUser, String externalSeller, double amount);
 }

@@ -10,8 +10,13 @@ public class ExternalSeller {
     @Column(name = "id_ES", nullable = false)
     private Long esId;
 
-    @Column(name = "email_ES", nullable = false, unique = true)
-    private String emailES;
+    @Column(name = "login_seller", nullable = false, unique = true)
+    private String loginSeller;
+
+    @Column(name = "seller_nameBank")
+    private String sellerNameBank;
+    @Column(name = "seller_numeroBank")
+    private String sellerNumeroBank;
 
     public Long getEsId() {
         return esId;
@@ -21,11 +26,27 @@ public class ExternalSeller {
         this.esId = esId;
     }
 
-    public String getEmailES() {
-        return emailES;
+    public String getLoginSeller() {
+        return loginSeller;
     }
 
-    public void setEmailES(String emailES) {
-        this.emailES = emailES;
+    public void setLoginSeller(String loginSeller) {
+        this.loginSeller = loginSeller;
+    }
+
+    public String getSellerNameBank() {
+        return sellerNameBank;
+    }
+
+    public void setSellerNameBank(String sellerNameBank) {
+        this.sellerNameBank = sellerNameBank;
+    }
+
+    public String getSellerNumeroBank() {
+        return sellerNumeroBank;
+    }
+
+    public void setSellerNumeroBank(String sellerNumeroBank) {
+        this.sellerNumeroBank = sellerNumeroBank;
     }
 }

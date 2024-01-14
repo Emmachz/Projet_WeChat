@@ -4,29 +4,31 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class PurchaseConfirmation {
-    int purchaseId;
+    Long purchaseId;
 
-    String userMail;
+    String userLogin;
 
-    public PurchaseConfirmation(int id, String mail)
+    public PurchaseConfirmation(Long id, String login)
     {
         this.purchaseId = id;
-        this.userMail = mail;
+        this.userLogin = login;
     }
 
-    public int getPurchaseId() {
+    public PurchaseConfirmation(){}
+
+    public Long getPurchaseId() {
         return purchaseId;
     }
 
-    public void setPurchaseId(int purchaseId) {
+    public void setPurchaseId(Long purchaseId) {
         this.purchaseId = purchaseId;
     }
 
-    public String getUserMail() {
-        return userMail;
+    public String getUserLogin() {
+        return userLogin;
     }
 
-    public void setUserMail(String userMail) {
-        this.userMail = userMail;
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
     }
 }
