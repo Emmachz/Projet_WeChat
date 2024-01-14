@@ -2,12 +2,10 @@ package top.nextnet.resource;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import jakarta.ws.rs.Path;
 import top.nextnet.camel.gateways.UserGateway;
 
 

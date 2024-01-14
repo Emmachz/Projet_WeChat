@@ -4,47 +4,79 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class PurchaseDTO {
-    int weChatUserId;
+    String loginUser;
 
-    int externalSellerId;
+    String loginSeller;
 
-    int amount;
+    double amount;
+
+    Long purchaseId;
+
+    boolean isDebitOk;
+
+    boolean isCreditOk;
 
     public PurchaseDTO()
     {
 
     }
 
-    public PurchaseDTO(int idWC,
-                       int idES,
-                       int amount)
+    public PurchaseDTO(String loginUser,
+                       String loginSeller,
+                       double amount)
     {
-        this.weChatUserId = idWC;
-        this.externalSellerId = idES;
+        this.loginUser = loginUser;
+        this.loginSeller = loginSeller;
         this.amount = amount;
+        this.isDebitOk = false;
+        this.isCreditOk = false;
     }
 
-    public int getWeChatUserId() {
-        return weChatUserId;
+    public String getLoginUser() {
+        return loginUser;
     }
 
-    public void setWeChatUserId(int weChatUserId) {
-        this.weChatUserId = weChatUserId;
+    public void setLoginUser(String loginUser) {
+        this.loginUser = loginUser;
     }
 
-    public int getExternalSellerId() {
-        return externalSellerId;
+    public String getLoginSeller() {
+        return loginSeller;
     }
 
-    public void setExternalSellerId(int idES) {
-        this.externalSellerId = idES;
+    public void setLoginSeller(String loginSeller) {
+        this.loginSeller = loginSeller;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public Long getPurchaseId() {
+        return purchaseId;
+    }
+
+    public void setPurchaseId(Long purchaseId) {
+        this.purchaseId = purchaseId;
+    }
+
+    public boolean isDebitOk() {
+        return isDebitOk;
+    }
+
+    public void setDebitOk(boolean debitOk) {
+        isDebitOk = debitOk;
+    }
+
+    public boolean isCreditOk() {
+        return isCreditOk;
+    }
+
+    public void setCreditOk(boolean creditOk) {
+        isCreditOk = creditOk;
     }
 }

@@ -17,7 +17,7 @@ public class PurchaseHandler {
         return service.init(purchase);
     }
 
-    public void confirm(PurchaseConfirmation confirmationInfos) throws UserNotAllowedToPayException, PurchaseNotExistException
+    public void confirm(PurchaseConfirmation confirmationInfos) throws UserNotAllowedToPayException, PurchaseNotExistException, AlreadyPaidPurchaseException
     {
         service.confirm(confirmationInfos);
     }

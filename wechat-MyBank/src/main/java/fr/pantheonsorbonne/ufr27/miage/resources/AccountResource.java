@@ -1,5 +1,6 @@
 package fr.pantheonsorbonne.ufr27.miage.resources;
 
+import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchAccountException;
 import fr.pantheonsorbonne.ufr27.miage.service.OperationService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -18,7 +19,14 @@ public class AccountResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public void creditAccount(@PathParam("bankNumber") String bankNumber, @PathParam("amount") double creditedAmount) {
-        service.creditMoney(bankNumber, creditedAmount);
+        try
+        {
+            service.creditMoney(bankNumber, creditedAmount);
+        }
+        catch (NoSuchAccountException e)
+        {
+
+        }
     }
 }
 

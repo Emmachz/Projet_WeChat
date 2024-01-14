@@ -20,10 +20,14 @@ public class Versement {
     @Column(name = "versement_amount", nullable = false)
     private double versementAmount;
 
+    @Column(name = "is_complete", nullable = false)
+    private boolean isComplete;
+
     public Versement(User emetteur, User receveur, double value){
         this.emetteurId = emetteur;
         this.receveurId = receveur;
         this.versementAmount = value;
+        this.isComplete = false;
     }
 
     public Versement() {
@@ -54,5 +58,13 @@ public class Versement {
     }
     public double getVersementAmount(){
         return versementAmount;
+    }
+
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    public void setComplete(boolean complete) {
+        isComplete = complete;
     }
 }

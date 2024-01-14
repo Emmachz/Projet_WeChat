@@ -1,9 +1,15 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
+import fr.pantheonsorbonne.ufr27.miage.dao.ExternalSellerDAO;
+import fr.pantheonsorbonne.ufr27.miage.dao.TransferDAO;
 import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
+import fr.pantheonsorbonne.ufr27.miage.dto.BankOperation;
+import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseDTO;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import fr.pantheonsorbonne.ufr27.miage.dto.UserLocal;
+import fr.pantheonsorbonne.ufr27.miage.exception.SellerNotRegisteredException;
 import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
+import fr.pantheonsorbonne.ufr27.miage.model.ExternalSeller;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
 import fr.pantheonsorbonne.ufr27.miage.model.Versement;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -24,7 +30,6 @@ public class VersementServiceImpl implements VersementService {
             Versement versement = new Versement(emetteur, receveur, transfertArgent.getValue());
             return versement;
     }
-
 
     @Override
     @Transactional

@@ -1,8 +1,5 @@
 package top.nextnet.camel;
 
-import fr.pantheonsorbonne.ufr27.miage.dto.Booking;
-import fr.pantheonsorbonne.ufr27.miage.dto.CancelationNotice;
-import fr.pantheonsorbonne.ufr27.miage.dto.ETicket;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -52,7 +49,7 @@ public class CamelRoutes extends RouteBuilder {
 
         from("direct:confirm-purchase")
                 .marshal().json()//, "onBookedResponseReceived"
-                .to("sjms2:" + jmsPrefix + "confirm-purchase");
+                .to("sjms2:" + jmsPrefix + "confirmation");
 
         from("sjms2:" + jmsPrefix + "versementSuccesEmetteur")
                 .log("Message Versement succès ${body} ${headers}")

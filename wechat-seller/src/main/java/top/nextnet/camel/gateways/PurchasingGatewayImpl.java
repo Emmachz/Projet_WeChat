@@ -17,9 +17,9 @@ public class PurchasingGatewayImpl implements PurshasingGateway {
     CamelContext context;
 
     @Override
-    public void sendWeChatPurshasing(int idWeChatCustomer, int idWeChatExternalSeller, int amount) {
+    public void sendWeChatPurshasing(String weChatUser, String externalSeller, double amount) {
         try (ProducerTemplate producer = context.createProducerTemplate()) {
-            producer.sendBody("direct:selling", new PurchaseDTO(idWeChatCustomer, idWeChatExternalSeller, amount));
+            producer.sendBody("direct:selling", new PurchaseDTO(weChatUser, externalSeller, amount));
         } catch (IOException e) {
             e.printStackTrace();
         }

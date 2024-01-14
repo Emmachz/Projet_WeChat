@@ -1,11 +1,13 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
+import fr.pantheonsorbonne.ufr27.miage.exception.UnsufficientAmountInAccountException;
 import fr.pantheonsorbonne.ufr27.miage.model.Bank;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class BankDAOImpl implements BankDAO{
@@ -14,52 +16,53 @@ public class BankDAOImpl implements BankDAO{
     EntityManager em;
 
     @Override
-    public Bank findUser(Long bankId) throws NoSuchComptException {
+    public Bank findUser(Long bankId) throws NoSuchAccountException {
         try {
             Bank comptFind = (Bank) em.createQuery("Select compt from Bank compt where compt.bankId=:bankId").setParameter("bankId", bankId).getSingleResult();
             return comptFind;
         } catch (NoResultException e) {
-            throw new NoSuchComptException();
+            throw new NoSuchAccountException();
         }
     }
     @Override
-    public Bank findUserByNumero(String bankNumber) throws NoSuchComptException {
+    @Transactional
+    public Bank findUserByNumero(String bankNumber) throws NoSuchAccountException {
         try {
             Bank comptFind = (Bank) em.createQuery("Select compt from Bank compt where compt.bankNumber=:bankNumber").setParameter("bankNumber", bankNumber).getSingleResult();
             return comptFind;
         } catch (NoResultException e) {
-            throw new NoSuchComptException();
+            throw new NoSuchAccountException();
         }
     }
 
     @Override
-    public TransfertArgent updateTwoComptes(TransfertArgent transfertArgent) throws NoSuchComptException {
+    public TransfertArgent updateTwoComptes(TransfertArgent transfertArgent) throws NoSuchAccountException {
         try{
             Bank bankEmet = this.findUserByNumero(transfertArgent.getEmetteur().getUserNumeroBank());
             Bank bankRece = this.findUserByNumero(transfertArgent.getReceveur().getUserNumeroBank());
             double value = transfertArgent.getValue();
             if (bankEmet != null && bankRece != null){
-                bankEmet.setBankAmonut(bankEmet.getBankAmonut() - value);
-                bankRece.setBankAmonut(bankRece.getBankAmonut() + value);
+                bankEmet.setBankAmount(bankEmet.getBankAmonut() - value);
+                bankRece.setBankAmount(bankRece.getBankAmonut() + value);
                 em.persist(bankEmet);
                 em.persist(bankRece);
             }
         } catch (NoResultException e) {
-            throw new NoSuchComptException();
+            throw new NoSuchAccountException();
         }
         return transfertArgent;
     }
     @Override
-    public TransfertArgent updateCompteCredit(TransfertArgent transfertArgent) throws NoSuchComptException{
+    public TransfertArgent updateCompteCredit(TransfertArgent transfertArgent) throws NoSuchAccountException {
         try{
             Bank bankEmet = this.findUserByNumero(transfertArgent.getEmetteur().getUserNumeroBank());
             double value = transfertArgent.getValue();
             if (bankEmet != null){
-                bankEmet.setBankAmonut(bankEmet.getBankAmonut() - value);
+                bankEmet.setBankAmount(bankEmet.getBankAmonut() - value);
                 em.persist(bankEmet);
             }
         } catch (NoResultException e) {
-            throw new NoSuchComptException();
+            throw new NoSuchAccountException();
         }
         return transfertArgent;
     }
@@ -70,7 +73,7 @@ public class BankDAOImpl implements BankDAO{
             if (bankEmet.getBankAmonut() >= value){
                 return true;
             }
-        } catch (NoSuchComptException e) {
+        } catch (NoSuchAccountException e) {
             throw new RuntimeException(e);
         }
         return false;
@@ -79,46 +82,46 @@ public class BankDAOImpl implements BankDAO{
 
 
     @Override
-    public TransfertArgent updateCompteDebit(TransfertArgent transfertArgent) throws NoSuchComptException {
+    public TransfertArgent updateCompteDebit(TransfertArgent transfertArgent) throws NoSuchAccountException {
         try{
             Bank bankRece = this.findUserByNumero(transfertArgent.getReceveur().getUserNumeroBank());
             double value = transfertArgent.getValue();
             if (bankRece != null){
-                bankRece.setBankAmonut(bankRece.getBankAmonut() + value);
+                bankRece.setBankAmount(bankRece.getBankAmonut() + value);
                 em.persist(bankRece);
             }
         } catch (NoResultException e) {
-            throw new NoSuchComptException();
+            throw new NoSuchAccountException();
         }
         return transfertArgent;
     }
 
     @Override
-    public void addMoneyToAccount(String bankNumber, double amount)
+    @Transactional
+    public void addMoneyToAccount(String bankNumber, double amount) throws NoSuchAccountException
     {
-        try {
-            Bank account = this.findUserByNumero(bankNumber);
-            double initialBalance = account.getBankAmonut();
-            account.setBankAmonut(initialBalance + amount);
-            em.merge(account);
-            em.flush();
-        }catch (NoSuchComptException e){
-            System.out.println(e.getMessage());
-        }
+        Bank account = this.findUserByNumero(bankNumber);
+        double initialBalance = account.getBankAmonut();
+        account.setBankAmount(initialBalance + amount);
+        em.merge(account);
+        em.flush();
     }
 
     @Override
-    public void debitMoneyFromAccount(String bankNumber, double amount)
+    @Transactional
+    public void debitMoneyFromAccount(String bankNumber, double amount) throws UnsufficientAmountInAccountException, NoSuchAccountException
     {
-        try {
-            Bank account = this.findUserByNumero(bankNumber);
-            double initialBalance = account.getBankAmonut();
-            account.setBankAmonut(initialBalance - amount);
-            em.merge(account);
-            em.flush();
-        }catch (NoSuchComptException e){
-            System.out.println(e.getMessage());
+        Bank account = this.findUserByNumero(bankNumber);
+        double initialBalance = account.getBankAmonut();
+        if(initialBalance >= amount)
+        {
+            account.setBankAmount(initialBalance - amount);
         }
+        else
+        {
+            throw new UnsufficientAmountInAccountException();
+        }
+        em.persist(account);
     }
 
 }

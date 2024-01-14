@@ -2,6 +2,7 @@ package top.nextnet.resource;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.POST;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 
@@ -14,14 +15,18 @@ import top.nextnet.service.PurshasingGateway;
 @RegisterRestClient(configKey = "seller-api")
 public class SellerResource {
 
+    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.externalSellerUserName")
+    String externalSellerUserName;
+
     @Inject
     private PurshasingGateway gateway;
 
-    @Path("purchase/new/{idES}/{idWC}/{amount}")
+
+    @Path("purchase/new/{weChatUser}/{amount}")
     @POST
-    public void createPurchase(@PathParam int idES, @PathParam int idWC, @PathParam int amount)
+    public void createPurchase(@PathParam String weChatUser, @PathParam double amount)
     {
-        gateway.sendWeChatPurshasing(idWC, idES, amount);
+        gateway.sendWeChatPurshasing(weChatUser, externalSellerUserName, amount);
     }
 
 }
