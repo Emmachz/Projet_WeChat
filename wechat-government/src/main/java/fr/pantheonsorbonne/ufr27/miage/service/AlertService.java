@@ -8,8 +8,6 @@ import java.util.Collection;
 
 public interface AlertService {
 
-    Alert alert(Alert alert) throws EventNotFoundException;
-
     Collection<Event> getEventService();
 
     Event getEventServiceId(int id);

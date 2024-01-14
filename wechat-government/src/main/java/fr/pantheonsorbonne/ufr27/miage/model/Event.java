@@ -24,8 +24,6 @@ public class Event {
     @Column(name = "description", nullable = false)
     private String description;
 
-
-
     public Event(String category, String region, String date, String hour, String description) {
         this.category = category;
         this.region = region;

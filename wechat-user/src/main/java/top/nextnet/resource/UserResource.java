@@ -1,5 +1,6 @@
 package top.nextnet.resource;
 
+import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
 import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -10,18 +11,14 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import top.nextnet.camel.gateways.GivingGateway;
 
+import java.util.Collection;
+
 
 @Path("/user")
 @RegisterRestClient(configKey = "user-api")
 public class UserResource {
-
-
     @Inject
     GivingGateway gateway;
-
-
-
-
 
     @Path("/give/{donationId}/{typeGive}/{quantity}")
     @GET
@@ -32,6 +29,15 @@ public class UserResource {
                              @jakarta.ws.rs.PathParam("quantity") int quantity) {
         this.gateway.sendGivingOrder(new Giving(donationId, "ile-de-france", typeGive, quantity));
     }
+/*
+    @Path("/getAllAlert")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Collection<Alert> getAlert() {
+
+        return this.alertService.getEventService();
+    }
+    */
 
 
 }

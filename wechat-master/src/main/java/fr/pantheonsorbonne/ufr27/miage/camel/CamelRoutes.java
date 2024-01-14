@@ -40,7 +40,7 @@ public class CamelRoutes extends RouteBuilder {
 
         camelContext.setTracing(true);
 
-        from("sjms2:topic:" + jmsPrefix)
+        from("sjms2:" + jmsPrefix + "sendAlert")
                 .unmarshal().json(Alert.class)
                 .log("Clearning expiredtransitional ticket ${body}")
                 .bean(alertGateway, "addAlert")
