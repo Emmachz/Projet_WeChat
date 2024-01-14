@@ -1,17 +1,14 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
-import fr.pantheonsorbonne.ufr27.miage.exception.UnsuficientQuotaForVenueException;
 import fr.pantheonsorbonne.ufr27.miage.model.Donation;
-import fr.pantheonsorbonne.ufr27.miage.model.Help;
-import fr.pantheonsorbonne.ufr27.miage.model.Region;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.NonUniqueResultException;
 import jakarta.transaction.Transactional;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Random;
 
 @ApplicationScoped
 public class DonationDAOImpl implements DonationDAO {
@@ -28,64 +25,43 @@ public class DonationDAOImpl implements DonationDAO {
 
     @Override
     @Transactional
-    public Donation addDonation(List<Region> regions, Region RegionOfNeed, String description) throws UnsuficientQuotaForVenueException {
+    public Donation addDonation(String RegionOfNeed, String description, double moneySupport, double timeSupport, double clotheSupport ) {
 
         Donation donation = new Donation();
         donation.setDescription(description);
-
-
-        for (int i = 0; i < regions.size(); i++) {
-                int randomIndexMoney = new Random().nextInt(100000);
-                int randomIndexTime = new Random().nextInt(100000);
-                int randomIndexClothe = new Random().nextInt(100000);
-                Help help = new Help();
-                help.setRegion(regions.get(i).getRegion());
-                help.setMoneySupport(randomIndexMoney);
-                help.setTimeSupport(randomIndexTime);
-                help.setClotheSupport(randomIndexClothe);
-                em.persist(help);
-                donation.getHelps().add(help);
-
-        }
-
-        Help helpForRegionNeed = new Help();
-        int randomIndexTime = new Random().nextInt(100000);
-        int randomIndexClothe = new Random().nextInt(100000);
-        helpForRegionNeed.setRegion(RegionOfNeed.getRegion());
-        helpForRegionNeed.setMoneySupport(0);
-        helpForRegionNeed.setTimeSupport(randomIndexTime);
-        helpForRegionNeed.setClotheSupport(randomIndexClothe);
-        em.persist(helpForRegionNeed);
-        donation.getHelps().add(helpForRegionNeed);
-
-
-        // Réattacher l'entité à la session avant de la persister
-        em.merge(donation);
-
-        // Persister l'entité dans la base de données
+        donation.setRegionOfNeed(RegionOfNeed);
+        donation.setMoneySupport(moneySupport);
+        donation.setMoneySupport(timeSupport);
+        donation.setMoneySupport(clotheSupport);
         em.persist(donation);
-
-        // Valider la transaction
-        em.getTransaction().commit();
-
-        System.out.println("La donation a été ajouté avec succès.");
-        //em.persist(newEvent);
-        System.out.println(donation);
-
         return donation;
 
     }
 
+    @Override
+    @Transactional
+    public void updateDonation(Donation updateDonation){
 
-/*
+        Donation donation = em.find(Donation.class, updateDonation.getId());
+        if (donation != null) {
+            donation.setMoneyGived(updateDonation.getMoneyGived());
+            donation.setClotheGived(updateDonation.getClotheGived());
+            donation.setTimeGived(updateDonation.getTimeGived());
+            em.persist(donation);
+        }
+
+    }
+
+
+
     @Override
     @Transactional
     public void deleteDonation(int id){
-        Event eventToDelete = getEventId(id);
-        if (eventToDelete != null) {
-            em.remove(eventToDelete);
+        Donation donationToDelete = getDonationById(id);
+        if (donationToDelete != null) {
+            em.remove(donationToDelete);
         } else {
-            System.out.println("L'événement avec l'ID " + id + " n'existe pas.");
+            System.out.println("La donation avec l'ID " + id + " n'existe pas.");
         }
     }
 
@@ -93,11 +69,22 @@ public class DonationDAOImpl implements DonationDAO {
         return em.createQuery("SELECT event.idEvent FROM Event event", Integer.class).getResultList();
     }
 
+    private Donation getDonationById(int id) {
+        try {
+            return em.createQuery("SELECT d FROM Donation d WHERE donationId = :donationId", Donation.class)
+                    .setParameter("donationId", id)
+                    .getSingleResult();
+        } catch (NonUniqueResultException | NoResultException e) {
+            //throw new EventNotFoundException(alert.getAlertId());
+            return null;
+        }
+    }
+
     private boolean isEventExists(int id) {
         Collection<Integer> allEventIds = getAllEventId();
         System.out.println(allEventIds.contains(id));
         return allEventIds.contains(id);
     }
-*/
+
 
 }

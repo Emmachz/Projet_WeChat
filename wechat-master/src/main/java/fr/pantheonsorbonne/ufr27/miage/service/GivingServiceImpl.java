@@ -1,12 +1,13 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
 
+import fr.pantheonsorbonne.ufr27.miage.camel.gateway.DonationGateway;
 import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
 import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import fr.pantheonsorbonne.ufr27.miage.dto.UserLocal;
 import fr.pantheonsorbonne.ufr27.miage.exception.UnsuficientQuotaDonationException;
 import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
-import fr.pantheonsorbonne.ufr27.miage.model.Help;
+import fr.pantheonsorbonne.ufr27.miage.model.Donation;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -21,6 +22,9 @@ public class GivingServiceImpl implements GivingService {
     @Inject
     UserDAO userDAO;
 
+    @Inject
+    DonationGateway donationGateway;
+
     @PersistenceContext
     EntityManager em;
 
@@ -28,9 +32,12 @@ public class GivingServiceImpl implements GivingService {
     @Transactional
     public Giving giveMoney(Giving give)throws UnsuficientQuotaDonationException {
         try {
-            Help help = (Help) (em.createQuery("select h from  Help h  where h.helpId =: helpId").setParameter("helpId", give.getHelpId()).getSingleResult());
-            help.setMoneySupport(help.getMoneySupport() - give.getQuantity());
-            em.persist(help);
+            Donation donation = callDonation(give);
+            donation.setMoneyGived(donation.getMoneyGived() + give.getQuantity());
+            em.persist(donation);
+            if (donation.getMoneyGived()>donation.getMoneySupport()){
+                donationGateway.updateDonation(donation);
+            }
         } catch (NonUniqueResultException | NoResultException e) {
             throw new UnsuficientQuotaDonationException(give.getQuantity(), "money");
         }
@@ -41,9 +48,12 @@ public class GivingServiceImpl implements GivingService {
     @Transactional
     public Giving giveTime(Giving give) throws UnsuficientQuotaDonationException{
         try {
-            Help help = (Help) (em.createQuery("select h from  Help h  where h.helpId =: helpId").setParameter("helpId", give.getHelpId()).getSingleResult());
-            help.setTimeSupport(help.getTimeSupport() - give.getQuantity());
-            em.persist(help);
+            Donation donation = callDonation( give);
+            donation.setTimeGived(donation.getTimeGived() + give.getQuantity());
+            em.persist(donation);
+            if (donation.getTimeGived()>donation.getTimeSupport()){
+                donationGateway.updateDonation(donation);
+            }
         } catch (NonUniqueResultException | NoResultException e) {
             throw new UnsuficientQuotaDonationException(give.getQuantity(), "time");
         }
@@ -54,11 +64,14 @@ public class GivingServiceImpl implements GivingService {
     @Transactional
     public Giving giveClothe(Giving give) throws UnsuficientQuotaDonationException{
         try {
-            Help help = (Help) (em.createQuery("select h from  Help h  where h.helpId =: helpId").setParameter("helpId", give.getHelpId()).getSingleResult());
-            help.setClotheSupport(help.getClotheSupport() - give.getQuantity());
-            em.persist(help);
+            Donation donation = callDonation(give);
+            donation.setClotheGived(donation.getClotheGived() + give.getQuantity());
+            em.persist(donation);
+            if (donation.getClotheGived()>donation.getClotheSupport()){
+                donationGateway.updateDonation(donation);
+            }
         } catch (NonUniqueResultException | NoResultException e) {
-            throw new UnsuficientQuotaDonationException(give.getQuantity(), "clothes");
+            throw new UnsuficientQuotaDonationException(give.getQuantity(), "clothe");
         }
         return give;
     }
@@ -66,9 +79,14 @@ public class GivingServiceImpl implements GivingService {
     @Override
     @Transactional
     public Giving convertirGiving(Giving give) throws UserNotFoundException.NoExistUserException {
-            User donneur = userDAO.findUserByLogin(give.getUserLogin());
-            UserLocal user = new UserLocal(donneur.getUserName(), donneur.getUserWallet(),donneur.getUserLogin(), donneur.getUserRegion().getIdRegion(), donneur.getUserEmail(), donneur.getUserNameBank(), donneur.getUserNumeroBank());
+            User giver = userDAO.findUserByLogin(give.getUserLogin());
+            UserLocal user = new UserLocal(giver.getUserName(), giver.getUserWallet(),giver.getUserLogin(), giver.getUserRegion().getIdRegion(), giver.getUserEmail(), giver.getUserNameBank(), giver.getUserNumeroBank());
             return new Giving(user, give.getQuantity(), give.getTypeGive(), give.getHelpId());
+    }
+
+    private Donation callDonation(Giving give){
+        return  (Donation) (em.createQuery("select d from  Donation d  where d.donationId =: donationId").setParameter("donationId", give.getHelpId()).getSingleResult());
+
     }
 
 

@@ -1,7 +1,7 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
-import fr.pantheonsorbonne.ufr27.miage.dao.AlertDAO;
-import fr.pantheonsorbonne.ufr27.miage.model.Alert;
+import fr.pantheonsorbonne.ufr27.miage.dao.DonationDAO;
+import fr.pantheonsorbonne.ufr27.miage.model.Donation;
 import fr.pantheonsorbonne.ufr27.miage.model.Region;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -11,17 +11,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ApplicationScoped
-public class AlertServiceImpl implements AlertService {
+public class DonationServiceImpl implements DonationService {
     @PersistenceContext
     EntityManager em;
 
     @Inject
-    AlertDAO alertDAO;
+    DonationDAO donationDAO;
 
-    public void addAlert(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert){
-        Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region(getRegionId(alert.getAlertRegion()),alert.getAlertRegion()));
-        this.alertDAO.addAlert(newAlert);
+    @Override
+    public void addDonation(fr.pantheonsorbonne.ufr27.miage.dto.Donation donation){
+        Donation newDonation=new Donation(donation.getDonationId(), donation.getDescription(), donation.getRegionOfNeed(), donation.getMoneySupport(), donation.getTimeSupport(), donation.getClotheSupport(), donation.getMoneyGived(), donation.getTimeGived(), donation.getClotheGived());
+        this.donationDAO.addDonation(newDonation);
     }
+
+
 
     public String getRegionId(String regionName) {
         Map<String, String> regionNameMapping = new HashMap<>();

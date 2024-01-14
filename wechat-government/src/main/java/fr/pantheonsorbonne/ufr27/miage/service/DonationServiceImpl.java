@@ -1,26 +1,16 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
-import fr.pantheonsorbonne.ufr27.miage.camel.AlertGateway;
 import fr.pantheonsorbonne.ufr27.miage.camel.DonationGateway;
 import fr.pantheonsorbonne.ufr27.miage.dao.DonationDAO;
-import fr.pantheonsorbonne.ufr27.miage.dao.EventDAO;
-import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
-import fr.pantheonsorbonne.ufr27.miage.exception.EventNotFoundException;
-import fr.pantheonsorbonne.ufr27.miage.exception.UnsuficientQuotaForVenueException;
 import fr.pantheonsorbonne.ufr27.miage.model.Donation;
-import fr.pantheonsorbonne.ufr27.miage.model.Event;
-import fr.pantheonsorbonne.ufr27.miage.model.Region;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 @ApplicationScoped
 public class DonationServiceImpl implements DonationService {
@@ -34,45 +24,42 @@ public class DonationServiceImpl implements DonationService {
     @PersistenceContext
     EntityManager em;
 
-
+    @Override
     @Transactional
     public Collection<Donation> getDonationService(){
 
         return this.donationDao.getDonations();
 
     }
+    @Override
     @Transactional
-    public String addDonationService( Collection<String> regions, String RegionOfNeed, String description ) throws UnsuficientQuotaForVenueException {
-        Region regionOfNeedR = new Region();
-        regionOfNeedR.setRegion(RegionOfNeed);
-
-        for(String r : regions) {
-            Region rRegion = new Region();
-            rRegion.setRegion(r);
-            if (!isValidRegion(rRegion) || !isValidRegion(regionOfNeedR)) {
-                return "Erreur dans l'entrée de la région";
-            }
-            ListRegions.add(rRegion);
-
-        }
-        Donation donation = this.donationDao.addDonation(ListRegions, regionOfNeedR, description );
+    public void addDonationService( String RegionOfNeed, String description, double moneySupport, double timeSupport, double clotheSupport ) {
+        Donation donation = this.donationDao.addDonation(RegionOfNeed, description, moneySupport,  timeSupport, clotheSupport);
         this.donationGateway.sendDonation(donation);
-        return "Event bien envoyé";
 
     }
-/*
+    @Override
     @Transactional
-    public void deleteEventServiceId(int id){
-        this.eventdao.deleteEvent(id);
+    public void updateDonation(fr.pantheonsorbonne.ufr27.miage.dto.Donation donation) {
+
+        Donation updateDonation=new Donation(donation.getDonationId(), donation.getDescription(), donation.getRegionOfNeed(), donation.getMoneySupport(), donation.getTimeSupport(), donation.getClotheSupport(), donation.getMoneyGived(), donation.getTimeGived(), donation.getClotheGived());
+        this.donationDao.updateDonation(updateDonation);
+
     }
 
- */
+    @Override
+    @Transactional
+    public void deleteDonationService(int id){
+        this.donationDao.deleteDonation(id);
+    }
 
-    private boolean isValidRegion(Region region) {
+
+
+    private boolean isValidRegion(String region) {
         String[] validRegions = {"auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
                 "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
                 "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire"};
-        return Arrays.asList(validRegions).contains(region.getRegion());
+        return Arrays.asList(validRegions).contains(region);
     }
 
 }

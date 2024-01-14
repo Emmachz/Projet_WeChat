@@ -30,9 +30,7 @@ public class CamelRoutes extends RouteBuilder {
     public void configure() throws Exception {
         camelContext.setTracing(true);
         from("direct:giving")
-                .log("dede")
-                .marshal().json()//, "onBookedResponseReceived"
-                .log("dede")
+                .marshal().json()
                 .to("sjms2:" + jmsPrefix + "givingDonation");
 
         from("sjms2:topic:alert" + userRegion + jmsPrefix)

@@ -1,19 +1,19 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
-import fr.pantheonsorbonne.ufr27.miage.model.Alert;
+import fr.pantheonsorbonne.ufr27.miage.model.Donation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
-public class AlertDAOImpl implements AlertDAO {
+public class DonationDAOImpl implements DonationDAO {
 
     @PersistenceContext
     EntityManager em;
 
     @Transactional
-    public void addAlert(Alert alert) {
-        em.merge(alert);
+    public void addDonation(Donation donation) {
+        em.merge(donation);
     }
 
 }

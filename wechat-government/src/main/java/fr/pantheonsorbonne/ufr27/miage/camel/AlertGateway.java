@@ -13,8 +13,6 @@ import java.io.IOException;
 
 @ApplicationScoped
 public class AlertGateway {
-    @Inject
-    AlertService AlertService;
 
     @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.jmsPrefix")
     String jmsPrefix;

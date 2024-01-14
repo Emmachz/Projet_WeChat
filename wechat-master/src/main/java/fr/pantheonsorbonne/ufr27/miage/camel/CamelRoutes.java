@@ -2,9 +2,11 @@ package fr.pantheonsorbonne.ufr27.miage.camel;
 
 
 import fr.pantheonsorbonne.ufr27.miage.camel.gateway.AlertGateway;
+import fr.pantheonsorbonne.ufr27.miage.camel.gateway.DonationGateway;
 import fr.pantheonsorbonne.ufr27.miage.camel.gateway.GivingGateway;
 import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchUserException;
 import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
+import fr.pantheonsorbonne.ufr27.miage.dto.Donation;
 import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.service.AlertService;
@@ -16,6 +18,10 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @ApplicationScoped
 public class CamelRoutes extends RouteBuilder {
 
@@ -23,16 +29,20 @@ public class CamelRoutes extends RouteBuilder {
     String jmsPrefix;
 
     @Inject
-    AlertService alertService;
+    fr.pantheonsorbonne.ufr27.miage.camel.handler.GivingHandler givingHandler;
 
     @Inject
-    fr.pantheonsorbonne.ufr27.miage.camel.handler.GivingHandler givingHandler;
+    AlertService alertService;
 
     @Inject
     MessageService messageService;
 
     @Inject
     AlertGateway alertGateway;
+
+    @Inject
+    DonationGateway donationGateway;
+
     @Inject
     GivingGateway givingGateway;
 
@@ -52,13 +62,49 @@ public class CamelRoutes extends RouteBuilder {
                 .handled(true)
                 .setHeader("success", simple("false"));
 
-        from("sjms2:topic:" + jmsPrefix)
+
+        from("sjms2:" + jmsPrefix + "sendAlert")
                 .unmarshal().json(Alert.class)
-                .log("Clearning expired transitional ticket ${body}")
                 .bean(alertGateway, "addAlert")
-                .bean(alertGateway, "transfertAlert2");
-                //.toD("sjms2:topic:alert${body.getAlertRegion()}" + jmsPrefix)
-                //.marshal().json();
+                .bean(alertGateway, "transfertAlert");
+
+
+        from("direct:alerttransfert")
+                .marshal().json()
+                .process(exchange -> {
+                    String headerRegion = exchange.getIn().getHeader("headerRegion", String.class);
+                    String topicName = "sjms2:topic:alert" + headerRegion + jmsPrefix;
+                    exchange.getIn().setHeader("topicName", topicName);
+                })
+                .toD("${header.topicName}");
+
+        from("sjms2:" + jmsPrefix + "sendAlertAllRegion")
+                .unmarshal().json(Donation.class)
+                .bean(donationGateway, "addDonation")
+                .marshal().json()
+                .process(exchange -> {
+                    List<String> allRegions = Arrays.asList("auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
+                            "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
+                            "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire");
+                    List<String> topicList = allRegions.stream()
+                            .map(region -> "sjms2:topic:alert" + region + jmsPrefix)
+                            .collect(Collectors.toList());
+                    exchange.getIn().setHeader("topicList", topicList);
+                })
+                .recipientList(simple("${header.topicList}"));
+
+
+        from("direct:donationTransfert")
+                .marshal().json()
+                .process(exchange -> {
+                    String headerRegion = exchange.getIn().getHeader("headerRegion", String.class);
+                    String topicName = "sjms2:topic:donation" + headerRegion + jmsPrefix;
+                    exchange.getIn().setHeader("topicName", topicName);
+                })
+                .toD("${header.topicName}");
+
+
+
 
 
         from("sjms2:" + jmsPrefix + "givingDonation")
@@ -102,6 +148,11 @@ public class CamelRoutes extends RouteBuilder {
                 .bean(givingGateway, "giveClothe")
                 .marshal().json()
                 .end();
+
+
+                from("direct:updateDonation")
+                .marshal().json()
+                .to("sjms2:" + jmsPrefix + "updateDonation");
 
 
     }

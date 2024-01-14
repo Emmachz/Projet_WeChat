@@ -15,8 +15,11 @@ public interface DonationDAO {
     Collection<Donation> getDonations();
 
     @Transactional
-    Donation addDonation(Collection<Region> regions, Region RegionOfNeed, String description) throws UnsuficientQuotaForVenueException;
+    Donation addDonation(String RegionOfNeed, String description, double moneySupport, double timeSupport, double clotheSupport ) ;
 
     @Transactional
-    Donation addDonation(List<Region> regions, Region RegionOfNeed, String description) throws UnsuficientQuotaForVenueException;
+    void updateDonation(Donation updateDonation);
+
+    @Transactional
+    void deleteDonation(int id);
 }

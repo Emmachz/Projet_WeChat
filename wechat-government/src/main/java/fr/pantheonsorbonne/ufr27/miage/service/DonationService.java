@@ -1,16 +1,15 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
-import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
-import fr.pantheonsorbonne.ufr27.miage.exception.EventNotFoundException;
-import fr.pantheonsorbonne.ufr27.miage.exception.UnsuficientQuotaForVenueException;
 import fr.pantheonsorbonne.ufr27.miage.model.Donation;
-import fr.pantheonsorbonne.ufr27.miage.model.Event;
-import fr.pantheonsorbonne.ufr27.miage.model.Region;
+import jakarta.transaction.Transactional;
 
 import java.util.Collection;
 
 public interface DonationService {
     public Collection<Donation> getDonationService();
-    public String addDonationService(Collection<String> regions, String RegionOfNeed, String description ) throws UnsuficientQuotaForVenueException;
+    public void addDonationService(String RegionOfNeed, String description, double moneySupport, double timeSupport, double clotheSupport);
+    public void updateDonation(fr.pantheonsorbonne.ufr27.miage.dto.Donation donation);
 
-    }
+    @Transactional
+    void deleteDonationService(int id);
+}
