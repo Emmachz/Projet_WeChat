@@ -21,11 +21,11 @@ public class UserResource {
     @Path("{loginUser}/versement/{loginUserDest}/amount/{value}")
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public String versementUserAUser(@jakarta.ws.rs.PathParam("loginUser") String loginUser,
+    public boolean versementUserAUser(@jakarta.ws.rs.PathParam("loginUser") String loginUser,
                                      @jakarta.ws.rs.PathParam("loginUserDest") String loginUserDest,
                                      @jakarta.ws.rs.PathParam("value") double value) {
 
-        return gateway.sendTransfertInfos(new TransfertArgent(loginUser, loginUserDest, value));
+       return gateway.sendTransfertInfos(new TransfertArgent(loginUser, loginUserDest, value));
 
     }
 

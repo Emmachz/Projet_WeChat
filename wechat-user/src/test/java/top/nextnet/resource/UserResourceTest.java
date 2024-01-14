@@ -1,7 +1,5 @@
-package top.nextnet.resource.resource;
+package top.nextnet.resource;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.response.Response;
 import jakarta.transaction.*;
@@ -9,7 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 public class UserResourceTest {
@@ -31,8 +30,8 @@ public class UserResourceTest {
                 .statusCode(200)
                 .extract()
                 .response();
-        String test = response.as(String.class);
-        assertEquals("OK", test);
+        boolean test = response.as(boolean.class);
+        assertTrue(test);
 
     }
 

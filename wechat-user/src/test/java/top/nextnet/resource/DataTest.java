@@ -1,4 +1,4 @@
-package top.nextnet.resource.resource;
+package top.nextnet.resource;
 
 public record DataTest(String loginEmetteur, String loginReceveur, double value) {
 }
