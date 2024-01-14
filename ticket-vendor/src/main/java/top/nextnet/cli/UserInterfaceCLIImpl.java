@@ -32,14 +32,16 @@ public class UserInterfaceCLIImpl implements UserInterfaceCLI {
 
     public void displayAvailableGigsToCli(){
         terminal.println("VendorId="+vendorId);
+        // Récupère les DTO "Gig" grâce à la ressource qui fait un appel Api REST et les affiche à l'écran
         for (Gig gig : vendorService.getGigs(vendorId)) {
             terminal.println("[" + gig.getVenueId() + "] " + gig.getArtistName() + " " + gig.getDate().format(DateTimeFormatter.ISO_DATE) + " " + gig.getLocation());
         }
     }
 
+    // Interagit avec le client et soumet ses choix en revoyant un DTO avec les données
     public Booking getBookingFromOperator(){
         terminal.println("Which Gig to book?");
-
+        // Venue Id choisi par le user parmi les venues dispo
         Integer venueId = textIO.newIntInputReader().withPossibleValues(vendorService.getGigs(vendorId).stream().map(g -> g.getVenueId()).collect(Collectors.toList())).read("Which venue?");
         Integer sittingCount = textIO.newIntInputReader().read("How many seats?");
         Integer standingCount = textIO.newIntInputReader().read("How many pit tickets?");

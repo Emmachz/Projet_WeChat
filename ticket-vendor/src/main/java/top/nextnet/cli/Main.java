@@ -22,7 +22,7 @@ public class Main implements Runnable {
 
     @Override
     public void run() {
-
+        // init UserInteface ?
         System.setProperty(TextIoFactory.TEXT_TERMINAL_CLASS_PROPERTY, SwingTextTerminal.class.getName());
         TextIO textIO = TextIoFactory.getTextIO();
         var terminal = TextIoFactory.getTextTerminal();
@@ -32,6 +32,7 @@ public class Main implements Runnable {
 
         while (true) {
             try {
+                // GET
                 eCommerce.displayAvailableGigsToCli();
                 Booking booking = eCommerce.getBookingFromOperator();
                 bookingGateway.sendBookingOrder(booking.getStandingTicketsNumber(), booking.getSeatingTicketsNumber(), booking.getVenueId());
