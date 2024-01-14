@@ -1,4 +1,4 @@
-package fr.pantheonsorbonne.ufr27.miage.camel.gateway;
+package fr.pantheonsorbonne.ufr27.miage.camel;
 
 import fr.pantheonsorbonne.ufr27.miage.exception.AlertNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.model.Alert;
@@ -13,8 +13,6 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @ApplicationScoped
 public class AlertGateway {

@@ -5,15 +5,11 @@ import fr.pantheonsorbonne.ufr27.miage.model.Alert;
 import fr.pantheonsorbonne.ufr27.miage.model.Region;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import java.util.HashMap;
 import java.util.Map;
 
 @ApplicationScoped
 public class AlertServiceImpl implements AlertService {
-    @PersistenceContext
-    EntityManager em;
 
     @Inject
     AlertDAO alertDAO;
@@ -38,6 +34,7 @@ public class AlertServiceImpl implements AlertService {
         regionNameMapping.put("occitanie", "FR-ACC");
         regionNameMapping.put("provence-alpes-cote-dazur", "FR-PAC");
         regionNameMapping.put("pays-de-la-loire", "FR-PDL");
+        regionNameMapping.put("all", "FR-ALL");
         return regionNameMapping.get(regionName);
     }
 

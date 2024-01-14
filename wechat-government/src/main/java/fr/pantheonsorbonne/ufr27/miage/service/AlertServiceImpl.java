@@ -2,15 +2,9 @@ package fr.pantheonsorbonne.ufr27.miage.service;
 
 import fr.pantheonsorbonne.ufr27.miage.camel.AlertGateway;
 import fr.pantheonsorbonne.ufr27.miage.dao.EventDAO;
-import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
-import fr.pantheonsorbonne.ufr27.miage.exception.EventNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.model.Event;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.NonUniqueResultException;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 import java.util.Arrays;
@@ -24,10 +18,6 @@ public class AlertServiceImpl implements AlertService {
 
     @Inject
     AlertGateway alertGateway;
-
-    @PersistenceContext
-    EntityManager em;
-
 
     public Collection<Event> getEventService(){
         return this.eventdao.getEvent();
@@ -59,7 +49,7 @@ public class AlertServiceImpl implements AlertService {
     private boolean isValidRegion(Event event) {
         String[] validRegions = {"auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
                 "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
-                "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire"};
+                "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire", "all"};
         return Arrays.asList(validRegions).contains(event.getRegion());
     }
 

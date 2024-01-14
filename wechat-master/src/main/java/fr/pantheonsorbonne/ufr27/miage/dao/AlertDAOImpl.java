@@ -11,9 +11,11 @@ public class AlertDAOImpl implements AlertDAO {
     @PersistenceContext
     EntityManager em;
 
+    @Override
     @Transactional
     public void addAlert(Alert alert) {
         em.merge(alert);
     }
+
 
 }
