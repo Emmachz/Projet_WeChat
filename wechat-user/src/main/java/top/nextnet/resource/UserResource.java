@@ -7,7 +7,6 @@ import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import top.nextnet.camel.gateways.UserGateway;
-import top.nextnet.service.PurchaseConfirmationGateway;
 
 
 @Path("/user")
@@ -17,15 +16,15 @@ public class UserResource {
     @Inject
     private UserGateway gateway;
 
-
     @Path("{loginUser}/versement/{loginUserDest}/amount/{value}")
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void versementUserAUser(@jakarta.ws.rs.PathParam("loginUser") String loginUser,
-                                   @jakarta.ws.rs.PathParam("loginUserDest") String loginUserDest,
-                                   @jakarta.ws.rs.PathParam("value") double value) {
+    public boolean versementUserAUser(@jakarta.ws.rs.PathParam("loginUser") String loginUser,
+                                     @jakarta.ws.rs.PathParam("loginUserDest") String loginUserDest,
+                                     @jakarta.ws.rs.PathParam("value") double value) {
 
-        gateway.sendTransfertInfos(new TransfertArgent(loginUser, loginUserDest, value));
+       return gateway.sendTransfertInfos(new TransfertArgent(loginUser, loginUserDest, value));
+
     }
 
 }
