@@ -24,7 +24,7 @@ public class AlertGateway {
 
     public void sendAlertAllRegion(Event event){
         try (ProducerTemplate producerTemplate = camelContext.createProducerTemplate()) {
-            producerTemplate.sendBody("direct:AlertAllRegion", new Alert(event.getIdEvent(), event.getDescription(), "all"));
+            producerTemplate.sendBody("direct:AlertAllRegion", new Alert(event.getIdEvent(), event.getDescription(), event.getRegion()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
