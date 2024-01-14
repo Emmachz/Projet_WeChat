@@ -17,10 +17,5 @@ public class AlertDAOImpl implements AlertDAO {
         em.merge(alert);
     }
 
-    @Override
-    @Transactional
-    public void addAlertAllRegion(Alert alert){
-        em.merge((alert));
-    }
 
 }

@@ -6,5 +6,5 @@ public interface AlertService {
 
     void addAlert(Alert alert);
     String getRegionId(String regionName);
-    //void addAlertAllRegion(Alert alert);
+
 }

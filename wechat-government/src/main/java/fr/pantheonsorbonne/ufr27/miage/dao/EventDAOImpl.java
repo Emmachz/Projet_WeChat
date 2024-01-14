@@ -4,8 +4,6 @@ import fr.pantheonsorbonne.ufr27.miage.model.Event;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.NonUniqueResultException;
 import jakarta.transaction.Transactional;
 
 import java.util.Collection;
@@ -25,14 +23,9 @@ public class EventDAOImpl implements EventDAO {
     @Override
     @Transactional
     public Event getEventId(int id) {
-        try {
-            return em.createQuery("SELECT event FROM Event event WHERE idEvent = :id", Event.class)
-                    .setParameter("id", id)
-                    .getSingleResult();
-        } catch (NonUniqueResultException | NoResultException e) {
-            //throw new EventNotFoundException(alert.getAlertId());
-            return null;
-        }
+        return em.createQuery("SELECT event FROM Event event WHERE idEvent = :id", Event.class)
+                .setParameter("id", id)
+                .getSingleResult();
     }
 
     @Override
@@ -62,5 +55,4 @@ public class EventDAOImpl implements EventDAO {
             System.out.println("L'événement avec l'ID " + id + " n'existe pas.");
         }
     }
-
 }

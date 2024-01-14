@@ -5,8 +5,6 @@ import fr.pantheonsorbonne.ufr27.miage.dao.EventDAO;
 import fr.pantheonsorbonne.ufr27.miage.model.Event;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 import java.util.Arrays;
@@ -20,9 +18,6 @@ public class AlertServiceImpl implements AlertService {
 
     @Inject
     AlertGateway alertGateway;
-
-    @PersistenceContext
-    EntityManager em;
 
     public Collection<Event> getEventService(){
         return this.eventdao.getEvent();

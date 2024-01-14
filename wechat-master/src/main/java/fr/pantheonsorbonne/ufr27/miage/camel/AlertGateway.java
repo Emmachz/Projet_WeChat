@@ -13,8 +13,6 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @ApplicationScoped
 public class AlertGateway {
