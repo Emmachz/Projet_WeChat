@@ -1,10 +1,14 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
+import fr.pantheonsorbonne.ufr27.miage.camel.gateway.AlertGateway;
+import fr.pantheonsorbonne.ufr27.miage.camel.gateway.DonationGateway;
+import fr.pantheonsorbonne.ufr27.miage.camel.gateway.GivingGateway;
+import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchUserException;
 import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
+import fr.pantheonsorbonne.ufr27.miage.dto.Donation;
 import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.service.AlertService;
-import fr.pantheonsorbonne.ufr27.miage.service.MessageService;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -29,9 +33,11 @@ public class CamelRoutes extends RouteBuilder {
     AlertService alertService;
 
     @Inject
-    fr.pantheonsorbonne.ufr27.miage.camel.handler.GivingHandler givingHandler;
-    @Inject
     AlertGateway alertGateway;
+
+    @Inject
+    DonationGateway donationGateway;
+
     @Inject
     GivingGateway givingGateway;
 
@@ -51,11 +57,19 @@ public class CamelRoutes extends RouteBuilder {
                 .handled(true)
                 .setHeader("success", simple("false"));
 
-        from("sjms2:topic:" + jmsPrefix)
+        from("sjms2:" + jmsPrefix + "sendAlert")
                 .unmarshal().json(Alert.class)
-                .log("Clearning expired transitional ticket ${body}")
                 .bean(alertGateway, "addAlert")
                 .bean(alertGateway, "transfertAlert");
+
+        from("direct:alerttransfert")
+                .marshal().json()
+                .process(exchange -> {
+                    String headerRegion = exchange.getIn().getHeader("headerRegion", String.class);
+                    String topicName = "sjms2:topic:alert" + headerRegion + jmsPrefix;
+                    exchange.getIn().setHeader("topicName", topicName);
+                })
+                .toD("${header.topicName}");
 
         from("sjms2:" + jmsPrefix + "sendAlertAllRegion")
                 .unmarshal().json(Alert.class)
@@ -72,28 +86,43 @@ public class CamelRoutes extends RouteBuilder {
                 })
                 .recipientList(simple("${header.topicList}"));
 
-
-        from("direct:alerttransfert")
-                .marshal().json()
-                .choice()
-                .when(header("headerRegion").in("auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
-                        "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
-                        "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire"))
-                .process(exchange -> {
-                    String headerRegion = exchange.getIn().getHeader("headerRegion", String.class);
-                    String topicName = "sjms2:topic:alert" + headerRegion + jmsPrefix;
-                    exchange.getIn().setHeader("topicName", topicName);
-                })
-                .toD("${header.topicName}");
-
 /*
-        from("direct:alerttransfert")
-                .marshal().json()
+        from("sjms2:" + jmsPrefix + "sendDonation")
+                .unmarshal().json(Donation.class)
+                .bean(donationGateway, "addDonation");
+
+        from("direct:createDonation")
                 .process(exchange -> {
-                    String headerRegion = exchange.getIn().getHeader("headerRegion", String.class);
+                    List<String> regionList =  (List<String>) exchange.getIn().getHeader("regionList", List.class);
+                    List<String> topicList = regionList.stream()
+                            .map(region -> "sjms2:topic:alert" + region + jmsPrefix)
+                            .collect(Collectors.toList());
+                    exchange.getIn().setHeader("topicList", topicList);
                 })
-                .toD("sjms2:topic:alert" + String.valueOf(header("headerRegion"))+ jmsPrefix);
-*/
+                .recipientList(simple("${header.topicList}"));
+
+ */
+
+
+        from("sjms2:" + jmsPrefix + "sendDonation")
+                .unmarshal().json(Donation.class)
+                .bean(donationGateway, "addDonation")
+                .process(exchange -> {
+                    List<String> allRegions = Arrays.asList("auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
+                            "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
+                            "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire");;
+
+                    String regionOnNeed =  ((Donation)exchange.getIn().getBody()).getRegionOfNeed();
+
+                    List<String> topicList = allRegions.stream()
+                            .filter(region -> !region.equals(regionOnNeed))
+                            .map(region -> "sjms2:topic:donation" + region + jmsPrefix)
+                            .collect(Collectors.toList());
+
+                    exchange.getIn().setHeader("topicList", topicList);
+                }).marshal().json()
+                .recipientList(simple("${header.topicList}"));
+
 
 
         from("sjms2:" + jmsPrefix + "givingDonation")

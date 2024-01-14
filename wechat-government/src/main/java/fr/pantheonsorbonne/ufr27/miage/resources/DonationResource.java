@@ -18,7 +18,7 @@ public class DonationResource {
     @Path(("/allDonations"))
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Collection<Donation> getAlert() {
+    public Collection<Donation> getDonations() {
         return this.donationService.getDonationService();
     }
 

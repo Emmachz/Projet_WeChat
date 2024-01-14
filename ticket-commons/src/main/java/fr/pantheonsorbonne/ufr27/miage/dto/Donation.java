@@ -3,8 +3,6 @@ package fr.pantheonsorbonne.ufr27.miage.dto;
 import java.util.Collection;
 
 public class Donation {
-    int donationId;
-
     String description;
 
     String regionOfNeed;
@@ -25,9 +23,7 @@ public class Donation {
 
 
 
-    public Donation(int donationId, String description, String regionOfNeed, double moneySupport, double timeSupport, double clotheSupport, double moneyGived, double timeGived, double clotheGived) {
-
-        this.donationId = donationId;
+    public Donation( String description, String regionOfNeed, double moneySupport, double timeSupport, double clotheSupport, double moneyGived, double timeGived, double clotheGived) {
         this.description = description;
         this.regionOfNeed = regionOfNeed;
         this.moneySupport = moneySupport;
@@ -42,9 +38,6 @@ public class Donation {
     public Donation() {
     }
 
-    public int getDonationId() {
-        return donationId;
-    }
 
     public String getDescription(){
         return description;

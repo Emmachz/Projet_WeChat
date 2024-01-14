@@ -31,8 +31,8 @@ public class DonationDAOImpl implements DonationDAO {
         donation.setDescription(description);
         donation.setRegionOfNeed(RegionOfNeed);
         donation.setMoneySupport(moneySupport);
-        donation.setMoneySupport(timeSupport);
-        donation.setMoneySupport(clotheSupport);
+        donation.setTimeSupport(timeSupport);
+        donation.setClotheSupport(clotheSupport);
         em.persist(donation);
         return donation;
 

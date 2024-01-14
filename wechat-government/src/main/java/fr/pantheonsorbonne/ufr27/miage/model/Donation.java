@@ -36,9 +36,7 @@ public class Donation {
     @Column(name = "clotheGived")
     private double clotheGived;
 
-    public Donation(int donationId, String description, String regionOfNeed, double moneySupport, double timeSupport, double clotheSupport, double moneyGived, double timeGived, double clotheGived) {
-
-        this.donationId = donationId;
+    public Donation(String description, String regionOfNeed, double moneySupport, double timeSupport, double clotheSupport, double moneyGived, double timeGived, double clotheGived) {
         this.description = description;
         this.regionOfNeed = regionOfNeed;
         this.moneySupport = moneySupport;

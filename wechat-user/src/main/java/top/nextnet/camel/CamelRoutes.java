@@ -1,6 +1,7 @@
 package top.nextnet.camel;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
+import fr.pantheonsorbonne.ufr27.miage.dto.Donation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.camel.CamelContext;
@@ -30,60 +31,19 @@ public class CamelRoutes extends RouteBuilder {
                 .unmarshal().json(Alert.class)
                 .log("${body.getAlertDescription()}");
 
+
         from("sjms2:topic:alertcorse"+ jmsPrefix)
-                .unmarshal().json(Alert.class)
-                .log("${body.getAlertDescription()}");
+                .unmarshal().json()
+                .log("${body}");
 
-        /*from("direct:confirm-purchase")
-                .marshal().json()//, "onBookedResponseReceived"
-                .to("sjms2:" + jmsPrefix + "confirm-purchase");
-
-         */
-
-        /*from("direct:cli")//
-                .marshal().json()//, "onBookedResponseReceived"
-                .to("sjms2:" + jmsPrefix + "booking?exchangePattern=InOut")//
-                .choice()
-                .when(header("success").isEqualTo(false))
-                .setBody(simple("not enough quota for this vendor"))
-                .bean(eCommerce, "showErrorMessage").stop()
-                .otherwise()
-                .unmarshal().json(Booking.class)
-                .bean(BookingResponseHandler)
-                .log("response received ${in.body}")
-                .bean(ticketingService, "fillTicketsWithCustomerInformations")
-                .split(body())
-                .marshal().json(ETicket.class)
-                .to("sjms2:" + jmsPrefix + "ticket?exchangePattern=InOut")
-                .choice()
-                .when(header("success").isEqualTo(false))
-                .bean(eCommerce, "showErrorMessage").stop()
-                .otherwise()
-                .bean(ticketingService, "notifyCreatedTicket");
+        from("sjms2:topic:donation" + userRegion + jmsPrefix)
+                .unmarshal().json(Donation.class)
+                .log(" Vous voulez faire un don pour : ${body.getDescription} ? ");
 
 
-        from("sjms2:topic:" + jmsPrefix + "cancellation")
-                .log("cancellation notice ${body} ${headers}")
-                .filter(header("vendorId").isEqualTo(vendorId))
-
-                .unmarshal().json(CancelationNotice.class)
-                .process(new Processor() {
-                    @Override
-                    public void process(Exchange exchange) throws Exception {
-
-                        CancelationNotice notice = exchange.getMessage().getMandatoryBody(CancelationNotice.class);
-                        exchange.getMessage().setHeaders(new HashMap<>());
-                        exchange.getMessage().setHeader("to", notice.getEmail());
-                        exchange.getMessage().setHeader("from", smtpFrom);
-                        exchange.getMessage().setHeader("contentType", "text/html");
-                        exchange.getMessage().setHeader("subject", "cancellation notice for venue");
-                        exchange.getMessage().setBody("Dear Customer,\n\n Venue for your ticket " + notice.getTicketId() + " has been cancelled.\n\n Contact vendor for refund");
-                    }
-                })
-                .log("cancellation notice ${body} ${headers}")
-                .to("smtps:" + smtpHost + ":" + smtpPort + "?username=" + smtpUser + "&password=" + smtpPassword + "&contentType=")
-                .bean(eCommerce, "showErrorMessage");
-            */
+        from("sjms2:topic:donationcorse"+ jmsPrefix)
+                .unmarshal().json(Donation.class)
+                .log("Vous voulez faire un don pour : ${body.getDescription} ? ");
 
     }
 }

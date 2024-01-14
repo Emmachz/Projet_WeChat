@@ -11,9 +11,18 @@ public class DonationDAOImpl implements DonationDAO {
     @PersistenceContext
     EntityManager em;
 
+    @Override
     @Transactional
-    public void addDonation(Donation donation) {
-        em.merge(donation);
+    public void addDonation(fr.pantheonsorbonne.ufr27.miage.dto.Donation donationDTO) {
+
+        Donation donation = new Donation();
+        donation.setDescription(donationDTO.getDescription());
+        donation.setRegionOfNeed(donationDTO.getRegionOfNeed());
+        donation.setMoneySupport(donationDTO.getMoneySupport());
+        donation.setTimeSupport(donationDTO.getTimeSupport());
+        donation.setClotheSupport(donationDTO.getClotheSupport());
+        em.persist(donation);
+
     }
 
 }

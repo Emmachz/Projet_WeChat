@@ -35,14 +35,15 @@ public class DonationServiceImpl implements DonationService {
     @Transactional
     public void addDonationService( String RegionOfNeed, String description, double moneySupport, double timeSupport, double clotheSupport ) {
         Donation donation = this.donationDao.addDonation(RegionOfNeed, description, moneySupport,  timeSupport, clotheSupport);
-        this.donationGateway.sendDonation(donation);
+        fr.pantheonsorbonne.ufr27.miage.dto.Donation newDonation = new fr.pantheonsorbonne.ufr27.miage.dto.Donation(donation.getDescription(), donation.getRegionOfNeed(), donation.getMoneySupport(), donation.getTimeSupport(), donation.getTimeSupport(), donation.getMoneyGived(), donation.getTimeGived(), donation.getClotheGived());
+        this.donationGateway.sendDonation(newDonation);
 
     }
     @Override
     @Transactional
     public void updateDonation(fr.pantheonsorbonne.ufr27.miage.dto.Donation donation) {
 
-        Donation updateDonation=new Donation(donation.getDonationId(), donation.getDescription(), donation.getRegionOfNeed(), donation.getMoneySupport(), donation.getTimeSupport(), donation.getClotheSupport(), donation.getMoneyGived(), donation.getTimeGived(), donation.getClotheGived());
+        Donation updateDonation=new Donation( donation.getDescription(), donation.getRegionOfNeed(), donation.getMoneySupport(), donation.getTimeSupport(), donation.getClotheSupport(), donation.getMoneyGived(), donation.getTimeGived(), donation.getClotheGived());
         this.donationDao.updateDonation(updateDonation);
 
     }
@@ -53,13 +54,5 @@ public class DonationServiceImpl implements DonationService {
         this.donationDao.deleteDonation(id);
     }
 
-
-
-    private boolean isValidRegion(String region) {
-        String[] validRegions = {"auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
-                "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
-                "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire"};
-        return Arrays.asList(validRegions).contains(region);
-    }
 
 }

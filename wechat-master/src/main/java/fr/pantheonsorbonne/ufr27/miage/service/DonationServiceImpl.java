@@ -20,8 +20,7 @@ public class DonationServiceImpl implements DonationService {
 
     @Override
     public void addDonation(fr.pantheonsorbonne.ufr27.miage.dto.Donation donation){
-        Donation newDonation=new Donation(donation.getDonationId(), donation.getDescription(), donation.getRegionOfNeed(), donation.getMoneySupport(), donation.getTimeSupport(), donation.getClotheSupport(), donation.getMoneyGived(), donation.getTimeGived(), donation.getClotheGived());
-        this.donationDAO.addDonation(newDonation);
+        this.donationDAO.addDonation(donation);
     }
 
 

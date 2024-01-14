@@ -1,9 +1,8 @@
-package fr.pantheonsorbonne.ufr27.miage.camel;
+package fr.pantheonsorbonne.ufr27.miage.camel.gateway;
 
 import fr.pantheonsorbonne.ufr27.miage.exception.AlertNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.model.Alert;
 import fr.pantheonsorbonne.ufr27.miage.model.Region;
-
 import fr.pantheonsorbonne.ufr27.miage.service.AlertService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

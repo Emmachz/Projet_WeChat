@@ -26,8 +26,9 @@ public class DonationGateway {
     @Inject
     DonationService donationService;
 
-    public void sendDonation(Donation donation) {
+    public void sendDonation(fr.pantheonsorbonne.ufr27.miage.dto.Donation  donation) {
         try (ProducerTemplate producer = camelContext.createProducerTemplate()) {
+
             producer.sendBody("direct:Donation", donation);
         } catch (IOException e) {
             throw new RuntimeException(e);

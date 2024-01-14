@@ -2,6 +2,7 @@ package fr.pantheonsorbonne.ufr27.miage.camel;
 
 
 import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
+import fr.pantheonsorbonne.ufr27.miage.dto.Donation;
 import fr.pantheonsorbonne.ufr27.miage.exception.ExpiredTransitionalTicketException;
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelExecutionException;
