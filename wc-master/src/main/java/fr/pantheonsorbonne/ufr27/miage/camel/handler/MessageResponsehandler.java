@@ -6,11 +6,12 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
 
 @ApplicationScoped
-public class EmetteurResponsehandler {
+public class MessageResponsehandler {
     @Handler
-    public TransfertArgent sendEmetteurMessage(Exchange exchange) {
+    public TransfertArgent sendMessage(Exchange exchange) {
         TransfertArgent transfertArgent = exchange.getMessage().getBody(TransfertArgent.class);
-        exchange.getMessage().setHeader("login", transfertArgent.getEmetteur().getUserLogin());
+        exchange.getMessage().setHeader("emetteur", transfertArgent.getEmetteur().getUserLogin());
+        exchange.getMessage().setHeader("receveur", transfertArgent.getReceveur().getUserLogin());
         return transfertArgent;
 
     }

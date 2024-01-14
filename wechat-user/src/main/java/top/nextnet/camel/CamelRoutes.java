@@ -1,8 +1,5 @@
 package top.nextnet.camel;
 
-import fr.pantheonsorbonne.ufr27.miage.dto.Booking;
-import fr.pantheonsorbonne.ufr27.miage.dto.CancelationNotice;
-import fr.pantheonsorbonne.ufr27.miage.dto.ETicket;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -54,9 +51,9 @@ public class CamelRoutes extends RouteBuilder {
                 .marshal().json()//, "onBookedResponseReceived"
                 .to("sjms2:" + jmsPrefix + "confirmation");
 
-        /*from("sjms2:topic:" + jmsPrefix + "versementSuccesEmetteur")
+        from("sjms2:" + jmsPrefix + "versementSuccesEmetteur")
                 .log("Message Versement succès ${body} ${headers}")
-                .filter(header("login").isEqualTo(userLogin))
+                .filter(header("emetteur").isEqualTo(userLogin))
                 .unmarshal().json(TransfertArgent.class)
                 .process(new Processor() {
                     @Override
@@ -66,16 +63,16 @@ public class CamelRoutes extends RouteBuilder {
                         exchange.getMessage().setHeader("to", transfertArgent.getEmetteur().getUserEmail());
                         exchange.getMessage().setHeader("from", smtpFrom);
                         exchange.getMessage().setHeader("contentType", "text/html");
-                        exchange.getMessage().setHeader("subject", "Versement Succès");
+                        exchange.getMessage().setHeader("subject", "Versement Success");
                         exchange.getMessage().setBody("Bonjour " + transfertArgent.getEmetteur().getUserName() +"," +
-                                "\n\n Votre versement " + transfertArgent.getValue() + " euros à "+ transfertArgent.getReceveur().getUserName()+" a été mise en place avec succès." +
-                                "\n\n Merci voutr confiance");
+                                "\n\n Votre versement " + transfertArgent.getValue() + " euros a "+ transfertArgent.getReceveur().getUserName()+" a ete mise en place avec success." +
+                                "\n\n Merci voutr confiance. \n\n WeChat");
                     }
                 })
                 .log("Message Versement succès ${body} ${headers}")
                 .to("smtps:" + smtpHost + ":" + smtpPort + "?username=" + smtpUser + "&password=" + smtpPassword + "&contentType=");
 
-                    */
+
 
 
     }

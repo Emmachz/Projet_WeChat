@@ -3,6 +3,7 @@ package fr.pantheonsorbonne.ufr27.miage.camel;
 
 import fr.pantheonsorbonne.ufr27.miage.camel.gateway.BankConverter;
 import fr.pantheonsorbonne.ufr27.miage.camel.gateway.VersementGateway;
+import fr.pantheonsorbonne.ufr27.miage.camel.handler.MessageResponsehandler;
 import fr.pantheonsorbonne.ufr27.miage.camel.handler.PurchaseHandler;
 import fr.pantheonsorbonne.ufr27.miage.camel.processor.PurchaseEnricher;
 import fr.pantheonsorbonne.ufr27.miage.dto.BankOperation;
@@ -14,7 +15,7 @@ import fr.pantheonsorbonne.ufr27.miage.exception.SellerNotRegisteredException;
 import fr.pantheonsorbonne.ufr27.miage.exception.UserNotExistingException;
 import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.service.WalletService;
-import org.apache.camel.*;
+import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -34,10 +35,7 @@ public class CamelRoutes extends RouteBuilder {
     fr.pantheonsorbonne.ufr27.miage.camel.handler.VersementResponseHandler versementResponseHandler;
 
     @Inject
-    fr.pantheonsorbonne.ufr27.miage.camel.handler.EmetteurResponsehandler emetteurResponsehandler;
-
-    @Inject
-    fr.pantheonsorbonne.ufr27.miage.camel.handler.ReceveurResponsehandler receveurResponsehandler;
+    MessageResponsehandler messageResponsehandler;
 
     @Inject
     WalletService walletHandler;
@@ -61,7 +59,7 @@ public class CamelRoutes extends RouteBuilder {
 
         onException(SellerNotRegisteredException.class)
                 .handled(true)
-                .log("You have not been registered in WeChat. Create an account to sold with WeChat.");
+                .log("You have not been registered in WeChat. Create an account to sell with WeChat.");
 
         onException(UserNotExistingException.class)
                 .handled(true)
@@ -130,33 +128,36 @@ public class CamelRoutes extends RouteBuilder {
                 .marshal().json();
 
 
-
-
-
-        /*from("sjms2:" + jmsPrefix + "TransfertArgent")
+        from("sjms2:" + jmsPrefix + "TransfertArgent")
                 .unmarshal().json(TransfertArgent.class)
                 .bean(versementGateway, "findTwoUsersVersement")
                 .bean(versementResponseHandler)
                 .choice()
                 .when(header("success").isEqualTo(true))
                 .bean(versementGateway, "realizeVersementWallet")
-                .bean(emetteurResponsehandler)
+                .bean(messageResponsehandler)
                 .marshal().json()
-                .to("sjms2:topic:" + jmsPrefix + "versementSuccesEmetteur")
+                .to("sjms2:" + jmsPrefix + "versementSuccesEmetteur")
                 .stop()
                 .otherwise()
                 .bean(versementGateway, "sendInfosToBank")
                 .marshal().json()
-                .multicast()
-                .to("sjms2:" + jmsPrefix + "MyBankSystem?exchangePattern=InOut", "sjms2:" + jmsPrefix + "YesBankSystem?exchangePattern=InOut")
-                .parallelProcessing()
-                .aggregationStrategy((new AggregationStrategy() {
-                    @Override
-                    public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
-                        return null;
-                    }
-                }))
-        ;*/
+                .to("sjms2:" + jmsPrefix + "MyBankSystem?exchangePattern=InOut")
+                .log("${headers}")
+                .choice()
+                .when(header("success").isEqualTo(true))
+                .to("sjms2:" + jmsPrefix + "YesBankSystem?exchangePattern=InOut")
+                .choice()
+                .when(header("success").isEqualTo(true))
+                .to("sjms2:" + jmsPrefix + "versementSuccesEmetteur")
+                .stop()
+                .otherwise()
+                .log("Versement Non Success : Erreur YesBankSystem ")
+                .otherwise()
+                .log("Versement Non Success : Erreur MyBankSystem ")
+                .end()
+        ;
+
 
 
 

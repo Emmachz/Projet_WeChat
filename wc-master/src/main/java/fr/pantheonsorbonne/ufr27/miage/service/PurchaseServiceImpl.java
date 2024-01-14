@@ -1,19 +1,32 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
+import fr.pantheonsorbonne.ufr27.miage.dao.ExternalSellerDAO;
 import fr.pantheonsorbonne.ufr27.miage.dao.PurchaseDAO;
+import fr.pantheonsorbonne.ufr27.miage.dao.TransferDAO;
+import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
+import fr.pantheonsorbonne.ufr27.miage.dto.BankOperation;
 import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseConfirmation;
 import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseDTO;
 import fr.pantheonsorbonne.ufr27.miage.exception.*;
+import fr.pantheonsorbonne.ufr27.miage.model.ExternalSeller;
 import fr.pantheonsorbonne.ufr27.miage.model.Purchase;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class PurchaseServiceImpl implements PurchaseService {
 
     @Inject
     PurchaseDAO purchaseDAO;
+
+    @Inject
+    ExternalSellerDAO esDAO;
+
+    @Inject
+    UserDAO userDAO;
+
 
     @Override
     public PurchaseDTO init(PurchaseDTO purchase) throws SellerNotRegisteredException, UserNotExistingException
@@ -27,6 +40,31 @@ public class PurchaseServiceImpl implements PurchaseService {
         purchase.setPurchaseId(entity.getId());
 
         return purchase;
+    }
+
+    @Override
+    @Transactional
+    public BankOperation findBankDebitInfosFromPurchase(PurchaseDTO purchase) {
+        try
+        {
+            User sender = this.userDAO.findUserByLogin(purchase.getLoginUser());
+            return new BankOperation(sender.getUserNumeroBank(), sender.getUserNameBank(), purchase.getAmount());
+        } catch (UserNotFoundException.NoExistUserException e)
+        {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public BankOperation findBankCreditInfosFromPurchase(PurchaseDTO purchase) {
+        try
+        {
+            ExternalSeller receiver = this.esDAO.findSellerByLogin(purchase.getLoginSeller());
+            return new BankOperation(receiver.getSellerNumeroBank(), receiver.getSellerNameBank(), purchase.getAmount());
+        } catch (SellerNotRegisteredException e)
+        {
+            throw new RuntimeException();
+        }
     }
 
     @Override

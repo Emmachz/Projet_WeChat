@@ -2,6 +2,7 @@ package fr.pantheonsorbonne.ufr27.miage.camel;
 
 
 import fr.pantheonsorbonne.ufr27.miage.camel.gateway.CompteGateway;
+import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchAccountException;
 import fr.pantheonsorbonne.ufr27.miage.dto.BankOperation;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import org.apache.camel.CamelContext;
@@ -35,40 +36,26 @@ public class CamelRoutes extends RouteBuilder {
 
         camelContext.setTracing(true);
 
-        /*onException(NoSuchAccountException.class)
+        onException(NoSuchAccountException.class)
                 .handled(true)
                 .setHeader("success", simple("false"))
-                .setBody(simple("Le compte bancaire n existe pas : Mauvais Nom de Banque !"));*/
+                .setBody(simple("Le compte bancaire n existe pas : Mauvais Nom de Banque !"));
 
         from("sjms2:" + jmsPrefix + "MyBankSystem?exchangePattern=InOut")
                 .unmarshal().json(TransfertArgent.class)
+                .bean(accountGateway, "realizeOperation")
                 .bean(checkUserHandler)
                 .choice()
-                    .when(header("success").isEqualTo(false))
-                        .log("Le compte bancaire n existe pas : Mauvais Nom de Banque !")
-                        .setBody(simple("Compte n existe pas : Mauvais Compte"))
-                        .marshal().json()
-                        .stop()
-                    .when(header("DoubleCompt").isEqualTo(true))
-                        .bean(accountGateway, "updateTwoComptesBank")
-                        .setHeader("DoubleCompt", simple("true"))
-                        .log("Versement entre deux comptes bancaires termine : success")
-                        .marshal().json()
-                        .stop()
-                    .when(header("emetteur").isEqualTo(true))
-                        .bean(accountGateway, "updateCompteBankCredit")
-                        .setHeader("emetteur", simple("true"))
-                        .log("Operation de l'emetteur  : success")
-                        .marshal().json()
-                        .stop()
-                    .when(header("receveur").isEqualTo(true))
-                        .bean(accountGateway, "updateCompteBankDebit")
-                        .setHeader("receveur", simple("true"))
-                        .log("Operation de le receveur  : success")
-                        .marshal().json()
-                        .stop()
-
-                ;
+                .when(header("success").isEqualTo(false))
+                .log("Le compte bancaire n existe pas : Mauvais Nom de Banque !")
+                .marshal().json()
+                .stop()
+                .otherwise()
+                .log("Versement termine : success")
+                .marshal().json()
+                .stop()
+                .end()
+        ;
 
         from("sjms2:" + jmsPrefix + "bank-debit?exchangePattern=InOut")
                 .filter(exchange -> exchange.getMessage().getBody(BankOperation.class).getBankName() != bankName)
@@ -77,6 +64,7 @@ public class CamelRoutes extends RouteBuilder {
         from("sjms2:" + jmsPrefix + "bank-credit?exchangePattern=InOut")
                 .filter(exchange -> exchange.getMessage().getBody(BankOperation.class).getBankName() != bankName)
                 .bean(accountGateway, "credit");
+
     }
 
 }

@@ -14,9 +14,9 @@ public class CompteGateway {
    @Inject
    OperationService operationService;
 
-    public TransfertArgent updateTwoComptesBank(TransfertArgent transfertArgent){ return operationService.updateTwoComptesBank(transfertArgent);}
-    public TransfertArgent updateCompteBankCredit(TransfertArgent transfertArgent){ return operationService.updateCompteBankCredit(transfertArgent);}
-    public TransfertArgent updateCompteBankDebit(TransfertArgent transfertArgent){return operationService.updateCompteBankDebit(transfertArgent);}
+    TransfertArgent realizeOperation (TransfertArgent transfertArgent) throws NoSuchAccountException {
+        return operationService.realizeOperation(transfertArgent);
+    }
 
     public BankOperation debit(BankOperation debitInfos)
     {
@@ -43,5 +43,4 @@ public class CompteGateway {
         }
         return creditInfos;
     }
-
 }

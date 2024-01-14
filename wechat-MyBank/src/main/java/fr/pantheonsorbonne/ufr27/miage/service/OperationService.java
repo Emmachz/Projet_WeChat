@@ -6,9 +6,7 @@ import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import fr.pantheonsorbonne.ufr27.miage.exception.UnsufficientAmountInAccountException;
 
 public interface OperationService {
-    TransfertArgent updateTwoComptesBank(TransfertArgent transfertArgent);
-    TransfertArgent updateCompteBankCredit(TransfertArgent transfertArgent);
-    TransfertArgent updateCompteBankDebit(TransfertArgent transfertArgent);
+    TransfertArgent realizeOperation (TransfertArgent transfertArgent) throws NoSuchAccountException;
 
     void creditMoney(String bankNumber, double amount) throws NoSuchAccountException;
 

@@ -8,15 +8,7 @@ import fr.pantheonsorbonne.ufr27.miage.model.Versement;
 
 public interface VersementService {
 
-    Versement findTwoUsersVersement (TransfertArgent transfertArgent);
-
-    TransfertArgent initTransfer(TransfertArgent transfertArgent) throws UserNotFoundException.NoExistUserException;
-
-    BankOperation findBankDebitInfosFromTransfer(TransfertArgent transfer);
-
-    BankOperation findBankDebitInfosFromPurchase(PurchaseDTO purchase);
-
-    BankOperation findBankCreditInfosFromPurchase(PurchaseDTO purchase);
+    Versement findTwoUsersVersement (TransfertArgent transfertArgent) throws UserNotFoundException.NoExistUserException;
 
     TransfertArgent realizeVersementWallet (Versement versement);
 

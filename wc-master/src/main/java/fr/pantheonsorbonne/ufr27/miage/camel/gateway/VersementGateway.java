@@ -1,6 +1,7 @@
 package fr.pantheonsorbonne.ufr27.miage.camel.gateway;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
+import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.model.Versement;
 import fr.pantheonsorbonne.ufr27.miage.service.VersementService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -19,7 +20,7 @@ public class VersementGateway {
         return versementService.sendInfosToBank(versement);
     }
 
-    public Versement findTwoUsersVersement (TransfertArgent transfertArgent) { return versementService.findTwoUsersVersement(transfertArgent);}
+    public Versement findTwoUsersVersement (TransfertArgent transfertArgent) throws UserNotFoundException.NoExistUserException { return versementService.findTwoUsersVersement(transfertArgent);}
 
 
 }

@@ -22,81 +22,22 @@ public class VersementServiceImpl implements VersementService {
     @Inject
     UserDAO userDAO;
 
-    @Inject
-    ExternalSellerDAO esDAO;
-
-    @Inject
-    TransferDAO transferDAO;
-
     @Override
     @Transactional
-    public Versement findTwoUsersVersement (TransfertArgent transfertArgent){
-        try{
+    public Versement findTwoUsersVersement (TransfertArgent transfertArgent) throws UserNotFoundException.NoExistUserException {
             User emetteur = userDAO.findUserByLogin(transfertArgent.getLoginEmetteur());
             User receveur = userDAO.findUserByLogin(transfertArgent.getLoginReceveur());
             Versement versement = new Versement(emetteur, receveur, transfertArgent.getValue());
             return versement;
-        } catch (UserNotFoundException.NoExistUserException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public TransfertArgent initTransfer(TransfertArgent transfertArgent) throws UserNotFoundException.NoExistUserException {
-        User sender = userDAO.findUserByLogin(transfertArgent.getLoginEmetteur());
-        User receiver = userDAO.findUserByLogin(transfertArgent.getLoginReceveur());
-        var entityTransfer = this.transferDAO.createTransfer(sender, receiver, transfertArgent.getValue());
-        transfertArgent.setTransferId(entityTransfer.getVersementId());
-        return transfertArgent;
-    }
-
-    @Override
-    @Transactional
-    public BankOperation findBankDebitInfosFromTransfer(TransfertArgent transfer) {
-        try
-        {
-            User sender = this.userDAO.findUserByLogin(transfer.getLoginEmetteur());
-            return new BankOperation(sender.getUserNumeroBank(), sender.getUserNameBank(), transfer.getValue());
-        }catch (UserNotFoundException.NoExistUserException e)
-        {
-            throw new RuntimeException();
-        }
-    }
-
-    @Override
-    @Transactional
-    public BankOperation findBankDebitInfosFromPurchase(PurchaseDTO purchase) {
-        try
-        {
-            User sender = this.userDAO.findUserByLogin(purchase.getLoginUser());
-            return new BankOperation(sender.getUserNumeroBank(), sender.getUserNameBank(), purchase.getAmount());
-        } catch (UserNotFoundException.NoExistUserException e)
-        {
-            throw new RuntimeException();
-        }
-    }
-
-    @Override
-    public BankOperation findBankCreditInfosFromPurchase(PurchaseDTO purchase) {
-        try
-        {
-            ExternalSeller receiver = this.esDAO.findSellerByLogin(purchase.getLoginSeller());
-            return new BankOperation(receiver.getSellerNumeroBank(), receiver.getSellerNameBank(), purchase.getAmount());
-        } catch (SellerNotRegisteredException e)
-        {
-            throw new RuntimeException();
-        }
     }
 
     @Override
     @Transactional
     public TransfertArgent realizeVersementWallet (Versement versement){
-        try{
-            return userDAO.upadateUser(versement);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return userDAO.upadateUser(versement);
     }
+
+
     @Override
     @Transactional
     public TransfertArgent sendInfosToBank(Versement versement){

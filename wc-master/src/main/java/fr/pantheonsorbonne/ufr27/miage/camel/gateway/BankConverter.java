@@ -2,6 +2,7 @@ package fr.pantheonsorbonne.ufr27.miage.camel.gateway;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.BankOperation;
 import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseDTO;
+import fr.pantheonsorbonne.ufr27.miage.service.PurchaseService;
 import fr.pantheonsorbonne.ufr27.miage.service.VersementService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -11,7 +12,7 @@ import jakarta.inject.Inject;
 public class BankConverter {
 
     @Inject
-    VersementService service;
+    PurchaseService service;
 
     public BankOperation convertToDebitOperation(PurchaseDTO purchase) {
         BankOperation debitInfos = service.findBankDebitInfosFromPurchase(purchase);

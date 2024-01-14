@@ -2,17 +2,12 @@ package top.nextnet.resource;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-
-import jakarta.ws.rs.Path;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import top.nextnet.camel.gateways.UserGateway;
 import top.nextnet.service.PurchaseConfirmationGateway;
-import top.nextnet.service.UserGateway;
 
 
 @Path("/user")
@@ -22,15 +17,6 @@ public class UserResource {
     @Inject
     private UserGateway gateway;
 
-    @Inject
-    private PurchaseConfirmationGateway confirmationGateway;
-
-    @Path("purchase/{idPurchase}/confirm")
-    @PUT
-    public void confirmPurchase(@PathParam Long idPurchase)
-    {
-        confirmationGateway.confirmWeChatPurchase(idPurchase);
-    }
 
     @Path("{loginUser}/versement/{loginUserDest}/amount/{value}")
     @GET
