@@ -14,26 +14,26 @@ public class BankDAOImpl implements BankDAO{
     EntityManager em;
 
     @Override
-    public Bank findUser(Long bankId) throws NoSuchComptException {
+    public Bank findUser(Long bankId) throws NoSuchAccountException {
         try {
             Bank comptFind = (Bank) em.createQuery("Select compt from Bank compt where compt.bankId=:bankId").setParameter("bankId", bankId).getSingleResult();
             return comptFind;
         } catch (NoResultException e) {
-            throw new NoSuchComptException();
+            throw new NoSuchAccountException();
         }
     }
     @Override
-    public Bank findUserByNumero(String bankNumber) throws NoSuchComptException {
+    public Bank findUserByNumero(String bankNumber) throws NoSuchAccountException {
         try {
             Bank comptFind = (Bank) em.createQuery("Select compt from Bank compt where compt.bankNumber=:bankNumber").setParameter("bankNumber", bankNumber).getSingleResult();
             return comptFind;
         } catch (NoResultException e) {
-            throw new NoSuchComptException();
+            throw new NoSuchAccountException();
         }
     }
 
     @Override
-    public TransfertArgent updateTwoComptes(TransfertArgent transfertArgent) throws NoSuchComptException {
+    public TransfertArgent updateTwoComptes(TransfertArgent transfertArgent) throws NoSuchAccountException {
         try{
             Bank bankEmet = this.findUserByNumero(transfertArgent.getEmetteur().getUserNumeroBank());
             Bank bankRece = this.findUserByNumero(transfertArgent.getReceveur().getUserNumeroBank());
@@ -45,12 +45,12 @@ public class BankDAOImpl implements BankDAO{
                 em.persist(bankRece);
             }
         } catch (NoResultException e) {
-            throw new NoSuchComptException();
+            throw new NoSuchAccountException();
         }
         return transfertArgent;
     }
     @Override
-    public TransfertArgent updateCompteCredit(TransfertArgent transfertArgent) throws NoSuchComptException{
+    public TransfertArgent updateCompteCredit(TransfertArgent transfertArgent) throws NoSuchAccountException {
         try{
             Bank bankEmet = this.findUserByNumero(transfertArgent.getEmetteur().getUserNumeroBank());
             double value = transfertArgent.getValue();
@@ -59,7 +59,7 @@ public class BankDAOImpl implements BankDAO{
                 em.persist(bankEmet);
             }
         } catch (NoResultException e) {
-            throw new NoSuchComptException();
+            throw new NoSuchAccountException();
         }
         return transfertArgent;
     }
@@ -70,7 +70,7 @@ public class BankDAOImpl implements BankDAO{
             if (bankEmet.getBankAmonut() >= value){
                 return true;
             }
-        } catch (NoSuchComptException e) {
+        } catch (NoSuchAccountException e) {
             throw new RuntimeException(e);
         }
         return false;
@@ -79,7 +79,7 @@ public class BankDAOImpl implements BankDAO{
 
 
     @Override
-    public TransfertArgent updateCompteDebit(TransfertArgent transfertArgent) throws NoSuchComptException {
+    public TransfertArgent updateCompteDebit(TransfertArgent transfertArgent) throws NoSuchAccountException {
         try{
             Bank bankRece = this.findUserByNumero(transfertArgent.getReceveur().getUserNumeroBank());
             double value = transfertArgent.getValue();
@@ -88,7 +88,7 @@ public class BankDAOImpl implements BankDAO{
                 em.persist(bankRece);
             }
         } catch (NoResultException e) {
-            throw new NoSuchComptException();
+            throw new NoSuchAccountException();
         }
         return transfertArgent;
     }
@@ -102,7 +102,7 @@ public class BankDAOImpl implements BankDAO{
             account.setBankAmonut(initialBalance + amount);
             em.merge(account);
             em.flush();
-        }catch (NoSuchComptException e){
+        }catch (NoSuchAccountException e){
             System.out.println(e.getMessage());
         }
     }
@@ -116,7 +116,7 @@ public class BankDAOImpl implements BankDAO{
             account.setBankAmonut(initialBalance - amount);
             em.merge(account);
             em.flush();
-        }catch (NoSuchComptException e){
+        }catch (NoSuchAccountException e){
             System.out.println(e.getMessage());
         }
     }

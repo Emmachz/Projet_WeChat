@@ -1,9 +1,10 @@
 package fr.pantheonsorbonne.ufr27.miage.service;
 
 import fr.pantheonsorbonne.ufr27.miage.dao.BankDAO;
-import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchComptException;
+import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchAccountException;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import fr.pantheonsorbonne.ufr27.miage.dto.UserLocal;
+import fr.pantheonsorbonne.ufr27.miage.exception.UnsufficientAmountInAccountException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -15,7 +16,7 @@ public class OperationServiceImpl implements OperationService{
 
     @Override
     @Transactional
-    public TransfertArgent realizeOperation (TransfertArgent transfertArgent) throws NoSuchComptException {
+    public TransfertArgent realizeOperation (TransfertArgent transfertArgent) throws NoSuchAccountException {
         UserLocal emetteur = transfertArgent.getEmetteur();
         UserLocal receveur = transfertArgent.getReceveur();
         double value = transfertArgent.getValue();
@@ -44,12 +45,12 @@ public class OperationServiceImpl implements OperationService{
 
     @Override
     @Transactional
-    public void creditMoney(String bankNumber, double amount) {
+    public void creditMoney(String bankNumber, double amount) throws NoSuchAccountException {
         bankDAO.addMoneyToAccount(bankNumber, amount);
     }
 
     @Override
-    public void debitMoney(String bankNumber, double amount) {
+    public void debitMoney(String bankNumber, double amount) throws UnsufficientAmountInAccountException, NoSuchAccountException {
         bankDAO.debitMoneyFromAccount(bankNumber, amount);
     }
 

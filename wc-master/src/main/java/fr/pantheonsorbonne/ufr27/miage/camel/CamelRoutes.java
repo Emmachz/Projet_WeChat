@@ -1,11 +1,11 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
 
-import fr.pantheonsorbonne.ufr27.miage.camel.gateway.BankConverter;
+import fr.pantheonsorbonne.ufr27.miage.camel.handler.BankConverter;
 import fr.pantheonsorbonne.ufr27.miage.camel.gateway.VersementGateway;
 import fr.pantheonsorbonne.ufr27.miage.camel.handler.MessageResponsehandler;
 import fr.pantheonsorbonne.ufr27.miage.camel.handler.PurchaseHandler;
-import fr.pantheonsorbonne.ufr27.miage.camel.processor.PurchaseEnricher;
+import fr.pantheonsorbonne.ufr27.miage.camel.handler.PurchaseEnricher;
 import fr.pantheonsorbonne.ufr27.miage.dto.BankOperation;
 import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseConfirmation;
 import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseDTO;

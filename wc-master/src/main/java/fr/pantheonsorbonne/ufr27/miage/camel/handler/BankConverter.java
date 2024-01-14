@@ -1,4 +1,4 @@
-package fr.pantheonsorbonne.ufr27.miage.camel.gateway;
+package fr.pantheonsorbonne.ufr27.miage.camel.handler;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.BankOperation;
 import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseDTO;

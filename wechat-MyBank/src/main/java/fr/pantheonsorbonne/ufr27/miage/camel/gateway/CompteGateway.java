@@ -4,7 +4,7 @@ import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchAccountException;
 import fr.pantheonsorbonne.ufr27.miage.dto.BankOperation;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import fr.pantheonsorbonne.ufr27.miage.exception.UnsufficientAmountInAccountException;
-import fr.pantheonsorbonne.ufr27.miage.service.OperationService;
+import fr.pantheonsorbonne.ufr27.miage.service.OperationServiceImpl;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -12,7 +12,7 @@ import jakarta.inject.Inject;
 public class CompteGateway {
 
    @Inject
-   OperationService operationService;
+   OperationServiceImpl operationService;
 
     TransfertArgent realizeOperation (TransfertArgent transfertArgent) throws NoSuchAccountException {
         return operationService.realizeOperation(transfertArgent);
