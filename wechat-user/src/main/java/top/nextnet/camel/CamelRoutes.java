@@ -36,8 +36,8 @@ public class CamelRoutes extends RouteBuilder {
                 .to("sjms2:" + jmsPrefix + "givingDonation");
 
         from("sjms2:topic:alert" + userRegion + jmsPrefix)
-                //.unmarshal().json(Alert.class)
-                .log("${body}");
+                .unmarshal().json(Alert.class)
+                .log("${body.getAlertDescription()}");
 
 
         /*from("direct:confirm-purchase")

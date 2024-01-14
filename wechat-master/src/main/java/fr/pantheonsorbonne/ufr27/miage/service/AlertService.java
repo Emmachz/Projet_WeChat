@@ -7,6 +7,8 @@ public interface AlertService {
 
     Alert alert(Alert alert) throws EventNotFoundException;
 
-    void addAlert(Alert alert);
+    void addAlert(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert);
+
+    String getRegionId(String regionName);
 
 }

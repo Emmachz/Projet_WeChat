@@ -4,7 +4,6 @@ import fr.pantheonsorbonne.ufr27.miage.exception.AlertNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.model.Alert;
 import fr.pantheonsorbonne.ufr27.miage.model.Region;
 
-
 import fr.pantheonsorbonne.ufr27.miage.service.AlertService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -17,8 +16,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.netty.handler.codec.http.HttpHeaders.setHeader;
-
 @ApplicationScoped
 public class AlertGateway {
 
@@ -29,8 +26,7 @@ public class AlertGateway {
     CamelContext camelContext;
 
     public void addAlert(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert){
-        Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region(getRegionId(alert.getAlertRegion()),alert.getAlertRegion()));
-        this.alertService.addAlert(newAlert);
+        this.alertService.addAlert(alert);
     }
 
     public void transfertAlert(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert) throws AlertNotFoundException, IOException {
@@ -43,26 +39,8 @@ public class AlertGateway {
     }
 
     private Alert createNewAlert(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert) {
-        String regionId = getRegionId(alert.getAlertRegion());
+        String regionId = this.alertService.getRegionId(alert.getAlertRegion());
         return new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region(regionId, alert.getAlertRegion()));
-    }
-
-    private String getRegionId(String regionName) {
-        Map<String, String> regionNameMapping = new HashMap<>();
-        regionNameMapping.put("auvergne-rhone-alpes", "FR-ARA");
-        regionNameMapping.put("bourgogne-franche-comte", "FR-BFC");
-        regionNameMapping.put("bretagne", "FR-BRE");
-        regionNameMapping.put("corse", "FR-COR");
-        regionNameMapping.put("centre-val-de-loire", "FR-CVL");
-        regionNameMapping.put("grand-est", "FR-GES");
-        regionNameMapping.put("hauts-de-france", "FR-HDF");
-        regionNameMapping.put("ile-de-france", "FR-IDF");
-        regionNameMapping.put("nouvelle-aquitaine", "FR-NAQ");
-        regionNameMapping.put("normandie", "FR-NOR");
-        regionNameMapping.put("occitanie", "FR-ACC");
-        regionNameMapping.put("provence-alpes-cote-dazur", "FR-PAC");
-        regionNameMapping.put("pays-de-la-loire", "FR-PDL");
-        return regionNameMapping.get(regionName);
     }
 
     private void sendAlertToTopic(ProducerTemplate producerTemplate, Alert newAlert) {
