@@ -17,5 +17,6 @@ public interface AlertService {
     String addEventService(Event event);
 
     void deleteEventServiceId(int id);
+    void addEventAllRegionService(Event event);
 
 }

@@ -28,6 +28,10 @@ public class CamelRoutes extends RouteBuilder {
         from ("direct:Alert")
                 .marshal().json()
                 .to("sjms2:" + jmsPrefix + "sendAlert");
+
+        from ("direct:AlertAllRegion")
+                .marshal().json()
+                .to("sjms2:" + jmsPrefix + "sendAlertAllRegion");
     }
 
     private static class ExpiredTransitionalTicketProcessor implements Processor {

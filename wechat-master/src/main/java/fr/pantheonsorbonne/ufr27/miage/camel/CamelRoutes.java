@@ -1,10 +1,8 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
-
 import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
 import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import fr.pantheonsorbonne.ufr27.miage.exception.ExpiredTransitionalTicketException;
-import fr.pantheonsorbonne.ufr27.miage.service.AlertService;
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
@@ -15,17 +13,15 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @ApplicationScoped
 public class CamelRoutes extends RouteBuilder {
 
     @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.jmsPrefix")
     String jmsPrefix;
-
-    //@ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.UserId")
-    //int idUser;
-
-    @Inject
-    AlertService alertService;
     @Inject
     fr.pantheonsorbonne.ufr27.miage.camel.handler.GivingHandler givingHandler;
     @Inject
@@ -42,9 +38,23 @@ public class CamelRoutes extends RouteBuilder {
 
         from("sjms2:" + jmsPrefix + "sendAlert")
                 .unmarshal().json(Alert.class)
-                .log("Clearning expiredtransitional ticket ${body}")
                 .bean(alertGateway, "addAlert")
                 .bean(alertGateway, "transfertAlert");
+
+        from("sjms2:" + jmsPrefix + "sendAlertAllRegion")
+                .unmarshal().json(Alert.class)
+                .bean(alertGateway, "addAlertAllRegion")
+                .marshal().json()
+                .process(exchange -> {
+                    List<String> allRegions = Arrays.asList("auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
+                            "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
+                            "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire");
+                    List<String> topicList = allRegions.stream()
+                            .map(region -> "sjms2:topic:alert" + region + jmsPrefix)
+                            .collect(Collectors.toList());
+                    exchange.getIn().setHeader("topicList", topicList);
+                })
+                .recipientList(simple("${header.topicList}"));
 
 
         from("direct:alerttransfert")
@@ -67,7 +77,6 @@ public class CamelRoutes extends RouteBuilder {
                 .when(header("typeGive").isEqualTo("clothe"))
                 .bean(givingGateway, "giveClothe")
                 .marshal().json();
-
     }
 
     private static class ExpiredTransitionalTicketProcessor implements Processor {

@@ -63,4 +63,12 @@ public class EventDAOImpl implements EventDAO {
         }
     }
 
+    @Override
+    @Transactional
+    public void sendAllEvent(Event event){
+        Event newEvent = new Event(event.getCategory(), event.getRegion(), event.getDate(), event.getHour(), event.getDescription());
+        Event attachedEvent = em.merge(event);
+        em.persist(attachedEvent);
+    }
+
 }

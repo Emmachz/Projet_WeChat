@@ -57,6 +57,13 @@ public class EventResource {
         return this.alertService.addEventService(event);
     }
 
+    @Path(("/addAllEvent"))
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public void addAllEvent(Event event) {
+        this.alertService.addEventAllRegionService(event);
+    }
+
     @Path("deleteEvent/{alertId}")
     @DELETE
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -64,5 +71,4 @@ public class EventResource {
     public void deleteEvent(@PathParam("alertId") int alertId) {
         this.alertService.deleteEventServiceId(alertId);
     }
-
 }

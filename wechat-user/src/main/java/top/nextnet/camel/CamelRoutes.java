@@ -1,19 +1,12 @@
 package top.nextnet.camel;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
-import fr.pantheonsorbonne.ufr27.miage.dto.Booking;
-import fr.pantheonsorbonne.ufr27.miage.dto.CancelationNotice;
-import fr.pantheonsorbonne.ufr27.miage.dto.ETicket;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.camel.CamelContext;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-
-import java.util.HashMap;
 
 @ApplicationScoped
 public class CamelRoutes extends RouteBuilder {
@@ -39,6 +32,9 @@ public class CamelRoutes extends RouteBuilder {
                 .unmarshal().json(Alert.class)
                 .log("${body.getAlertDescription()}");
 
+        from("sjms2:topic:alertcorse"+ jmsPrefix)
+                .unmarshal().json(Alert.class)
+                .log("${body.getAlertDescription()}");
 
         /*from("direct:confirm-purchase")
                 .marshal().json()//, "onBookedResponseReceived"

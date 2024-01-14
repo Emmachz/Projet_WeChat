@@ -23,6 +23,11 @@ public class AlertServiceImpl implements AlertService {
         this.alertDAO.addAlert(newAlert);
     }
 
+    public void addAlertAllRegion(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert){
+        Alert newAlert=new Alert(alert.getAlertId(), alert.getAlertDescription(), alert.getAlertRegion(), new Region(getRegionId(alert.getAlertRegion()), alert.getAlertRegion()));
+        this.alertDAO.addAlertAllRegion(newAlert);
+    }
+
     public String getRegionId(String regionName) {
         Map<String, String> regionNameMapping = new HashMap<>();
         regionNameMapping.put("auvergne-rhone-alpes", "FR-ARA");
@@ -38,6 +43,7 @@ public class AlertServiceImpl implements AlertService {
         regionNameMapping.put("occitanie", "FR-ACC");
         regionNameMapping.put("provence-alpes-cote-dazur", "FR-PAC");
         regionNameMapping.put("pays-de-la-loire", "FR-PDL");
+        regionNameMapping.put("all", "FR-ALL");
         return regionNameMapping.get(regionName);
     }
 

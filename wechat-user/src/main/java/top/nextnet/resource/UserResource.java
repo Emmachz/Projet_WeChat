@@ -29,15 +29,7 @@ public class UserResource {
                              @jakarta.ws.rs.PathParam("quantity") int quantity) {
         this.gateway.sendGivingOrder(new Giving(donationId, "ile-de-france", typeGive, quantity));
     }
-/*
-    @Path("/getAllAlert")
-    @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Collection<Alert> getAlert() {
 
-        return this.alertService.getEventService();
-    }
-    */
 
 
 }

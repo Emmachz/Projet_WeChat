@@ -11,7 +11,8 @@ VALUES ('FR-ARA', 'auvergne-rhone-alpes'),
        ('FR-NAQ', 'nouvelle-aquitaine'),
        ('FR-OCC', 'occitanie'),
        ('FR-PDL', 'pays-de-la-loire'),
-       ('FR-PAC', 'provence-alpes-cote-dazur');
+       ('FR-PAC', 'provence-alpes-cote-dazur'),
+       ('FR-ALL', 'all');
 
 
 INSERT INTO `Alert` (idAlert, description, region, idRegion )
