@@ -14,7 +14,6 @@ VALUES ('FR-ARA', 'auvergne-rhone-alpes'),
        ('FR-PAC', 'provence-alpes-cote-dazur'),
        ('FR-ALL', 'all');
 
-
 INSERT INTO `Alert` (idAlert, description, region, idRegion )
 VALUES (1,'attentat','ile-de-france', 'FR-IDF');
 
