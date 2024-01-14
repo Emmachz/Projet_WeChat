@@ -29,8 +29,10 @@ public class VersementServiceImpl implements VersementService {
     @Override
     @Transactional
     public TransfertArgent realizeVersementWallet (Versement versement){
-            return userDAO.upadateUser(versement);
+        return userDAO.upadateUser(versement);
     }
+
+
     @Override
     @Transactional
     public TransfertArgent sendInfosToBank(Versement versement){

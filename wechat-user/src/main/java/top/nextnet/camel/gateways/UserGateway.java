@@ -3,5 +3,5 @@ package top.nextnet.camel.gateways;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 
 public interface UserGateway {
-    void sendTransfertInfos(TransfertArgent transfertArgent);
+    String sendTransfertInfos(TransfertArgent transfertArgent);
 }

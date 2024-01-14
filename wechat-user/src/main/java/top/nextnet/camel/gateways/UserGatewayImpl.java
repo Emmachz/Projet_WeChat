@@ -15,11 +15,13 @@ public class UserGatewayImpl implements UserGateway {
     CamelContext context;
 
     @Override
-    public void sendTransfertInfos(TransfertArgent transfertArgent) {
+    public String sendTransfertInfos(TransfertArgent transfertArgent) {
         try (ProducerTemplate producer = context.createProducerTemplate()) {
             producer.sendBody("direct:versement", transfertArgent);
+            return "OK";
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return "KO";
     }
 }
