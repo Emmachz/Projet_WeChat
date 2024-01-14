@@ -29,10 +29,6 @@ public class AlertGateway {
         this.alertService.addAlert(alert);
     }
 
-    public void addAlertAllRegion(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert){
-        this.alertService.addAlertAllRegion(alert);
-    }
-
     public void transfertAlert(fr.pantheonsorbonne.ufr27.miage.dto.Alert alert) throws AlertNotFoundException, IOException {
         try (ProducerTemplate producerTemplate = camelContext.createProducerTemplate()) {
             Alert newAlert = createNewAlert(alert);

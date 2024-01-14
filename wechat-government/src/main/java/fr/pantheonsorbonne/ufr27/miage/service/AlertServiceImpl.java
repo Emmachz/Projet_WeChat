@@ -51,15 +51,10 @@ public class AlertServiceImpl implements AlertService {
         this.eventdao.deleteEvent(id);
     }
 
-    public void addEventAllRegionService(Event event){
-        this.eventdao.sendAllEvent(event);
-        this.alertGateway.sendAlertAllRegion(event);
-    }
-
     private boolean isValidRegion(Event event) {
         String[] validRegions = {"auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
                 "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
-                "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire"};
+                "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire", "all"};
         return Arrays.asList(validRegions).contains(event.getRegion());
     }
 

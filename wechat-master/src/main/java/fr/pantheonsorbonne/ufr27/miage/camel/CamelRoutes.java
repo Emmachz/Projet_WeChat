@@ -43,7 +43,7 @@ public class CamelRoutes extends RouteBuilder {
 
         from("sjms2:" + jmsPrefix + "sendAlertAllRegion")
                 .unmarshal().json(Alert.class)
-                .bean(alertGateway, "addAlertAllRegion")
+                .bean(alertGateway, "addAlert")
                 .marshal().json()
                 .process(exchange -> {
                     List<String> allRegions = Arrays.asList("auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",

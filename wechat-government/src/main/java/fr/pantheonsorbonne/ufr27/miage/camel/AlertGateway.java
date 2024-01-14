@@ -16,18 +16,14 @@ public class AlertGateway {
 
     public void sendAlert(Event event) {
         try (ProducerTemplate producerTemplate = camelContext.createProducerTemplate()) {
-            producerTemplate.sendBody("direct:Alert", new Alert(event.getIdEvent(), event.getDescription(), event.getRegion()));
+            if(event.getRegion().equals("all")){
+                producerTemplate.sendBody("direct:AlertAllRegion", new Alert(event.getIdEvent(), event.getDescription(), event.getRegion()));
+            }
+            else {
+                producerTemplate.sendBody("direct:Alert", new Alert(event.getIdEvent(), event.getDescription(), event.getRegion()));
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
-    public void sendAlertAllRegion(Event event){
-        try (ProducerTemplate producerTemplate = camelContext.createProducerTemplate()) {
-            producerTemplate.sendBody("direct:AlertAllRegion", new Alert(event.getIdEvent(), event.getDescription(), event.getRegion()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 }
