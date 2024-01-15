@@ -23,34 +23,32 @@ Tous les échanges monétaires effectués par WeChat avec les banques doivent ê
 ## Effectuer un virement sur WeChat
 ### Exigences fonctionnelles
 Le master DOIT permettre réaliser l'opération de versement en cas de solde de WeChat suffisant.
-Le bank DOIT permettre réaliser l'opération de versement en cas de solde de WeChat insuffisant.
+La banque DOIT permettre de réaliser l'opération de versement en cas de solde de WeChat insuffisant.
 Le master DOIT informer le User en cas de succès de versement par email.
 
 <img width="556" alt="Capture d’écran 2024-01-15 à 03 35 25" src="https://github.com/Emmachz/Projet_WeChat/assets/112880851/0cb49b26-c7c4-42b0-baa7-49035abab6a6">
 
-## Envoyer une alert au utilisateur WeChat
+## Envoyer une alerte aux utilisateurs WeChat
 ### Exigences fonctionnelles
--Le master DOIT fournir uniquement ce qui a été envoyé par le gouvernement.
--Le gouvernement DOIT alerter sur wechat les utilisateurs lorsqu’il y a un événement majeur.
--Les utilisateurs DOIT recevoir uniquement les alerts qui concerne sa région 
--Le gouvernement DOIT envoyer un événement à une région existante métropole française. 
--Le master DOIT envoyer un alerte à une région existante dans la métropole française.
--Le gouvernement DOIT pouvoir envoyer une alerte à une seule région.
--Le gouvernement DOIT pouvoir envoyer une alerte à toutes les régions de la métropole française.
-### Exigences non fonctionnelle
--Lors de l’envoie d’une alert, le gouvernement doit informer tous les utilisateurs concernés de façon fiable
+Le gouvernement DOIT alerter sur WeChat les utilisateurs lorsqu’il y a un événement majeur.
+Les utilisateurs DOIVENT recevoir uniquement les alertes qui concernent leur région. 
+Le master DOIT envoyer un alerte à une région existante dans la France métropolitaine.
+Le gouvernement DOIT pouvoir envoyer une alerte à une seule région.
+Le gouvernement DOIT pouvoir envoyer une alerte à toutes les régions de la France métropolitaine.
+### Exigences non fonctionnelles
+Lors de l’envoie d’une alerte, le gouvernement doit informer tous les utilisateurs concernés de façon fiable.
 
 <img width="515" alt="Capture d’écran 2024-01-15 à 03 36 35" src="https://github.com/Emmachz/Projet_WeChat/assets/112880851/1934c479-a942-4e7f-93f3-89489f46f9c6">
 
 ## Effectuer des donations sur Wechat 
 ### Exigences fonctionnelles
-le gouvernement DOIT créer un donation 
-Le master DOIT envoyer à toutes les régions, à l'exception celle impacter
-L’utilisateur DOIT faire une don
-Si le don de l’utilisateur est de l’argent, il DOIT faire un versement à gouvernement 
-Si la quantité demandée est atteinte, le master DOIT envoyer une demande d’update au gouvernement
+Pour aider une région, le gouvernement DOIT créer une demande de donations et la lier à une région sur WeChat.
+Le master DOIT envoyer la demande de donations à toutes les régions, à l'exception de la région impactée.
+Pour répondre à une demande de don, l’utilisateur DOIT effectuer un don depuis WeChat.
+Si le don de l’utilisateur est de l’argent, il DOIT faire un versement au gouvernement. 
+Si la quantité demandée est atteinte, le master DOIT envoyer une demande d’update au gouvernement.
 ### Exigences non fonctionnelle
--Les donations effectué sur WeChat doit être fiable
+Les donations effectuées sur WeChat doivents être fiables.
 
 <img width="497" alt="Capture d’écran 2024-01-15 à 03 37 30" src="https://github.com/Emmachz/Projet_WeChat/assets/112880851/d76e0ef1-c1ab-4ac8-b610-83db5a5a07aa">
 
