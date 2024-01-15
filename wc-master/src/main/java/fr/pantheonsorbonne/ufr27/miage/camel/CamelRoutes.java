@@ -107,15 +107,18 @@ public class CamelRoutes extends RouteBuilder {
                 .to("sjms2:" + jmsPrefix + "MyBankSystem?exchangePattern=InOut")
                 .choice()
                 .when(header("success").isEqualTo(true))
-                .to("sjms2:" + jmsPrefix + "YesBankSystem?exchangePattern=InOut")
-                .choice()
-                .when(header("success").isEqualTo(true))
-                .to("sjms2:" + jmsPrefix + "versementSuccesEmetteur")
-                .stop()
-                .otherwise()
-                .log("Versement Non Success : Erreur YesBankSystem ")
+                    .to("sjms2:" + jmsPrefix + "YesBankSystem?exchangePattern=InOut")
+                    .choice()
+                    .when(header("success").isEqualTo(true))
+                    .to("sjms2:" + jmsPrefix + "versementSuccesEmetteur")
+                    .endChoice()
+                    .otherwise()
+                    .log("Versement Non Success : Erreur YesBankSystem ")
+                    .endChoice()
                 .otherwise()
                 .log("Versement Non Success : Erreur MyBankSystem ")
+                .endChoice()
+                .endChoice()
                 .end()
         ;
 
@@ -140,14 +143,14 @@ public class CamelRoutes extends RouteBuilder {
                 .when(header("credit-success").isEqualTo(false))//Le crédit n'a pas eu lieu
                 .bean(bankConverter, "convertToDebitOperation")//Reformation du débit initial
                 .log("send back to user")
-                .to("sjms2:" + jmsPrefix + "bank-credit?exchangePattern=InOut")//Qui sera finalement crédité à l'acheteur après l'échec du débit
+                .to("sjms2:topic:" + jmsPrefix + "bank-credit?exchangePattern=InOut")//Qui sera finalement crédité à l'acheteur après l'échec du débit
                 .log("Error occurred during creditation of the seller. User get his money back.");
 
 
         from("sjms2:" + jmsPrefix + "credit-seller?exchangePattern=InOut")
                 .unmarshal().json(PurchaseDTO.class)
                 .bean(bankConverter, "convertToCreditOperation")//Créer un crédit
-                .to("sjms2:" + jmsPrefix + "bank-credit?exchangePattern=InOut")//Envoyé vers la route banque
+                .to("sjms2:topic:" + jmsPrefix + "bank-credit?exchangePattern=InOut")//Envoyé vers la route banque
                 .process(exchange -> {
                     BankOperation credit = exchange.getMessage().getBody(BankOperation.class);
                     exchange.getMessage().setHeader("credit-success", credit.isComplete()); //Permet de donner l'info de la créditation ou non
@@ -165,7 +168,7 @@ public class CamelRoutes extends RouteBuilder {
                 .choice()
                 .when(header("debit-success").isEqualTo(false))
                 .bean(bankConverter, "convertToDebitOperation")
-                .to("sjms2:" + jmsPrefix + "bank-debit?exchangePattern=InOut")
+                .to("sjms2:topic:" + jmsPrefix + "bank-debit?exchangePattern=InOut")
                 .process(exchange -> {
                     BankOperation debit = exchange.getMessage().getBody(BankOperation.class);
                     exchange.getMessage().setHeader("debit-success", debit.isComplete());

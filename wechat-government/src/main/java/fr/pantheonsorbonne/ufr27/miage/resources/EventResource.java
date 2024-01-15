@@ -29,7 +29,7 @@ public class EventResource {
         return this.alertService.getEventServiceId(alertId);
     }
 
-    @Path("/{alertId}/region/{alertRegion}")
+    @Path("/{alertId}/newRegion/{alertRegion}")
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})

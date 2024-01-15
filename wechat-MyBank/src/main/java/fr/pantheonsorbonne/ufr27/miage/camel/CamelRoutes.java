@@ -64,11 +64,11 @@ public class CamelRoutes extends RouteBuilder {
                 .end()
         ;
 
-        from("sjms2:" + jmsPrefix + "bank-debit?exchangePattern=InOut")
+        from("sjms2:topic:" + jmsPrefix + "bank-debit?exchangePattern=InOut")
                 .filter(exchange -> exchange.getMessage().getBody(BankOperation.class).getBankName() != bankName)
                 .bean(accountGateway, "debit");
 
-        from("sjms2:" + jmsPrefix + "bank-credit?exchangePattern=InOut")
+        from("sjms2:topic:" + jmsPrefix + "bank-credit?exchangePattern=InOut")
                 .filter(exchange -> exchange.getMessage().getBody(BankOperation.class).getBankName() != bankName)
                 .bean(accountGateway, "credit");
 
