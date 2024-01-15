@@ -1,15 +1,15 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
 
+import fr.pantheonsorbonne.ufr27.miage.camel.gateway.AlertGateway;
+import fr.pantheonsorbonne.ufr27.miage.camel.gateway.DonationGateway;
+import fr.pantheonsorbonne.ufr27.miage.camel.gateway.GivingGateway;
 import fr.pantheonsorbonne.ufr27.miage.camel.handler.BankConverter;
 import fr.pantheonsorbonne.ufr27.miage.camel.gateway.VersementGateway;
 import fr.pantheonsorbonne.ufr27.miage.camel.handler.MessageResponsehandler;
 import fr.pantheonsorbonne.ufr27.miage.camel.handler.PurchaseHandler;
 import fr.pantheonsorbonne.ufr27.miage.camel.handler.PurchaseEnricher;
-import fr.pantheonsorbonne.ufr27.miage.dto.BankOperation;
-import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseConfirmation;
-import fr.pantheonsorbonne.ufr27.miage.dto.PurchaseDTO;
-import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
+import fr.pantheonsorbonne.ufr27.miage.dto.*;
 import fr.pantheonsorbonne.ufr27.miage.exception.AlreadyPaidPurchaseException;
 import fr.pantheonsorbonne.ufr27.miage.exception.SellerNotRegisteredException;
 import fr.pantheonsorbonne.ufr27.miage.exception.UserNotExistingException;
@@ -21,6 +21,10 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class CamelRoutes extends RouteBuilder {
@@ -34,6 +38,8 @@ public class CamelRoutes extends RouteBuilder {
     @Inject
     fr.pantheonsorbonne.ufr27.miage.camel.handler.VersementResponseHandler versementResponseHandler;
 
+    @Inject
+    fr.pantheonsorbonne.ufr27.miage.camel.handler.GivingHandler givingHandler;
     @Inject
     MessageResponsehandler messageResponsehandler;
 
@@ -51,6 +57,15 @@ public class CamelRoutes extends RouteBuilder {
 
     @Inject
     BankConverter bankConverter;
+
+    @Inject
+    GivingGateway givingGateway;
+
+    @Inject
+    AlertGateway alertGateway;
+
+    @Inject
+    DonationGateway donationGateway;
 
     @Override
     public void configure() throws Exception {
@@ -157,7 +172,104 @@ public class CamelRoutes extends RouteBuilder {
                 .end()
         ;
 
+        from("sjms2:" + jmsPrefix + "sendAlert")
+                .unmarshal().json(Alert.class)
+                .bean(alertGateway, "addAlert")
+                .bean(alertGateway, "transfertAlert");
 
+        from("direct:alerttransfert")
+                .marshal().json()
+                .process(exchange -> {
+                    String headerRegion = exchange.getIn().getHeader("headerRegion", String.class);
+                    String topicName = "sjms2:topic:alert" + headerRegion + jmsPrefix;
+                    exchange.getIn().setHeader("topicName", topicName);
+                })
+                .toD("${header.topicName}");
+
+        from("sjms2:" + jmsPrefix + "sendAlertAllRegion")
+                .unmarshal().json(Alert.class)
+                .bean(alertGateway, "addAlert")
+                .marshal().json()
+                .process(exchange -> {
+                    List<String> allRegions = Arrays.asList("auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
+                            "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
+                            "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire");
+                    List<String> topicList = allRegions.stream()
+                            .map(region -> "sjms2:topic:alert" + region + jmsPrefix)
+                            .collect(Collectors.toList());
+                    exchange.getIn().setHeader("topicList", topicList);
+                })
+                .recipientList(simple("${header.topicList}"));
+
+
+
+        from("sjms2:" + jmsPrefix + "sendDonation")
+                .unmarshal().json(Donation.class)
+                .bean(donationGateway, "addDonation")
+                .process(exchange -> {
+                    List<String> allRegions = Arrays.asList("auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
+                            "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
+                            "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire");;
+
+                    String regionOnNeed =  ((Donation)exchange.getIn().getBody()).getRegionOfNeed();
+
+                    List<String> topicList = allRegions.stream()
+                            .filter(region -> !region.equals(regionOnNeed))
+                            .map(region -> "sjms2:topic:donation" + region + jmsPrefix)
+                            .collect(Collectors.toList());
+
+                    exchange.getIn().setHeader("topicList", topicList);
+                }).marshal().json()
+                .recipientList(simple("${header.topicList}"));
+
+
+
+        from("sjms2:" + jmsPrefix + "givingDonation")
+                .unmarshal().json(Giving.class)
+                .bean(givingGateway, "convertirGiving")
+                .bean(givingHandler)
+                .choice()
+                .when(header("typeGive").isEqualTo("money"))
+                .choice()
+                .when(header("success").isEqualTo(true))
+                .bean(givingGateway, "giveMoney")
+                .marshal().json()
+                .to("sjms2:" + jmsPrefix + "sendGovernment")
+                .stop()
+                .when(header("success").isEqualTo("passBank"))
+                .choice()
+                .when(header("bank").isEqualTo("MyBank"))
+                .marshal().json()
+                .to("sjms2:" + jmsPrefix + "MyBankGiving?exchangePattern=InOut")
+                .choice()
+                .when(header("success").isEqualTo(true))
+                .to("sjms2:" + jmsPrefix + "sendGovernment")
+                .stop()
+                .otherwise()
+                .to("sjms2:" + jmsPrefix + "FailedGiving")
+                .stop()
+                .when(header("bank").isEqualTo("YesBank"))
+                .marshal().json()
+                .to("sjms2:" + jmsPrefix + "YesBankGiving?exchangePattern=InOut")
+                .choice()
+                .when(header("success").isEqualTo(true))
+                .to("sjms2:" + jmsPrefix + "sendGovernment")
+                .stop()
+                .otherwise()
+                .to("sjms2:" + jmsPrefix + "FailedGiving")
+                .stop()
+                .when(header("typeGive").isEqualTo("time"))
+                .bean(givingGateway, "giveTime")
+
+                .when(header("typeGive").isEqualTo("clothe"))
+                .bean(givingGateway, "giveClothe")
+                .marshal().json()
+                .end();
+
+
+        from("direct:updateDonation")
+                .marshal().json()
+                .to("sjms2:" + jmsPrefix + "updateDonation");
 
 
     }

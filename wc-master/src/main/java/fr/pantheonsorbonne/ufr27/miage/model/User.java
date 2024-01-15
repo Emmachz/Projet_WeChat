@@ -15,22 +15,23 @@ public class User {
     private String userLogin;
     @Column(name = "user_email", nullable = false, unique = true)
     private String userEmail;
-    @Column(name = "user_region", length = 100)
-    private String userRegion;
     @Column(name = "user_wallet")
     private double userWallet;
     @Column(name = "user_nameBank")
     private String userNameBank;
     @Column(name = "user_numeroBank")
     private String userNumeroBank;
+    @ManyToOne
+    @JoinColumn(name = "id_region")
+    private Region idRegion;
 
     public User (String userName, String userLogin,
-                 String userEmail, String userRegion, double userWallet,
+                 String userEmail, Region idRegion, double userWallet,
                  String userNameBank,String userNumeroBank ){
         this.userName = userName;
         this. userLogin = userLogin;
         this. userEmail = userEmail;
-        this.userRegion = userRegion;
+        this.idRegion = idRegion;
         this.userWallet = userWallet;
         this.userNameBank = userNameBank;
         this.userNumeroBank =userNumeroBank;
@@ -70,12 +71,12 @@ public class User {
         return userEmail;
     }
 
-    public void setUserRegion (String userRegion){
-        this.userRegion = userRegion;
+    public void setUserRegion (Region idRegion){
+        this.idRegion = idRegion;
     }
 
-    public String getUserRegion(){
-        return userRegion;
+    public Region getUserRegion(){
+        return idRegion;
     }
 
     public void setUserNameBank (String bankName){

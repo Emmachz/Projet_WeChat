@@ -1,9 +1,9 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
+import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import fr.pantheonsorbonne.ufr27.miage.dto.UserLocal;
 import fr.pantheonsorbonne.ufr27.miage.exception.UnsufficientWalletAmountToPay;
-import fr.pantheonsorbonne.ufr27.miage.exception.UserNotExistingException;
 import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
 import fr.pantheonsorbonne.ufr27.miage.model.Versement;
@@ -42,14 +42,6 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    @Transactional
-    public void removeUser(Long userId) {
-        User u = em.find(User.class, userId);
-        if (u != null) {
-            em.remove(u);
-        }
-    }
-    @Override
     public TransfertArgent upadateUser (Versement versement){
         try{
             User emetteur = em.find(User.class, versement.getEmetteurId().getUserId());
@@ -60,8 +52,8 @@ public class UserDAOImpl implements UserDAO {
                 receveur.setUserWallet(receveur.getUserWallet() + value);
                 em.persist(emetteur);
                 em.persist(receveur);
-                UserLocal emetteurLocal = new UserLocal(emetteur.getUserName(), emetteur.getUserLogin(), emetteur.getUserEmail(), emetteur.getUserNameBank(), emetteur.getUserNumeroBank());
-                UserLocal receveurLocal = new UserLocal(receveur.getUserName(), receveur.getUserLogin(), receveur.getUserEmail(), receveur.getUserNameBank(), receveur.getUserNumeroBank());
+                UserLocal emetteurLocal = new UserLocal(emetteur.getUserName(), emetteur.getUserWallet(), emetteur.getUserLogin(), emetteur.getUserRegion().getRegion(), emetteur.getUserEmail(), emetteur.getUserNameBank(), emetteur.getUserNumeroBank());
+                UserLocal receveurLocal = new UserLocal(receveur.getUserName(), receveur.getUserWallet(), receveur.getUserLogin(), receveur.getUserRegion().getRegion(), receveur.getUserEmail(), receveur.getUserNameBank(), receveur.getUserNumeroBank());
                 return new TransfertArgent(emetteurLocal,receveurLocal, value);
             }
         } catch (NoResultException e) {
@@ -106,5 +98,20 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
+    @Override
+    public Giving upadateUserGiving(Giving give){
+        try{
+            User emetteur = this.findUserByLogin(give.getUsergive().userLogin());
+            double value = give.getQuantity();
+            if (emetteur != null){
+                emetteur.setUserWallet(emetteur.getUserWallet() - value);
+                em.persist(emetteur);
+                return give;
+            }
+        } catch (UserNotFoundException.NoExistUserException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
 
 }

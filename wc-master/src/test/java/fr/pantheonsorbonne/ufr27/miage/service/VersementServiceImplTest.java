@@ -4,6 +4,7 @@ import fr.pantheonsorbonne.ufr27.miage.dao.UserDAO;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import fr.pantheonsorbonne.ufr27.miage.dto.UserLocal;
 import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
+import fr.pantheonsorbonne.ufr27.miage.model.Region;
 import fr.pantheonsorbonne.ufr27.miage.model.User;
 import fr.pantheonsorbonne.ufr27.miage.model.Versement;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,11 +28,12 @@ public class VersementServiceImplTest {
 
     @BeforeEach
     public void setup() throws UserNotFoundException.NoExistUserException {
-        User emetteur = new User("liu", "haliu", "mail@gmail.com", "paris", 20, "MyBank", "1234567890");
-        User receveur = new User("ounissi", "onimyriam", "mail1@gmail.com", "paris", 50, "MyBank", "0234567890");
+        Region regionTest = new Region("PAR","paris");
+        User emetteur = new User("liu", "haliu", "mail@gmail.com", regionTest, 20, "MyBank", "1234567890");
+        User receveur = new User("ounissi", "onimyriam", "mail1@gmail.com", regionTest, 50, "MyBank", "0234567890");
 
-        UserLocal emetteurLocal = new UserLocal(emetteur.getUserName(), emetteur.getUserLogin(), emetteur.getUserEmail(), emetteur.getUserNameBank(), emetteur.getUserNumeroBank());
-        UserLocal receveurLocal = new UserLocal(receveur.getUserName(), receveur.getUserLogin(), receveur.getUserEmail(), receveur.getUserNameBank(), receveur.getUserNumeroBank());
+        UserLocal emetteurLocal = new UserLocal(emetteur.getUserName(), emetteur.getUserWallet(), emetteur.getUserLogin(), emetteur.getUserRegion().getRegion(), emetteur.getUserEmail(), emetteur.getUserNameBank(), emetteur.getUserNumeroBank());
+        UserLocal receveurLocal = new UserLocal(receveur.getUserName(), receveur.getUserWallet(), receveur.getUserLogin(), receveur.getUserRegion().getRegion(), receveur.getUserEmail(), receveur.getUserNameBank(), receveur.getUserNumeroBank());
         lenient().when(userDAO.findUserByLogin("haliu")).thenReturn(emetteur);
         lenient().when(userDAO.findUserByLogin("onimyriam")).thenReturn(receveur);
         lenient().when(userDAO.upadateUser(any())).thenAnswer((Answer<TransfertArgent>) invocationOnMock -> new TransfertArgent(emetteurLocal, receveurLocal, 5));
@@ -51,8 +53,9 @@ public class VersementServiceImplTest {
 
     @Test
     public void sendInfosToBank(){
-        User emetteur = new User("liu", "haliu", "mail@gmail.com", "paris", 20, "MyBank", "1234567890");
-        User receveur = new User("ounissi", "onimyriam", "mail1@gmail.com", "paris", 50, "MyBank", "0234567890");
+        Region regionTest = new Region("PAR","paris");
+        User emetteur = new User("liu", "haliu", "mail@gmail.com", regionTest, 20, "MyBank", "1234567890");
+        User receveur = new User("ounissi", "onimyriam", "mail1@gmail.com", regionTest, 50, "MyBank", "0234567890");
         TransfertArgent test = versementService.sendInfosToBank(new Versement(emetteur, receveur, 5));
         assertEquals(5, test.getValue());
     }

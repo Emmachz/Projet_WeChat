@@ -16,6 +16,7 @@ import java.util.HashMap;
 
 @ApplicationScoped
 public class CamelRoutes extends RouteBuilder {
+
     @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.userRegion")
     String userRegion;
 
@@ -24,6 +25,9 @@ public class CamelRoutes extends RouteBuilder {
 
     @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.userLogin")
     String userLogin;
+
+    @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.userMail")
+    String userMail;
 
     @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.smtp.user")
     String smtpUser;
@@ -64,12 +68,12 @@ public class CamelRoutes extends RouteBuilder {
                     public void process(Exchange exchange) throws Exception {
                         TransfertArgent transfertArgent = exchange.getMessage().getMandatoryBody(TransfertArgent.class);
                         exchange.getMessage().setHeaders(new HashMap<>());
-                        exchange.getMessage().setHeader("to", transfertArgent.getEmetteur().getUserEmail());
+                        exchange.getMessage().setHeader("to", transfertArgent.getEmetteur().userEmail());
                         exchange.getMessage().setHeader("from", smtpFrom);
                         exchange.getMessage().setHeader("contentType", "text/html");
                         exchange.getMessage().setHeader("subject", "Versement Success");
-                        exchange.getMessage().setBody("Bonjour " + transfertArgent.getEmetteur().getUserName() +"," +
-                                "\n\n Votre versement " + transfertArgent.getValue() + " euros a "+ transfertArgent.getReceveur().getUserName()+" a ete mise en place avec success." +
+                        exchange.getMessage().setBody("Bonjour " + transfertArgent.getEmetteur().userName() +"," +
+                                "\n\n Votre versement " + transfertArgent.getValue() + " euros a "+ transfertArgent.getReceveur().userName()+" a ete mise en place avec success." +
                                 "\n\n Merci voutr confiance. \n\n WeChat");
                     }
                 })
@@ -98,7 +102,26 @@ public class CamelRoutes extends RouteBuilder {
                 .unmarshal().json(Donation.class)
                 .log("Vous voulez faire un don pour : ${body.getDescription} ? ");
 
+        from("sjms2:" + jmsPrefix + "FailedGiving")
+                .log("Message Versement Failed ${body} ${headers}")
+                .filter(header("login").isEqualTo(userLogin))
+                .unmarshal().json(TransfertArgent.class)
+                .process(new Processor() {
+                    @Override
+                    public void process(Exchange exchange) throws Exception {
 
+                        exchange.getMessage().setHeaders(new HashMap<>());
+                        exchange.getMessage().setHeader("to",userMail);
+                                exchange.getMessage().setHeader("from", smtpFrom);
+                        exchange.getMessage().setHeader("contentType", "text/html");
+                        exchange.getMessage().setHeader("subject", "Versement Failed");
+                                exchange.getMessage().setBody("Bonjour " +userLogin +"," +
+                                        "\n\n Votre versement n a pas ete mise en place avec success." +
+                                        "\n\n Merci voutr confiance. \n\n WeChat");
+                    }
+                })
+                .log("Message Versement Failed ${body} ${headers}")
+                .to("smtps:" + smtpHost + ":" + smtpPort + "?username=" + smtpUser + "&password=" + smtpPassword + "&contentType=");
 
     }
 }

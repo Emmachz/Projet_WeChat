@@ -17,7 +17,7 @@ public class GivingHandler {
                 exchange.getMessage().setHeader("success", true);
             }else {
                 exchange.getMessage().setHeader("success", "passBank");
-                exchange.getMessage().setHeader("bank", give.getUsergive().userNameBank());
+                exchange.getMessage().setHeader("bank", give.getUsergive().userNumeroBank());
             }
     }
 }

@@ -4,6 +4,7 @@ package fr.pantheonsorbonne.ufr27.miage.camel;
 import fr.pantheonsorbonne.ufr27.miage.camel.gateway.CompteGateway;
 import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchAccountException;
 import fr.pantheonsorbonne.ufr27.miage.dto.BankOperation;
+import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
@@ -30,6 +31,12 @@ public class CamelRoutes extends RouteBuilder {
 
     @Inject
     CamelContext camelContext;
+
+    @Inject
+    CompteGateway compteGateway;
+
+    @Inject
+    fr.pantheonsorbonne.ufr27.miage.camel.handler.checkGivingHandler checkGivingHandler;
 
     @Override
     public void configure() throws Exception {
@@ -65,6 +72,20 @@ public class CamelRoutes extends RouteBuilder {
                 .filter(exchange -> exchange.getMessage().getBody(BankOperation.class).getBankName() != bankName)
                 .bean(accountGateway, "credit");
 
+        from("sjms2:" + jmsPrefix + "MyBankGiving?exchangePattern=InOut")
+                .unmarshal().json(Giving.class)
+                .bean(compteGateway, "realizeOperationGiving")
+                .bean(checkGivingHandler)
+                .choice()
+                .when(header("success").isEqualTo(false))
+                .log("Le compte bancaire n existe pas : Mauvais Nom de Banque !")
+                .marshal().json()
+                .stop()
+                .otherwise()
+                .log("Versement termine : success")
+                .marshal().json()
+                .stop()
+                .end();
     }
 
 }

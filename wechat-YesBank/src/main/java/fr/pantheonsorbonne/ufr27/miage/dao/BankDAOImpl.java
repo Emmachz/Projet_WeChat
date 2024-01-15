@@ -1,5 +1,6 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
+import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import fr.pantheonsorbonne.ufr27.miage.model.Bank;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -35,8 +36,8 @@ public class BankDAOImpl implements BankDAO{
     @Override
     public TransfertArgent updateTwoComptes(TransfertArgent transfertArgent) throws NoSuchAccountException {
         try{
-            Bank bankEmet = this.findUserByNumero(transfertArgent.getEmetteur().getUserNumeroBank());
-            Bank bankRece = this.findUserByNumero(transfertArgent.getReceveur().getUserNumeroBank());
+            Bank bankEmet = this.findUserByNumero(transfertArgent.getEmetteur().userNumeroBank());
+            Bank bankRece = this.findUserByNumero(transfertArgent.getReceveur().userNumeroBank());
             double value = transfertArgent.getValue();
             if (bankEmet != null && bankRece != null){
                 bankEmet.setBankAmonut(bankEmet.getBankAmonut() - value);
@@ -52,7 +53,7 @@ public class BankDAOImpl implements BankDAO{
     @Override
     public TransfertArgent updateCompteCredit(TransfertArgent transfertArgent) throws NoSuchAccountException {
         try{
-            Bank bankEmet = this.findUserByNumero(transfertArgent.getEmetteur().getUserNumeroBank());
+            Bank bankEmet = this.findUserByNumero(transfertArgent.getEmetteur().userNumeroBank());
             double value = transfertArgent.getValue();
             if (bankEmet != null){
                 bankEmet.setBankAmonut(bankEmet.getBankAmonut() - value);
@@ -81,7 +82,7 @@ public class BankDAOImpl implements BankDAO{
     @Override
     public TransfertArgent updateCompteDebit(TransfertArgent transfertArgent) throws NoSuchAccountException {
         try{
-            Bank bankRece = this.findUserByNumero(transfertArgent.getReceveur().getUserNumeroBank());
+            Bank bankRece = this.findUserByNumero(transfertArgent.getReceveur().userNumeroBank());
             double value = transfertArgent.getValue();
             if (bankRece != null){
                 bankRece.setBankAmonut(bankRece.getBankAmonut() + value);
@@ -119,6 +120,21 @@ public class BankDAOImpl implements BankDAO{
         }catch (NoSuchAccountException e){
             System.out.println(e.getMessage());
         }
+    }
+
+    @Override
+    public Giving updateGivingComptes (Giving giving) throws NoSuchAccountException {
+        try {
+            Bank compte = this.findUserByNumero(giving.getUsergive().userNumeroBank());
+            double value = giving.getQuantity();
+            if (compte != null) {
+                compte.setBankAmonut(compte.getBankAmonut() - value);
+                em.persist(compte);
+            }
+        } catch (NoResultException e) {
+            throw new NoSuchAccountException();
+        }
+        return giving;
     }
 
 }

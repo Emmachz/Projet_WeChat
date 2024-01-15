@@ -17,7 +17,7 @@ public class checkUserHandler {
             exchange.getMessage().setHeader("emetteur", transfertArgent.getLoginEmetteur());
         }else {
             exchange.getMessage().setHeader("success", true);
-            exchange.getMessage().setHeader("emetteur", transfertArgent.getEmetteur().getUserLogin());
+            exchange.getMessage().setHeader("emetteur", transfertArgent.getEmetteur().userLogin());
         }
     }
 }

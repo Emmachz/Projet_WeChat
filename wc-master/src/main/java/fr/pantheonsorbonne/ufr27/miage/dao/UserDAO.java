@@ -1,6 +1,7 @@
 package fr.pantheonsorbonne.ufr27.miage.dao;
 
 
+import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import fr.pantheonsorbonne.ufr27.miage.exception.UnsufficientWalletAmountToPay;
 import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
@@ -19,6 +20,5 @@ public interface UserDAO {
 
     void creditAmountToUser(String login, double amount);
 
-    void removeUser (Long userId);
-
+    Giving upadateUserGiving(Giving give);
 }

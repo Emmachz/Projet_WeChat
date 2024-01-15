@@ -2,6 +2,7 @@ package fr.pantheonsorbonne.ufr27.miage.camel.gateway;
 
 import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchAccountException;
 import fr.pantheonsorbonne.ufr27.miage.dto.BankOperation;
+import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import fr.pantheonsorbonne.ufr27.miage.exception.UnsufficientAmountInAccountException;
 import fr.pantheonsorbonne.ufr27.miage.service.OperationServiceImpl;
@@ -13,6 +14,11 @@ public class CompteGateway {
 
    @Inject
    OperationServiceImpl operationService;
+
+
+    public Giving realizeOperationGiving(Giving give) throws NoSuchAccountException {
+        return operationService.realizeOperationGiving(give);
+    }
 
     TransfertArgent realizeOperation (TransfertArgent transfertArgent) throws NoSuchAccountException {
         return operationService.realizeOperation(transfertArgent);

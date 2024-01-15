@@ -2,6 +2,7 @@ package fr.pantheonsorbonne.ufr27.miage.service;
 
 import fr.pantheonsorbonne.ufr27.miage.dao.BankDAO;
 import fr.pantheonsorbonne.ufr27.miage.dao.NoSuchAccountException;
+import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import fr.pantheonsorbonne.ufr27.miage.dto.UserLocal;
 import fr.pantheonsorbonne.ufr27.miage.exception.UnsufficientAmountInAccountException;
@@ -19,25 +20,25 @@ public class OperationServiceImpl implements OperationService{
         UserLocal emetteur = transfertArgent.getEmetteur();
         UserLocal receveur = transfertArgent.getReceveur();
         double value = transfertArgent.getValue();
-        if(!transfertArgent.getEmetteur().getUserNameBank().equals("MyBank") && !transfertArgent.getReceveur().getUserNameBank().equals("MyBank")){
-            return new TransfertArgent(emetteur.getUserLogin(), receveur.getUserLogin(), transfertArgent.getValue());
-        }else if (transfertArgent.getEmetteur().getUserNameBank().equals("MyBank") && transfertArgent.getReceveur().getUserNameBank().equals("MyBank")){
-            if (bankDAO.checkSolde(emetteur.getUserNumeroBank(), value) && bankDAO.checkSolde(receveur.getUserNumeroBank(), value)){
+        if(!transfertArgent.getEmetteur().userNameBank().equals("MyBank") && !transfertArgent.getReceveur().userNameBank().equals("MyBank")){
+            return new TransfertArgent(emetteur.userLogin(), receveur.userLogin(), transfertArgent.getValue());
+        }else if (transfertArgent.getEmetteur().userNameBank().equals("MyBank") && transfertArgent.getReceveur().userNameBank().equals("MyBank")){
+            if (bankDAO.checkSolde(emetteur.userNumeroBank(), value) && bankDAO.checkSolde(receveur.userNumeroBank(), value)){
                 bankDAO.updateTwoComptes(transfertArgent);
                 return transfertArgent;
             }
-        } else if (transfertArgent.getEmetteur().getUserNameBank().equals("MyBank")) {
-            if (bankDAO.checkSolde(emetteur.getUserNumeroBank(), value)){
+        } else if (transfertArgent.getEmetteur().userNameBank().equals("MyBank")) {
+            if (bankDAO.checkSolde(emetteur.userNumeroBank(), value)){
                 bankDAO.updateCompteCredit(transfertArgent);
                 return transfertArgent;
             }
-        }else if (transfertArgent.getReceveur().getUserNameBank().equals("MyBank")){
-            if (bankDAO.checkSolde(receveur.getUserNumeroBank(), value)){
+        }else if (transfertArgent.getReceveur().userNameBank().equals("MyBank")){
+            if (bankDAO.checkSolde(receveur.userNumeroBank(), value)){
                 bankDAO.updateCompteDebit(transfertArgent);
                 return transfertArgent;
             }
         }
-        return new TransfertArgent(emetteur.getUserLogin(), receveur.getUserLogin(), transfertArgent.getValue());
+        return new TransfertArgent(emetteur.userLogin(), receveur.userLogin(), transfertArgent.getValue());
     }
 
 
@@ -52,6 +53,16 @@ public class OperationServiceImpl implements OperationService{
         bankDAO.debitMoneyFromAccount(bankNumber, amount);
     }
 
+    @Override
+    @Transactional
+    public Giving realizeOperationGiving(Giving give) throws NoSuchAccountException {
+        if (bankDAO.checkSolde(give.getUsergive().userNumeroBank(), give.getQuantity())){
+            bankDAO.updateGivingComptes(give);
+            return give;
+        }else{
+            return new Giving(give.getDonationId(),give.getUsergive().userLogin(), give.getTypeGive(), give.getQuantity());
+        }
+    }
 
 
 }

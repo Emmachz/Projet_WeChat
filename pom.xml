@@ -10,13 +10,12 @@
     <name>project-m1</name>
     <modules>
         <module>wc-master</module>
-        <module>ticket-master</module>
-        <module>ticket-vendor</module>
         <module>ticket-commons</module>
         <module>wechat-MyBank</module>
         <module>wechat-YesBank</module>
         <module>wechat-seller</module>
         <module>wechat-user</module>
+        <module>wechat-government</module>
     </modules>
     <build>
         <plugins>

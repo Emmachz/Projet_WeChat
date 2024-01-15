@@ -10,8 +10,8 @@ public class MessageResponsehandler {
     @Handler
     public TransfertArgent sendMessage(Exchange exchange) {
         TransfertArgent transfertArgent = exchange.getMessage().getBody(TransfertArgent.class);
-        exchange.getMessage().setHeader("emetteur", transfertArgent.getEmetteur().getUserLogin());
-        exchange.getMessage().setHeader("receveur", transfertArgent.getReceveur().getUserLogin());
+        exchange.getMessage().setHeader("emetteur", transfertArgent.getEmetteur().userLogin());
+        exchange.getMessage().setHeader("receveur", transfertArgent.getReceveur().userLogin());
         return transfertArgent;
 
     }

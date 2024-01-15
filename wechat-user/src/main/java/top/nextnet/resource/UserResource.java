@@ -15,6 +15,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 
 import top.nextnet.camel.gateways.GivingGateway;
+import top.nextnet.camel.gateways.UserGateway;
 
 
 @Path("/user")
@@ -25,7 +26,7 @@ public class UserResource {
     GivingGateway gateway;
 
     @Inject
-    private UserGateway usergateway;
+    private UserGateway userGateway;
 
     @Path("/give/{userLogin}/{helpId}/{typeGive}/{quantity}")
     @GET
@@ -44,7 +45,7 @@ public class UserResource {
                                       @jakarta.ws.rs.PathParam("loginUserDest") String loginUserDest,
                                       @jakarta.ws.rs.PathParam("value") double value) {
 
-        return usergateway.sendTransfertInfos(new TransfertArgent(loginUser, loginUserDest, value));
+        return userGateway.sendTransfertInfos(new TransfertArgent(loginUser, loginUserDest, value));
 
     }
 }
