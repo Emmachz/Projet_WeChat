@@ -51,6 +51,7 @@ public class OperationServiceImpl implements OperationService{
     }
 
     @Override
+    @Transactional
     public void debitMoney(String bankNumber, double amount) throws UnsufficientAmountInAccountException, NoSuchAccountException {
         bankDAO.debitMoneyFromAccount(bankNumber, amount);
     }

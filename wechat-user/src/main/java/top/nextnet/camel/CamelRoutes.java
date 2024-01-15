@@ -2,6 +2,7 @@ package top.nextnet.camel;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
 import fr.pantheonsorbonne.ufr27.miage.dto.Donation;
+import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import fr.pantheonsorbonne.ufr27.miage.dto.TransfertArgent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -24,7 +25,7 @@ public class CamelRoutes extends RouteBuilder {
     String jmsPrefix;
 
     @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.userLogin")
-    String userLogin;
+    String userLoginLocal;
 
     @ConfigProperty(name = "fr.pantheonsorbonne.ufr27.miage.userMail")
     String userMail;
@@ -61,7 +62,7 @@ public class CamelRoutes extends RouteBuilder {
 
         from("sjms2:" + jmsPrefix + "versementSuccesEmetteur")
                 .log("Message Versement succès ${body} ${headers}")
-                .filter(header("emetteur").isEqualTo(userLogin))
+                .filter(header("emetteur").isEqualTo(userLoginLocal))
                 .unmarshal().json(TransfertArgent.class)
                 .process(new Processor() {
                     @Override
@@ -103,9 +104,9 @@ public class CamelRoutes extends RouteBuilder {
                 .log("Vous voulez faire un don pour : ${body.getDescription} ? ");
 
         from("sjms2:" + jmsPrefix + "FailedGiving")
-                .log("Message Versement Failed ${body} ${headers}")
-                .filter(header("login").isEqualTo(userLogin))
-                .unmarshal().json(TransfertArgent.class)
+                .log("Message Giving Failed ${body} ${headers}")
+                .filter(header("login").isEqualTo(userLoginLocal))
+                .unmarshal().json(Giving.class)
                 .process(new Processor() {
                     @Override
                     public void process(Exchange exchange) throws Exception {
@@ -114,13 +115,13 @@ public class CamelRoutes extends RouteBuilder {
                         exchange.getMessage().setHeader("to",userMail);
                                 exchange.getMessage().setHeader("from", smtpFrom);
                         exchange.getMessage().setHeader("contentType", "text/html");
-                        exchange.getMessage().setHeader("subject", "Versement Failed");
-                                exchange.getMessage().setBody("Bonjour " +userLogin +"," +
-                                        "\n\n Votre versement n a pas ete mise en place avec success." +
+                        exchange.getMessage().setHeader("subject", "Giving Failed");
+                                exchange.getMessage().setBody("Bonjour " +userLoginLocal +"," +
+                                        "\n\n Votre Giving n a pas ete mise en place avec success." +
                                         "\n\n Merci voutr confiance. \n\n WeChat");
                     }
                 })
-                .log("Message Versement Failed ${body} ${headers}")
+                .log("Message Giving Failed ${body} ${headers}")
                 .to("smtps:" + smtpHost + ":" + smtpPort + "?username=" + smtpUser + "&password=" + smtpPassword + "&contentType=");
 
     }
