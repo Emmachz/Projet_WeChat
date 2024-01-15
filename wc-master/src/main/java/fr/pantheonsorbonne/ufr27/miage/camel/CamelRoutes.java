@@ -137,14 +137,7 @@ public class CamelRoutes extends RouteBuilder {
                 .choice()
                 .when(header("debit-success").isEqualTo(true))//Le débit a bien eu lieu
                 .marshal().json()
-                .to("sjms2:" + jmsPrefix + "credit-seller?exchangePattern=InOut")//Crédite l'acheteur
-                .unmarshal().json(PurchaseDTO.class)
-                .choice()
-                .when(header("credit-success").isEqualTo(false))//Le crédit n'a pas eu lieu
-                .bean(bankConverter, "convertToDebitOperation")//Reformation du débit initial
-                .log("send back to user")
-                .to("sjms2:topic:" + jmsPrefix + "bank-credit?exchangePattern=InOut")//Qui sera finalement crédité à l'acheteur après l'échec du débit
-                .log("Error occurred during creditation of the seller. User get his money back.");
+                .to("sjms2:" + jmsPrefix + "credit-seller?exchangePattern=InOut");//Crédite l'acheteur
 
 
         from("sjms2:" + jmsPrefix + "credit-seller?exchangePattern=InOut")
