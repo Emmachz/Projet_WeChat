@@ -2,6 +2,7 @@ package fr.pantheonsorbonne.ufr27.miage.service;
 
 import fr.pantheonsorbonne.ufr27.miage.camel.DonationGateway;
 import fr.pantheonsorbonne.ufr27.miage.dao.DonationDAO;
+import fr.pantheonsorbonne.ufr27.miage.dto.EDonation;
 import fr.pantheonsorbonne.ufr27.miage.model.Donation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -41,9 +42,9 @@ public class DonationServiceImpl implements DonationService {
     }
     @Override
     @Transactional
-    public void updateDonation(fr.pantheonsorbonne.ufr27.miage.dto.Donation donation) {
-
-        Donation updateDonation=new Donation( donation.getDescription(), donation.getRegionOfNeed(), donation.getMoneySupport(), donation.getTimeSupport(), donation.getClotheSupport(), donation.getMoneyGived(), donation.getTimeGived(), donation.getClotheGived());
+    public void updateDonation(EDonation donation) {
+        System.out.println("dfjce "+donation.getDonationId());
+        Donation updateDonation=new Donation(donation.getDonationId(), donation.getDescription(), donation.getRegionOfNeed(), donation.getMoneySupport(), donation.getTimeSupport(), donation.getClotheSupport(), donation.getMoneyGived(), donation.getTimeGived(), donation.getClotheGived());
         this.donationDao.updateDonation(updateDonation);
 
     }

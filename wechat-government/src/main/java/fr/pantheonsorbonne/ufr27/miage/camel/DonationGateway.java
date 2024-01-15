@@ -1,6 +1,7 @@
 package fr.pantheonsorbonne.ufr27.miage.camel;
 
 import fr.pantheonsorbonne.ufr27.miage.dto.Alert;
+import fr.pantheonsorbonne.ufr27.miage.dto.EDonation;
 import fr.pantheonsorbonne.ufr27.miage.dto.Giving;
 import fr.pantheonsorbonne.ufr27.miage.model.Donation;
 import fr.pantheonsorbonne.ufr27.miage.model.Event;
@@ -34,7 +35,7 @@ public class DonationGateway {
             throw new RuntimeException(e);
         }
     }
-    public void updateDonation(fr.pantheonsorbonne.ufr27.miage.dto.Donation donation){
+    public void updateDonation(EDonation donation){
         this.donationService.updateDonation(donation);
     }
 

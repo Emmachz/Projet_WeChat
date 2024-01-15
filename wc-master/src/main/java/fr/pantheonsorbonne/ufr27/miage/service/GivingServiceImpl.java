@@ -48,7 +48,10 @@ public class GivingServiceImpl implements GivingService {
     @Transactional
     public Giving giveTime(Giving give) throws UnsuficientQuotaDonationException{
         try {
-            Donation donation = callDonation( give);
+            System.out.println("ici");
+            Donation donation = callDonation(give);
+
+            System.out.println("ici" + donation.getDescription());
             donation.setTimeGived(donation.getTimeGived() + give.getQuantity());
             em.persist(donation);
             if (donation.getTimeGived()>donation.getTimeSupport()){
@@ -85,7 +88,7 @@ public class GivingServiceImpl implements GivingService {
     }
 
     private Donation callDonation(Giving give){
-        return  (Donation) (em.createQuery("select d from  Donation d  where d.donationId =: donationId").setParameter("donationId", give.getHelpId()).getSingleResult());
+        return  em.createQuery("select d from  Donation d  where d.donationId =: id", Donation.class).setParameter("id", give.getDonationId()).getSingleResult();
 
     }
 

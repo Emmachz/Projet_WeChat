@@ -87,7 +87,9 @@ public class CamelRoutes extends RouteBuilder {
         onException(AlreadyPaidPurchaseException.class)
                 .handled(true)
                 .log("This purchase has already been confirmed.");
-
+/**
+ * CAMEL MASTER : TRANSFERT D'ARGENT
+ */
         from("sjms2:" + jmsPrefix + "TransfertArgent")
                 .unmarshal().json(TransfertArgent.class)
                 .bean(versementGateway, "findTwoUsersVersement")
@@ -171,7 +173,9 @@ public class CamelRoutes extends RouteBuilder {
                 .bean(enricher, "findPurchaseInfosFromBankOperation")
                 .end()
                 .marshal().json();
-
+/**
+ * CAMEL MASTER : SEND ALERT
+ */
         from("sjms2:" + jmsPrefix + "sendAlert")
                 .unmarshal().json(Alert.class)
                 .bean(alertGateway, "addAlert")
@@ -201,42 +205,67 @@ public class CamelRoutes extends RouteBuilder {
                     exchange.getIn().setHeader("topicName", topicName);
                 })
                 .toD("${header.topicName}");
+        /**
+         * CAMEL MASTER : SEND A DONATION
+         */
+        from("sjms2:" + jmsPrefix + "sendDonation")
+                .unmarshal().json(Donation.class)
+                .bean(donationGateway, "addDonation")
+                .process(exchange -> {
+                    List<String> allRegions = Arrays.asList("auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
+                            "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
+                            "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire");;
 
+                    String regionOnNeed =  ((Donation)exchange.getIn().getBody()).getRegionOfNeed();
+
+                    List<String> topicList = allRegions.stream()
+                            .filter(region -> !region.equals(regionOnNeed))
+                            .map(region -> "sjms2:topic:donation" + region + jmsPrefix)
+                            .collect(Collectors.toList());
+
+                    exchange.getIn().setHeader("topicList", topicList);
+                }).marshal().json()
+                .recipientList(simple("${header.topicList}"));
+
+
+        /**
+        * CAMEL MASTER : GIVING DONATION
+        */
         from("sjms2:" + jmsPrefix + "givingDonation")
                 .unmarshal().json(Giving.class)
                 .bean(givingGateway, "convertirGiving")
-                .bean(givingHandler)
+                .bean(givingHandler, "checkTypeOfGive")
                 .choice()
-                .when(header("typeGive").isEqualTo("money"))
-                .choice()
-                .when(header("success").isEqualTo(true))
-                .bean(givingGateway, "giveMoney")
-                .marshal().json()
-                .to("sjms2:" + jmsPrefix + "sendGovernment")
-                .stop()
-                .when(header("success").isEqualTo("passBank"))
-                .choice()
-                .when(header("bank").isEqualTo("MyBank"))
-                .marshal().json()
-                .to("sjms2:" + jmsPrefix + "MyBankGiving?exchangePattern=InOut")
-                .choice()
-                .when(header("success").isEqualTo(true))
-                .to("sjms2:" + jmsPrefix + "sendGovernment")
-                .stop()
-                .otherwise()
-                .to("sjms2:" + jmsPrefix + "FailedGiving")
-                .stop()
-                .when(header("bank").isEqualTo("YesBank"))
-                .marshal().json()
-                .to("sjms2:" + jmsPrefix + "YesBankGiving?exchangePattern=InOut")
-                .choice()
-                .when(header("success").isEqualTo(true))
-                .to("sjms2:" + jmsPrefix + "sendGovernment")
-                .stop()
-                .otherwise()
-                .to("sjms2:" + jmsPrefix + "FailedGiving")
-                .stop()
-                .when(header("typeGive").isEqualTo("time"))
+                    .when(header("typeGive").isEqualTo("money")).log("ezerfr")
+                        .choice().log("jfsdfosdj")
+                            .when(header("success").isEqualTo(true))
+                                .bean(givingGateway, "giveMoney")
+                                .marshal().json()
+                                .to("sjms2:" + jmsPrefix + "sendGovernment")
+                                .stop()
+                            .when(header("success").isEqualTo("passBank"))
+                                .choice()
+                                    .when(header("bank").isEqualTo("MyBank"))
+                                    .marshal().json()
+                                    .to("sjms2:" + jmsPrefix + "MyBankGiving?exchangePattern=InOut")
+                                .choice()
+                                    .when(header("success").isEqualTo(true))
+                                    .to("sjms2:" + jmsPrefix + "sendGovernment")
+                                    .stop()
+                                    .otherwise()
+                                    .to("sjms2:" + jmsPrefix + "FailedGiving")
+                                    .stop()
+                                    .when(header("bank").isEqualTo("YesBank"))
+                                    .marshal().json()
+                                    .to("sjms2:" + jmsPrefix + "YesBankGiving?exchangePattern=InOut")
+                                        .choice()
+                                            .when(header("success").isEqualTo(true))
+                                            .to("sjms2:" + jmsPrefix + "sendGovernment")
+                                            .stop()
+                                            .otherwise()
+                                            .to("sjms2:" + jmsPrefix + "FailedGiving")
+                                            .stop()
+                .when(header("typeGive").isEqualTo("time")).log("jfosdj")
                 .bean(givingGateway, "giveTime")
 
                 .when(header("typeGive").isEqualTo("clothe"))

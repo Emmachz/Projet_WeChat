@@ -1,5 +1,6 @@
 package fr.pantheonsorbonne.ufr27.miage.camel.gateway;
 
+import fr.pantheonsorbonne.ufr27.miage.dto.EDonation;
 import fr.pantheonsorbonne.ufr27.miage.exception.DonationNotFoundException;
 import fr.pantheonsorbonne.ufr27.miage.model.Donation;
 import fr.pantheonsorbonne.ufr27.miage.model.Region;
@@ -36,7 +37,7 @@ public class DonationGateway {
     public void updateDonation(Donation donation){
 
         try (ProducerTemplate producer = camelContext.createProducerTemplate()) {
-            producer.sendBody("direct:updateDonation", new fr.pantheonsorbonne.ufr27.miage.dto.Donation( donation.getDescription(), donation.getRegionOfNeed(), donation.getMoneySupport(), donation.getTimeSupport(), donation.getClotheSupport(), donation.getMoneyGived(), donation.getTimeGived(), donation.getClotheGived()));
+            producer.sendBody("direct:updateDonation", new EDonation( donation.getId(), donation.getDescription(), donation.getRegionOfNeed(), donation.getMoneySupport(), donation.getTimeSupport(), donation.getClotheSupport(), donation.getMoneyGived(), donation.getTimeGived(), donation.getClotheGived()));
         } catch (IOException e) {
             e.printStackTrace();
         }

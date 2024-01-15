@@ -6,6 +6,5 @@ public interface DonationService {
 
     void addDonation(fr.pantheonsorbonne.ufr27.miage.dto.Donation donation);
 
-    String getRegionId(String regionName);
 
 }

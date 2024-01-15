@@ -41,7 +41,6 @@ public class DonationDAOImpl implements DonationDAO {
     @Override
     @Transactional
     public void updateDonation(Donation updateDonation){
-
         Donation donation = em.find(Donation.class, updateDonation.getId());
         if (donation != null) {
             donation.setMoneyGived(updateDonation.getMoneyGived());
