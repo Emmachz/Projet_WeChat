@@ -172,21 +172,10 @@ public class CamelRoutes extends RouteBuilder {
                 .end()
                 .marshal().json();
 
-
-
         from("sjms2:" + jmsPrefix + "sendAlert")
                 .unmarshal().json(Alert.class)
                 .bean(alertGateway, "addAlert")
                 .bean(alertGateway, "transfertAlert");
-
-        from("direct:alerttransfert")
-                .marshal().json()
-                .process(exchange -> {
-                    String headerRegion = exchange.getIn().getHeader("headerRegion", String.class);
-                    String topicName = "sjms2:topic:alert" + headerRegion + jmsPrefix;
-                    exchange.getIn().setHeader("topicName", topicName);
-                })
-                .toD("${header.topicName}");
 
         from("sjms2:" + jmsPrefix + "sendAlertAllRegion")
                 .unmarshal().json(Alert.class)
@@ -204,27 +193,14 @@ public class CamelRoutes extends RouteBuilder {
                 .recipientList(simple("${header.topicList}"));
 
 
-
-        from("sjms2:" + jmsPrefix + "sendDonation")
-                .unmarshal().json(Donation.class)
-                .bean(donationGateway, "addDonation")
+        from("direct:alerttransfert")
+                .marshal().json()
                 .process(exchange -> {
-                    List<String> allRegions = Arrays.asList("auvergne-rhone-alpes", "bourgogne-franche-comte", "bretagne", "corse",
-                            "centre-val-de-loire", "grand-est", "hauts-de-france", "ile-de-france", "nouvelle-aquitaine",
-                            "normandie", "occitanie", "provence-alpes-cote-dazur", "pays-de-la-loire");;
-
-                    String regionOnNeed =  ((Donation)exchange.getIn().getBody()).getRegionOfNeed();
-
-                    List<String> topicList = allRegions.stream()
-                            .filter(region -> !region.equals(regionOnNeed))
-                            .map(region -> "sjms2:topic:donation" + region + jmsPrefix)
-                            .collect(Collectors.toList());
-
-                    exchange.getIn().setHeader("topicList", topicList);
-                }).marshal().json()
-                .recipientList(simple("${header.topicList}"));
-
-
+                    String headerRegion = exchange.getIn().getHeader("headerRegion", String.class);
+                    String topicName = "sjms2:topic:alert" + headerRegion + jmsPrefix;
+                    exchange.getIn().setHeader("topicName", topicName);
+                })
+                .toD("${header.topicName}");
 
         from("sjms2:" + jmsPrefix + "givingDonation")
                 .unmarshal().json(Giving.class)

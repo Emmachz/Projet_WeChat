@@ -90,8 +90,8 @@ public class CamelRoutes extends RouteBuilder {
 
 
         from("sjms2:topic:alertcorse"+ jmsPrefix)
-                .unmarshal().json()
-                .log("${body}");
+                .unmarshal().json(Alert.class)
+                .log("${body.getAlertDescription()}");
 
         from("sjms2:topic:donation" + userRegion + jmsPrefix)
                 .unmarshal().json(Donation.class)
