@@ -6,51 +6,53 @@ Pour tout transfert financières, chaque Utilisateur posède deux portefeuille, 
 
 De plus, le système doit prendre en charge la fonctionnalité permettant au gouvernement d'envoyer des alertes et des demandes de donationsaux utilisateurs de WeChat selon la region. Les utilisateurs correspondant aux régions demandé ont également la possibilité d'envoyer des dons, tels que des vêtements et de l'argent, selon les besoins.
 
-## Interfaces
+## Effectuer un paiement par WeChat : 
+### Exigences fonctionnelles
+Tout utilisateur ou vendeur WeChat doit relier son compte WeChat à un numéro de compte en banque et un nom de banque pour effectuer des actions monétaires sur WeChat.
+Un vendeur, inscrit en tant que vendeur externe sur WeChat, peut faire payer un acheteur par WeChat si ce dernier possède un compte sur WeChat.
+Une vente déclarée par un vendeur ne sera prise en compte par le système qu’après la confirmation de l’utilisateur relié à cette vente.
+Si un acheteur ne possède pas le montant requis sur son portefeuille WeChat, le système débite automatiquement son compte en banque.
 
-```
-artist->master: POST venue
-vendor->master: GET Gigs
-master->vendor: Collection<Gigs>
+### Exigences non fonctionnelles
+Tous les échanges monétaires effectués par WeChat avec les banques doivent être fiables.
 
-Customer->vendor: cli:gig selection
-
-vendor->master: jms:booking
-alt booking successfull
-    master->vendor: transitional tickets
-    vendor->Customer: ticket purshase ok
-    Customer->vendor: cli:customer informations
-    
-    vendor->master: jms:ticketing
-    master->vendor: tickets
-
-else booking unsuccessfull
-    master->vendor: no quota for gigs
-end
-
-opt venue cancellation
-    artist->master: DELETE venue
-    master->vendor: jms:topic:cancellation
-    vendor->Customer: smtp:cancellation email
-end
-```
-![PHOTO-2023-11-10-18-50-59](https://github.com/Emmachz/sample-quarkus-jee-project/assets/112880851/303a5f67-0efe-47c7-a5bb-dd3cfb1844a0)
+<img width="620" alt="Capture d’écran 2024-01-15 à 03 34 39" src="https://github.com/Emmachz/Projet_WeChat/assets/112880851/9398a7c8-1328-40e0-bf7c-b9bacfd0f8ff">
 
 
-## Schéma relationnel
 
-![](EER.png)
+## Effectuer un virement sur WeChat
+### Exigences fonctionnelles
+Le master DOIT permettre réaliser l'opération de versement en cas de solde de WeChat suffisant.
+Le bank DOIT permettre réaliser l'opération de versement en cas de solde de WeChat insuffisant.
+Le master DOIT informer le User en cas de succès de versement par email.
 
-## Exigences fonctionnelles
+<img width="556" alt="Capture d’écran 2024-01-15 à 03 35 25" src="https://github.com/Emmachz/Projet_WeChat/assets/112880851/0cb49b26-c7c4-42b0-baa7-49035abab6a6">
 
-* le vendor NE DOIT proposer que les concerts pour lesquels il a un quota disponible, transmis par le master.
-* le vendor DOIT pouvoir effectuer les opérations de booking et ticketing
-* le master DOIT permettre à l'artiste d'annuler son concert.
-* le master DOIT informer le vendor en cas d'annulation de concert
-* le vendor DOIT informer les clients de l'annulation du concert par mail
-* le master DOIT proposer un service de validation de la clé du ticket, pour les contrôles aux entées.
+## Envoyer une alert au utilisateur WeChat
+### Exigences fonctionnelles
+-Le master DOIT fournir uniquement ce qui a été envoyé par le gouvernement.
+-Le gouvernement DOIT alerter sur wechat les utilisateurs lorsqu’il y a un événement majeur.
+-Les utilisateurs DOIT recevoir uniquement les alerts qui concerne sa région 
+-Le gouvernement DOIT envoyer un événement à une région existante métropole française. 
+-Le master DOIT envoyer un alerte à une région existante dans la métropole française.
+-Le gouvernement DOIT pouvoir envoyer une alerte à une seule région.
+-Le gouvernement DOIT pouvoir envoyer une alerte à toutes les régions de la métropole française.
+### Exigences non fonctionnelle
+-Lors de l’envoie d’une alert, le gouvernement doit informer tous les utilisateurs concernés de façon fiable
 
-## Exigences non fonctionnelles
+<img width="515" alt="Capture d’écran 2024-01-15 à 03 36 35" src="https://github.com/Emmachz/Projet_WeChat/assets/112880851/1934c479-a942-4e7f-93f3-89489f46f9c6">
 
-* le booking et le ticketing, bien qu'étant des opérations synchrones, DOIVENT être fiables et donc utiliser le messaging
-* Lors de l'annulation de tickets, le master DOIT informer tous les vendors de l'annulation, de façon fiable.
+## Effectuer des donations sur Wechat 
+### Exigences fonctionnelles
+le gouvernement DOIT créer un donation 
+Le master DOIT envoyer à toutes les régions, à l'exception celle impacter
+L’utilisateur DOIT faire une don
+Si le don de l’utilisateur est de l’argent, il DOIT faire un versement à gouvernement 
+Si la quantité demandée est atteinte, le master DOIT envoyer une demande d’update au gouvernement
+### Exigences non fonctionnelle
+-Les donations effectué sur WeChat doit être fiable
+
+<img width="497" alt="Capture d’écran 2024-01-15 à 03 37 30" src="https://github.com/Emmachz/Projet_WeChat/assets/112880851/d76e0ef1-c1ab-4ac8-b610-83db5a5a07aa">
+
+
+si c’est une donation d’argent le système exécute le même processus que le versement d’argent 
