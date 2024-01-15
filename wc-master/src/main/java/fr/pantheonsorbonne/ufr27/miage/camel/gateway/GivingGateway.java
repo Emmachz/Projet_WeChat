@@ -18,6 +18,9 @@ public class GivingGateway {
     public Giving giveMoney(Giving give) throws  UnsuficientQuotaDonationException {
         return givingService.giveMoney(give);
     }
+    public Giving updateDonationAfterBank (Giving give) throws UnsuficientQuotaDonationException{
+        return givingService.updateDonationAfterBank(give);
+    }
     public Giving giveTime(Giving give) throws  UnsuficientQuotaDonationException {
         return givingService.giveTime(give);
     }

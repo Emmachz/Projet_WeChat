@@ -8,6 +8,7 @@ import fr.pantheonsorbonne.ufr27.miage.exception.UserNotFoundException;
 public interface GivingService {
 
     Giving giveMoney(Giving give) throws UnsuficientQuotaDonationException;
+    Giving updateDonationAfterBank (Giving give) throws UnsuficientQuotaDonationException;
     Giving giveTime(Giving give) throws UnsuficientQuotaDonationException;
     Giving giveClothe(Giving give)throws UnsuficientQuotaDonationException;
     Giving convertirGiving(Giving give) throws UserNotFoundException.NoExistUserException;

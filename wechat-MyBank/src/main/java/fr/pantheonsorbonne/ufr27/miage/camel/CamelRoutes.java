@@ -80,11 +80,11 @@ public class CamelRoutes extends RouteBuilder {
                 .when(header("success").isEqualTo(false))
                 .log("Le compte bancaire n existe pas : Mauvais Nom de Banque !")
                 .marshal().json()
-                .stop()
+                .endChoice()
                 .otherwise()
                 .log("Versement termine : success")
                 .marshal().json()
-                .stop()
+                .endChoice()
                 .end();
     }
 
