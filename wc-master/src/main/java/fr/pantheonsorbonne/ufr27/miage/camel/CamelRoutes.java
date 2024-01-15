@@ -88,6 +88,36 @@ public class CamelRoutes extends RouteBuilder {
                 .handled(true)
                 .log("This purchase has already been confirmed.");
 
+        from("sjms2:" + jmsPrefix + "TransfertArgent")
+                .unmarshal().json(TransfertArgent.class)
+                .bean(versementGateway, "findTwoUsersVersement")
+                .bean(versementResponseHandler)
+                .choice()
+                .when(header("success").isEqualTo(true))
+                .bean(versementGateway, "realizeVersementWallet")
+                .bean(messageResponsehandler)
+                .marshal().json()
+                .to("sjms2:" + jmsPrefix + "versementSuccesEmetteur")
+                .stop()
+                .otherwise()
+                .bean(versementGateway, "sendInfosToBank")
+                .marshal().json()
+                .to("sjms2:" + jmsPrefix + "MyBankSystem?exchangePattern=InOut")
+                .choice()
+                .when(header("success").isEqualTo(true))
+                .to("sjms2:" + jmsPrefix + "YesBankSystem?exchangePattern=InOut")
+                .choice()
+                .when(header("success").isEqualTo(true))
+                .to("sjms2:" + jmsPrefix + "versementSuccesEmetteur")
+                .stop()
+                .otherwise()
+                .log("Versement Non Success : Erreur YesBankSystem ")
+                .otherwise()
+                .log("Versement Non Success : Erreur MyBankSystem ")
+                .end()
+        ;
+
+
         from("sjms2:" + jmsPrefix + "selling")//Reception de la vente d'un vendeur
                 .unmarshal().json(PurchaseDTO.class)//
                 .bean(purchaseHandler, "init");//Stocke l'achat en base de donnée et attend la confirmation d'un acheteur
@@ -143,34 +173,6 @@ public class CamelRoutes extends RouteBuilder {
                 .marshal().json();
 
 
-        from("sjms2:" + jmsPrefix + "TransfertArgent")
-                .unmarshal().json(TransfertArgent.class)
-                .bean(versementGateway, "findTwoUsersVersement")
-                .bean(versementResponseHandler)
-                .choice()
-                .when(header("success").isEqualTo(true))
-                .bean(versementGateway, "realizeVersementWallet")
-                .bean(messageResponsehandler)
-                .marshal().json()
-                .to("sjms2:" + jmsPrefix + "versementSuccesEmetteur")
-                .stop()
-                .otherwise()
-                .bean(versementGateway, "sendInfosToBank")
-                .marshal().json()
-                .to("sjms2:" + jmsPrefix + "MyBankSystem?exchangePattern=InOut")
-                .choice()
-                .when(header("success").isEqualTo(true))
-                .to("sjms2:" + jmsPrefix + "YesBankSystem?exchangePattern=InOut")
-                .choice()
-                .when(header("success").isEqualTo(true))
-                .to("sjms2:" + jmsPrefix + "versementSuccesEmetteur")
-                .stop()
-                .otherwise()
-                .log("Versement Non Success : Erreur YesBankSystem ")
-                .otherwise()
-                .log("Versement Non Success : Erreur MyBankSystem ")
-                .end()
-        ;
 
         from("sjms2:" + jmsPrefix + "sendAlert")
                 .unmarshal().json(Alert.class)

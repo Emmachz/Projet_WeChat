@@ -52,7 +52,7 @@ public class CamelRoutes extends RouteBuilder {
         camelContext.setTracing(true);
 
         from("direct:versement")
-                .marshal().json()//, "onBookedResponseReceived"
+                .marshal().json()
                 .to("sjms2:" + jmsPrefix + "TransfertArgent");
 
         from("direct:confirm-purchase")
